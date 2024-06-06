@@ -1,38 +1,116 @@
-.App {
-  text-align: center;
+/* src/App.css */
+
+.input-group {
+  position: relative;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.input-group input[type="text"],
+.input-group input[type="password"] {
+  padding-left: 2.5rem; /* Adjust as needed */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.input-group i {
+  position: absolute;
+  top: 50%;
+  left: 0.75rem; /* Adjust as needed */
+  transform: translateY(-50%);
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f4f4;
+}
+
+.container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  width: 100%;
+  max-width: 600px;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }
 
-.App-link {
-  color: #61dafb;
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.logo-img {
+  max-width: 150px;
+  height: auto;
+}
+
+.login-box {
+  width: 100%;
+}
+
+form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+.input-group i {
+  margin-right: 10px;
+  color: #777;
+}
+
+.input-group input {
+  border: none;
+  outline: none;
+  width: 100%;
+  background: transparent;
+}
+
+.login-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: background-color 0.3s;
+}
+
+.login-button:hover {
+  background-color: #0056b3;
+}
+
+.forgot-password {
+  width: 100%;
+  padding: 10px;
+  background-color: #ccc;
+  color: #000;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.forgot-password:hover {
+  background-color: #999;
 }
