@@ -1,12 +1,35 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import icon10 from "../../../assets/icon10.png";
-import { useParams, useLocation } from "react-router-dom";
-const Exploration = () => {
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import icon9 from "../../../assets/icon9.png";
+import MedicalService from "../../../services/medical.service";
+
+const DiagnosticShow = () => {
   const location = useLocation();
   const patient = location.state?.patient;
   const color = location.state?.color;
-  console.log(patient);
+
+  const [diagnosis, setDiagnosis] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchDiagnosis = async () => {
+      try {
+        setLoading(true);
+        const response = await MedicalService.getAllDiagnosisByMedicalDossierId(
+          patient.id
+        );
+        setDiagnosis(response.data);
+        setLoading(false);
+      } catch (error) {
+        setError(error.message);
+        setLoading(false);
+      }
+    };
+
+    fetchDiagnosis();
+  }, [patient.id]);
+
   return (
     <div className="flex flex-col items-center p-10">
       <div className="flex items-center mb-6 w-full">
@@ -39,41 +62,34 @@ const Exploration = () => {
       </div>
       <div className={`mb-6 text-${color} font-bold`}>
         Mr Patient {patient?.prenom} {patient?.nom}
-      </div>{" "}
+      </div>
       <div className="bg-white border border-black rounded-3xl shadow-lg w-full max-w-md">
         <div className="p-6 border-b border-black justify-center w-full">
           <div className="text-center text-xl font-bold flex items-center justify-center">
-            <img
-              src={icon10}
-              alt="Identité"
-              className="mr-2 align-center w-8"
-            />
-            Exploration
+            <img src={icon9} alt="Identité" className="mr-2 align-center w-8" />
+            Diagnostic
           </div>
         </div>
-        <div className="p-6">
-          <Link
-            to="/exploration/radio-throax"
-            state={{ patient, color }}
-            className="no-underline"
-          >
-            <button className="bg-gradient-to-b from-[#97bfe4] to-[#3472ab] mt-5 border border-black hover:shadow-lg hover:shadow-xl hover:shadow-2xl hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mb-4 w-full">
-              Radio du thorax
-            </button>
-          </Link>
-          <Link
-            to="/exploration/echocardiographie"
-            state={{ patient, color }}
-            className="no-underline"
-          >
-            <button className="bg-gradient-to-b from-[#97bfe4] to-[#3472ab] mb-15 mt-10 border border-black hover:shadow-lg hover:shadow-xl hover:shadow-2xl hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mb-4 w-full">
-              Echocardiographie
-            </button>
-          </Link>
-        </div>
+        {loading ? (
+          <div className="p-6 mt-7">Loading...</div>
+        ) : error ? (
+          <div className="p-6 mt-7">{error}</div>
+        ) : (
+          <div className="p-6 mt-7">
+            {diagnosis.map((item, index) => (
+              <div
+                key={index}
+                className="border border-gray-400 rounded-md p-4 mb-4"
+              >
+                <div>Diagnosis: {item.diagnosis}</div>
+                <div>Differential Diagnosis: {item.diagnosisDifferentiel}</div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default Exploration;
+export default DiagnosticShow;

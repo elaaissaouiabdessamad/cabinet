@@ -1,47 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { useLocation } from "react-router-dom";
-import PatientService from "../../../services/patient.service";
 import icon1 from "../../../assets/icon1.png";
 
 const PatientIdentity = () => {
   const location = useLocation();
   const patient = location.state?.patient;
   const color = location.state?.color;
-
-  const [formData, setFormData] = useState({
-    nom: patient?.nom || "",
-    prenom: patient?.prenom || "",
-    age: patient?.age || "",
-    ville: patient?.ville || "",
-    profession: patient?.profession || "",
-    assurance: patient?.assurance || "",
-    referenceID: patient?.referenceID || "",
-    id: patient?.id || "",
-  });
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      await PatientService.updatePatient(patient.id, formData);
-      setSuccess("Patient details updated successfully");
-      setError(null);
-    } catch (err) {
-      setError("Failed to update patient details");
-      setSuccess(null);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="flex flex-col items-center p-10">
@@ -74,7 +38,7 @@ const PatientIdentity = () => {
         </button>
       </div>
       <div className={`mb-6 text-${color} font-bold`}>
-        Mr Patient {formData.prenom} {formData.nom}
+        Mr Patient {patient?.prenom} {patient?.nom}
       </div>
       <div className="bg-white border border-black rounded-3xl shadow-lg w-full max-w-md">
         <div className="p-6 border-b border-black justify-center w-full">
@@ -83,84 +47,50 @@ const PatientIdentity = () => {
             Identité
           </div>
         </div>
-        <form className="p-6" onSubmit={handleSubmit}>
+        <div className="p-6">
           <input
             type="text"
-            name="nom"
             placeholder="Nom"
-            value={formData.nom}
-            onChange={handleChange}
+            value={patient?.nom || ""}
             className="w-full mb-2 p-2 border rounded-lg"
           />
           <input
             type="text"
-            name="prenom"
             placeholder="Prénom"
-            value={formData.prenom}
-            onChange={handleChange}
+            value={patient?.prenom || ""}
             className="w-full mb-2 p-2 border rounded-lg"
           />
           <input
             type="text"
-            name="age"
             placeholder="Age"
-            value={formData.age}
-            onChange={handleChange}
+            value={patient?.age || ""}
             className="w-full mb-2 p-2 border rounded-lg"
           />
           <input
             type="text"
-            name="ville"
             placeholder="Ville"
-            value={formData.ville}
-            onChange={handleChange}
+            value={patient?.ville || ""}
             className="w-full mb-2 p-2 border rounded-lg"
           />
           <input
             type="text"
-            name="profession"
             placeholder="Profession"
-            value={formData.profession}
-            onChange={handleChange}
+            value={patient?.profession || ""}
             className="w-full mb-2 p-2 border rounded-lg"
           />
           <input
             type="text"
-            name="assurance"
             placeholder="Assurance"
-            value={formData.assurance}
-            onChange={handleChange}
+            value={patient?.assurance || ""}
             className="w-full mb-2 p-2 border rounded-lg"
           />
           <input
             type="text"
-            name="referenceID"
-            placeholder="Reference ID"
-            value={formData.referenceID}
-            onChange={handleChange}
-            className="w-full mb-2 p-2 border rounded-lg"
-          />
-          <input
-            type="text"
-            name="id"
             placeholder="ID"
-            value={formData.id}
-            onChange={handleChange}
-            className="w-full mb-2 p-2 border rounded-lg bg-gray-400"
-            readOnly
+            value={patient?.id || ""}
+            className="w-full mb-2 p-2 border rounded-lg"
           />
-          {error && <p className="text-red-500 text-center mt-2">{error}</p>}
-          {success && (
-            <p className="text-green-500 text-center mt-2">{success}</p>
-          )}
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white p-2 rounded-lg"
-            disabled={loading}
-          >
-            {loading ? "Updating..." : "Update"}
-          </button>
-        </form>
+        </div>
       </div>
     </div>
   );

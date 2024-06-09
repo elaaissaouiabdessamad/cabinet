@@ -1,13 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import icon3 from "../../../assets/icon3.png";
-import AddAntecedentForm from "../Forms/AddAntecedentForm"; // Import the new form component
+import MedicalService from "../../../services/medical.service";
 
-const CaseHistory = () => {
+const CaseHistoryShow = () => {
   const location = useLocation();
   const patient = location.state?.patient;
   const color = location.state?.color;
-  const [antecedentUpdate, setAntecedentUpdate] = useState("");
+
+  const [antecedents, setAntecedents] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchAntecedents = async () => {
+      try {
+        setLoading(true);
+        const response =
+          await MedicalService.getAllAntecedentsByMedicalDossierId(patient.id);
+        setAntecedents(response.data);
+        setLoading(false);
+      } catch (error) {
+        setError(error.message);
+        setLoading(false);
+      }
+    };
+
+    fetchAntecedents();
+  }, [patient.id]);
 
   return (
     <div className="flex flex-col items-center p-10">
@@ -50,14 +70,37 @@ const CaseHistory = () => {
           </div>
         </div>
         <div className="p-6">
-          <AddAntecedentForm
-            patientId={patient?.id}
-            setAntecedentUpdate={setAntecedentUpdate}
-          />
+          {loading && <p className="text-center">Loading...</p>}
+          {error && <p className="text-center text-red-500">{error}</p>}
+          {!loading && !error && (
+            <div>
+              {antecedents.map((antecedent, index) => (
+                <div
+                  key={index}
+                  className="mb-4 border border-gray-200 p-4 rounded-lg"
+                >
+                  <h3 className="mb-2">
+                    <strong>Personal: </strong>
+                    {antecedent.personal}
+                  </h3>
+                  <p className="mb-2">
+                    <strong>Familial: </strong> {antecedent.familial}
+                  </p>
+                  <p>
+                    <strong>Cardiovascular Risk Factors:</strong>{" "}
+                    {antecedent.cardiovascularRiskFactors}
+                  </p>
+                </div>
+              ))}
+              {antecedents.length === 0 && (
+                <p className="text-center">No antecedents found.</p>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-export default CaseHistory;
+export default CaseHistoryShow;

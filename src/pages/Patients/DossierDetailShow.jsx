@@ -15,7 +15,7 @@ import icon9 from "../../assets/icon9.png";
 import icon10 from "../../assets/icon10.png";
 import icon11 from "../../assets/icon11.png";
 
-const DossierDetail = () => {
+const DossierDetailShow = () => {
   const { id } = useParams();
   const location = useLocation();
   const patient = location.state?.patient;
@@ -52,8 +52,8 @@ const DossierDetail = () => {
             </svg>
           </button>
         </div>
-        <h2 className={`text-xl font-bold py-2 text-${color}`}>
-          Mr Patient &nbsp;
+        <h2 className={`text-xl py-2 text-${color} font-bold`}>
+          Mr. Patient &nbsp;
           <span className="text-gray-500">
             {patient.prenom} {patient.nom}
           </span>
@@ -66,7 +66,7 @@ const DossierDetail = () => {
         <div className="grid grid-cols-3 gap-4 mt-4">
           <Link
             to={{
-              pathname: `/patient-identity`,
+              pathname: `/show/patient-identity`,
             }}
             state={{ patient, color }}
             className="bg-white border rounded-lg p-4 flex items-center"
@@ -75,7 +75,7 @@ const DossierDetail = () => {
           </Link>
           <Link
             to={{
-              pathname: "/motif-hospitalisation",
+              pathname: "/show/motif-hospitalisation",
             }}
             state={{ patient, color }}
             className="bg-white border rounded-lg p-4 flex items-center"
@@ -89,7 +89,7 @@ const DossierDetail = () => {
           </Link>
           <Link
             to={{
-              pathname: "/antecedents",
+              pathname: "/show/antecedents",
             }}
             state={{ patient, color }}
             className="bg-white border rounded-lg p-4 flex items-center"
@@ -99,7 +99,7 @@ const DossierDetail = () => {
           </Link>
           <Link
             to={{
-              pathname: "/histoire-maladie",
+              pathname: "/show/histoire-maladie",
             }}
             state={{ patient, color }}
             className="bg-white border rounded-lg p-4 flex items-center"
@@ -113,7 +113,7 @@ const DossierDetail = () => {
           </Link>
           <Link
             to={{
-              pathname: "/conclusion-primaire",
+              pathname: "/show/conclusion-primaire",
             }}
             state={{ patient, color }}
             className="bg-white border rounded-lg p-4 flex items-center"
@@ -123,7 +123,7 @@ const DossierDetail = () => {
           </Link>
           <Link
             to={{
-              pathname: "/examen-clinique",
+              pathname: "/show/examen-clinique",
             }}
             state={{ patient, color }}
             className="bg-white border rounded-lg p-4 flex items-center"
@@ -133,7 +133,7 @@ const DossierDetail = () => {
           </Link>
           <Link
             to={{
-              pathname: "/ecg",
+              pathname: "/show/ecg",
             }}
             state={{ patient, color }}
             className="bg-white border rounded-lg p-4 flex items-center"
@@ -142,7 +142,7 @@ const DossierDetail = () => {
           </Link>
           <Link
             to={{
-              pathname: "/conclusion",
+              pathname: "/show/conclusion",
             }}
             state={{ patient, color }}
             className="bg-white border rounded-lg p-4 flex items-center"
@@ -151,7 +151,7 @@ const DossierDetail = () => {
           </Link>
           <Link
             to={{
-              pathname: "/diagnostic",
+              pathname: "/show/diagnostic",
             }}
             state={{ patient, color }}
             className="bg-white border rounded-lg p-4 flex items-center"
@@ -160,7 +160,7 @@ const DossierDetail = () => {
           </Link>
           <Link
             to={{
-              pathname: "/exploration",
+              pathname: "/show/exploration",
             }}
             state={{ patient, color }}
             className="bg-white border rounded-lg p-4 flex items-center"
@@ -170,7 +170,7 @@ const DossierDetail = () => {
           </Link>
           <Link
             to={{
-              pathname: "/biologie",
+              pathname: "/show/biologie",
             }}
             state={{ patient, color }}
             className="bg-white border rounded-lg p-4 flex items-center"
@@ -183,4 +183,4 @@ const DossierDetail = () => {
   );
 };
 
-export default DossierDetail;
+export default DossierDetailShow;

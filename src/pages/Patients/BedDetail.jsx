@@ -51,9 +51,15 @@ const BedDetail = () => {
     }
   };
 
-  const handleViewDossier = () => {
+  const handleUpdateDossier = () => {
     navigate(`/dossier/${bed.currentPatient.medicalDossier.id}`, {
-      state: { bed },
+      state: { patient: bed.currentPatient, color: getBgColor() },
+    });
+  };
+
+  const handleViewDossier = () => {
+    navigate(`/dossier/show/${bed.currentPatient.medicalDossier.id}`, {
+      state: { patient: bed.currentPatient, color: getBgColor() },
     });
   };
 
@@ -73,17 +79,22 @@ const BedDetail = () => {
 
   const getBgColor = () => {
     if (bed.state === "EMPTY") {
-      return "bg-blue-500";
+      return "blue-500";
     }
     const daysOccupied = moment().diff(moment(bed.startDateTime), "days");
     if (daysOccupied < 10) {
-      return "bg-green-500";
+      return "green-500";
     }
-    return "bg-red-500";
+    return "red-500";
+  };
+
+  const calculateDaysOccupied = (startDateTime) => {
+    const daysOccupied = moment().diff(moment(startDateTime), "days");
+    return daysOccupied;
   };
 
   return (
-    <div className="p-4 flex flex-col items-center p-10 min-h-screen">
+    <div className="p-4 flex flex-col items-center min-h-screen">
       <div className="flex items-center mb-4 w-full">
         <div className="flex items-center w-full relative">
           <input
@@ -91,7 +102,7 @@ const BedDetail = () => {
             placeholder="Search..."
             className="flex-grow p-2 border rounded-lg"
           />
-          <button className="ml-2 p-2 bg-white border rounded-lg">
+          <button className="absolute right-0 top-0 mr-2 p-2 rounded-lg">
             <i className="fas fa-search"></i>
           </button>
         </div>
@@ -114,7 +125,7 @@ const BedDetail = () => {
       </div>
 
       <h2
-        className={`shadow-md text-xl font-bold text-center ${getBgColor()} text-white py-2 w-full max-w-md`}
+        className={`shadow-md text-xl font-bold text-center bg-${getBgColor()} text-white py-2 w-full max-w-md`}
       >
         LIT {bed.id}
         <span className="block text-sm mt-1">
@@ -155,8 +166,8 @@ const BedDetail = () => {
                 <div className="flex justify-between">
                   <span className="font-semibold">Motif d'hospitalisation</span>
                   <span>
-                    {currentPatient.medicalDossier.ReasonHospitalization
-                      ? currentPatient.medicalDossier.ReasonHospitalization
+                    {currentPatient.medicalDossier.hospitalization
+                      ? currentPatient.medicalDossier.hospitalization
                       : "N/A"}
                   </span>
                 </div>
@@ -164,9 +175,9 @@ const BedDetail = () => {
                 <div className="flex justify-between">
                   <span className="font-semibold">Diagnostic</span>
                   <span>
-                    {currentPatient.medicalDossier.diagnoses.length
-                      ? currentPatient.medicalDossier.diagnoses.join(", ")
-                      : "N/A"}
+                    {`${calculateDaysOccupied(
+                      bed.startDateTime
+                    )} jours occupés`}
                   </span>
                 </div>
                 <hr />
@@ -209,12 +220,20 @@ const BedDetail = () => {
         </div>
       )}
       {currentPatient?.medicalDossier && (
-        <button
-          className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200 absolute bottom-4 right-4"
-          onClick={handleViewDossier}
-        >
-          Voir dossier
-        </button>
+        <div className="flex space-x-4 mt-4">
+          <button
+            className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition duration-200"
+            onClick={handleViewDossier}
+          >
+            Voir dossier
+          </button>
+          <button
+            className="bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600 transition duration-200"
+            onClick={handleUpdateDossier}
+          >
+            Editer dossier
+          </button>
+        </div>
       )}
     </div>
   );

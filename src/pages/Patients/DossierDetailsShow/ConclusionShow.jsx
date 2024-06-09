@@ -1,12 +1,14 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import icon10 from "../../../assets/icon10.png";
-import { useParams, useLocation } from "react-router-dom";
-const Exploration = () => {
+import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
+import ConclusionDisplay from "../Forms/ConclusionDisplay";
+import icon8 from "../../../assets/icon8.png";
+
+const Conclusion = () => {
+  const [conclusionUpdate, setConclusionUpdate] = useState(""); // Lifted state
   const location = useLocation();
   const patient = location.state?.patient;
   const color = location.state?.color;
-  console.log(patient);
+
   return (
     <div className="flex flex-col items-center p-10">
       <div className="flex items-center mb-6 w-full">
@@ -39,41 +41,23 @@ const Exploration = () => {
       </div>
       <div className={`mb-6 text-${color} font-bold`}>
         Mr Patient {patient?.prenom} {patient?.nom}
-      </div>{" "}
+      </div>
       <div className="bg-white border border-black rounded-3xl shadow-lg w-full max-w-md">
         <div className="p-6 border-b border-black justify-center w-full">
           <div className="text-center text-xl font-bold flex items-center justify-center">
-            <img
-              src={icon10}
-              alt="Identité"
-              className="mr-2 align-center w-8"
-            />
-            Exploration
+            <img src={icon8} alt="Identité" className="mr-2 align-center w-8" />
+            Conclusion
           </div>
         </div>
-        <div className="p-6">
-          <Link
-            to="/exploration/radio-throax"
-            state={{ patient, color }}
-            className="no-underline"
-          >
-            <button className="bg-gradient-to-b from-[#97bfe4] to-[#3472ab] mt-5 border border-black hover:shadow-lg hover:shadow-xl hover:shadow-2xl hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mb-4 w-full">
-              Radio du thorax
-            </button>
-          </Link>
-          <Link
-            to="/exploration/echocardiographie"
-            state={{ patient, color }}
-            className="no-underline"
-          >
-            <button className="bg-gradient-to-b from-[#97bfe4] to-[#3472ab] mb-15 mt-10 border border-black hover:shadow-lg hover:shadow-xl hover:shadow-2xl hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mb-4 w-full">
-              Echocardiographie
-            </button>
-          </Link>
+        <div className="pb-6 m-6">
+          <ConclusionDisplay
+            patientId={patient?.id}
+            conclusionUpdate={conclusionUpdate} // Pass conclusion state
+          />
         </div>
       </div>
     </div>
   );
 };
 
-export default Exploration;
+export default Conclusion;

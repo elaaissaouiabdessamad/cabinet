@@ -49,27 +49,27 @@ const ClinicalExamination = () => {
         </div>
         <div className="p-6">
           <Link
-            to="/examen-clinique/cardio-vasculaire"
+            to="/show/examen-clinique/cardio-vasculaire"
             state={{ patient, color }}
             className="no-underline"
           >
-            <button className="bg-gradient-to-b from-[#97bfe4] to-[#3472ab] mt-10 mb-10 border border-black hover:shadow-lg hover:shadow-xl hover:shadow-2xl hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg w-full">
+            <button className="bg-gradient-to-b from-[#97bfe4] to-[#3472ab] mt-5 mb-10 border border-black hover:shadow-lg hover:shadow-xl hover:shadow-2xl hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg w-full">
               Cardio vasculaire
             </button>
           </Link>
           <Link
-            to="/examen-clinique/pleuro-pulmonaire"
+            to="/show/examen-clinique/pleuro-pulmonaire"
             state={{ patient, color }}
-            className="no-underline mt-10"
+            className="no-underline"
           >
             <button className="bg-gradient-to-b from-[#97bfe4] to-[#3472ab] mb-10 border border-black hover:shadow-lg hover:shadow-xl hover:shadow-2xl hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg w-full">
               Pleuro pulmonaire
             </button>
           </Link>
           <Link
-            to="/examen-clinique/abdominal"
+            to="/show/examen-clinique/abdominal"
             state={{ patient, color }}
-            className="no-underline mt-10"
+            className="no-underline"
           >
             <button className="bg-gradient-to-b from-[#97bfe4] to-[#3472ab] mb-10 border border-black hover:shadow-lg hover:shadow-xl hover:shadow-2xl hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg w-full">
               Abdominal

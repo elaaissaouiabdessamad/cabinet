@@ -2,14 +2,23 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCog, faPowerOff, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "../styles/Dashboard.css";
 
 const Header = ({ currentTime, formatTime }) => {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    // Perform any necessary cleanup, such as removing authentication tokens
-    navigate("/login"); // Navigate to the login page
+  const handleLogout = async () => {
+    try {
+      // Call the logout endpoint
+      await axios.post("http://localhost:3000/api/auth/logout");
+
+      // Perform any necessary cleanup, such as removing authentication tokens
+      navigate("/login"); // Navigate to the login page
+    } catch (error) {
+      console.error("Error during logout:", error);
+      // Handle the error, show a message to the user, etc.
+    }
   };
 
   return (

@@ -13,6 +13,10 @@ const getBedById = (bedId) => {
   return axios.get(API_URL + bedId);
 };
 
+const getBedByPatientId = (patientId) => {
+  return axios.get(API_URL + "/patient/" + patientId);
+};
+
 const assignPatientToBed = (bedId, patientId) => {
   return axios.post(API_URL + "assign/bed/" + bedId + "/patient/" + patientId);
 };
@@ -27,6 +31,7 @@ const BedService = {
   removePatientToBed,
   getBedsBySectorId,
   getBedById,
+  getBedByPatientId,
 };
 
 export default BedService;

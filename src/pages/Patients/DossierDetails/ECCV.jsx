@@ -75,7 +75,7 @@ const ECVV = () => {
           </svg>
         </button>
       </div>
-      <div className={`mb-6 ${color}`}>
+      <div className={`mb-6 text-${color} font-bold`}>
         Mr Patient {patient?.prenom} {patient?.nom}
       </div>
       <div className="bg-white border border-black rounded-3xl shadow-lg w-full max-w-md">

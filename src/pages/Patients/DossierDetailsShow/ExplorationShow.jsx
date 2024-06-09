@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import icon6 from "../../../assets/icon6.png";
+import icon10 from "../../../assets/icon10.png";
 import { useParams, useLocation } from "react-router-dom";
-const ClinicalExamination = () => {
+const Exploration = () => {
   const location = useLocation();
   const patient = location.state?.patient;
   const color = location.state?.color;
@@ -43,36 +43,31 @@ const ClinicalExamination = () => {
       <div className="bg-white border border-black rounded-3xl shadow-lg w-full max-w-md">
         <div className="p-6 border-b border-black justify-center w-full">
           <div className="text-center text-xl font-bold flex items-center justify-center">
-            <img src={icon6} alt="Identité" className="mr-2 align-center w-8" />
-            Examen clinique
+            <img
+              src={icon10}
+              alt="Identité"
+              className="mr-2 align-center w-8"
+            />
+            Exploration
           </div>
         </div>
         <div className="p-6">
           <Link
-            to="/examen-clinique/cardio-vasculaire"
+            to="/show/exploration/radio-throax"
             state={{ patient, color }}
             className="no-underline"
           >
-            <button className="bg-gradient-to-b from-[#97bfe4] to-[#3472ab] mt-10 mb-10 border border-black hover:shadow-lg hover:shadow-xl hover:shadow-2xl hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg w-full">
-              Cardio vasculaire
+            <button className="bg-gradient-to-b from-[#97bfe4] to-[#3472ab] mt-5 mb-15 border border-black hover:shadow-lg hover:shadow-xl hover:shadow-2xl hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mb-4 w-full">
+              Radio du thorax
             </button>
           </Link>
           <Link
-            to="/examen-clinique/pleuro-pulmonaire"
+            to="/show/exploration/echocardiographie"
             state={{ patient, color }}
-            className="no-underline mt-10"
+            className="no-underline"
           >
-            <button className="bg-gradient-to-b from-[#97bfe4] to-[#3472ab] mb-10 border border-black hover:shadow-lg hover:shadow-xl hover:shadow-2xl hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg w-full">
-              Pleuro pulmonaire
-            </button>
-          </Link>
-          <Link
-            to="/examen-clinique/abdominal"
-            state={{ patient, color }}
-            className="no-underline mt-10"
-          >
-            <button className="bg-gradient-to-b from-[#97bfe4] to-[#3472ab] mb-10 border border-black hover:shadow-lg hover:shadow-xl hover:shadow-2xl hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg w-full">
-              Abdominal
+            <button className="bg-gradient-to-b from-[#97bfe4] to-[#3472ab] mb-15 mt-10 border border-black hover:shadow-lg hover:shadow-xl hover:shadow-2xl hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mb-4 w-full">
+              Echocardiographie
             </button>
           </Link>
         </div>
@@ -81,4 +76,4 @@ const ClinicalExamination = () => {
   );
 };
 
-export default ClinicalExamination;
+export default Exploration;

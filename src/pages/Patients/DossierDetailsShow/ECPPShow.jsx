@@ -1,12 +1,37 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import MedicalService from "../../../services/medical.service";
 import icon6 from "../../../assets/icon6.png";
-import { useParams, useLocation } from "react-router-dom";
-const ClinicalExamination = () => {
+
+const ECPP = () => {
   const location = useLocation();
   const patient = location.state?.patient;
   const color = location.state?.color;
-  console.log(patient);
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [pulmonaryExamData, setPulmonaryExamData] = useState([]);
+
+  useEffect(() => {
+    const fetchPulmonaryExamData = async () => {
+      try {
+        setLoading(true);
+        const response =
+          await MedicalService.getAlClinicalExamslByMedicalDossierId(
+            patient.id,
+            "pulmonary"
+          );
+        setPulmonaryExamData(response.data);
+        setLoading(false);
+      } catch (error) {
+        setError(error.message);
+        setLoading(false);
+      }
+    };
+
+    fetchPulmonaryExamData();
+  }, [patient.id]);
+
   return (
     <div className="flex flex-col items-center p-10">
       <div className="flex items-center mb-6 w-full">
@@ -44,41 +69,27 @@ const ClinicalExamination = () => {
         <div className="p-6 border-b border-black justify-center w-full">
           <div className="text-center text-xl font-bold flex items-center justify-center">
             <img src={icon6} alt="Identité" className="mr-2 align-center w-8" />
-            Examen clinique
+            Examen clinique &nbsp;
+            <span className="text-sm"> / Pleuro pulmonaire</span>
           </div>
         </div>
-        <div className="p-6">
-          <Link
-            to="/examen-clinique/cardio-vasculaire"
-            state={{ patient, color }}
-            className="no-underline"
-          >
-            <button className="bg-gradient-to-b from-[#97bfe4] to-[#3472ab] mt-10 mb-10 border border-black hover:shadow-lg hover:shadow-xl hover:shadow-2xl hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg w-full">
-              Cardio vasculaire
-            </button>
-          </Link>
-          <Link
-            to="/examen-clinique/pleuro-pulmonaire"
-            state={{ patient, color }}
-            className="no-underline mt-10"
-          >
-            <button className="bg-gradient-to-b from-[#97bfe4] to-[#3472ab] mb-10 border border-black hover:shadow-lg hover:shadow-xl hover:shadow-2xl hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg w-full">
-              Pleuro pulmonaire
-            </button>
-          </Link>
-          <Link
-            to="/examen-clinique/abdominal"
-            state={{ patient, color }}
-            className="no-underline mt-10"
-          >
-            <button className="bg-gradient-to-b from-[#97bfe4] to-[#3472ab] mb-10 border border-black hover:shadow-lg hover:shadow-xl hover:shadow-2xl hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg w-full">
-              Abdominal
-            </button>
-          </Link>
-        </div>
+        {loading ? (
+          <p>Loading...</p>
+        ) : error ? (
+          <p>{error}</p>
+        ) : (
+          <div className="p-6 m-4">
+            {pulmonaryExamData.map((exam, index) => (
+              <div key={index} className="mb-4">
+                <p className="font-bold">Pulmonary Exam Result:</p>
+                <p>{exam.pulmonary}</p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default ClinicalExamination;
+export default ECPP;

@@ -1,7 +1,50 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import BedService from "../../services/bed.service"; // Ensure the path is correct
 
 const Sectors = () => {
+  const [sectors, setSectors] = useState([
+    {
+      id: 1,
+      name: "SECTEUR USI",
+      occupied: 0,
+      empty: 0,
+      bgFrom: "#000e29",
+      bgTo: "#1c437c",
+    },
+    {
+      id: 2,
+      name: "SECTEUR FROID",
+      occupied: 0,
+      empty: 0,
+      bgFrom: "#3a73aa",
+      bgTo: "#6490bd",
+    },
+  ]);
+
+  useEffect(() => {
+    const fetchSectorData = async () => {
+      try {
+        const updatedSectors = await Promise.all(
+          sectors.map(async (sector) => {
+            const response = await BedService.getBedsBySectorId(sector.id);
+            const beds = response.data;
+            const occupied = beds.filter(
+              (bed) => bed.state === "OCCUPIED"
+            ).length;
+            const empty = beds.filter((bed) => bed.state === "EMPTY").length;
+            return { ...sector, occupied, empty };
+          })
+        );
+        setSectors(updatedSectors);
+      } catch (error) {
+        console.error("Error fetching sector data:", error);
+      }
+    };
+
+    fetchSectorData();
+  }, []); // Add 'sectors' to the dependency array
+
   return (
     <div className="p-10">
       <div className="flex items-center mb-4">
@@ -12,7 +55,7 @@ const Sectors = () => {
             className="flex-grow p-2 border rounded-lg"
           />
           <button className="ml-2 p-2 bg-white border rounded-lg">
-            <i class="fas fa-search"></i>
+            <i className="fas fa-search"></i>
           </button>
         </div>
         <button className="ml-4 p-2 w-10 h-10 bg-black text-white rounded-full flex items-center justify-center">
@@ -33,28 +76,34 @@ const Sectors = () => {
         </button>
       </div>
       <div className="mt-20 flex justify-around text-center w-full">
-        <Link to="/patients/1" className="no-underline">
-          <div className="rounded-3xl bg-gradient-to-b hover:bg-gradient-to-t from-[#000e29] to-[#1c437c] text-white p-16 shadow-lg cursor-pointer transform transition duration-500 hover:scale-105">
-            <div className="mb-20 text-center text-xl font-bold">
-              SECTEUR USI
+        {sectors.map((sector) => (
+          <Link
+            to={`/patients/${sector.id}`}
+            key={sector.id}
+            className="no-underline"
+          >
+            <div
+              className="rounded-3xl transition-transform duration-500 hover:scale-105"
+              style={{
+                backgroundImage: `linear-gradient(to bottom, ${sector.bgFrom}, ${sector.bgTo})`,
+                color: "white",
+                padding: "57px", // Adjust padding as needed
+                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                cursor: "pointer",
+                transition: "box-shadow 0.5s", // Add box-shadow transition
+              }}
+            >
+              <div className="mb-20 text-center text-xl font-bold">
+                {sector.name}
+              </div>
+              <div className="text-center">
+                {sector.occupied} LITS OCCUPÉS
+                <br />
+                {sector.empty} LITS LIBRES
+              </div>
             </div>
-            <div className="text-center">
-              6 LITS OCCUPÉS
-              <br />6 LITS LIBRES
-            </div>
-          </div>
-        </Link>
-        <Link to="/patients/2" className="no-underline">
-          <div className="rounded-3xl text-center bg-gradient-to-b hover:bg-gradient-to-t from-[#3a73aa] to-[#6490bd] text-white p-16 shadow-lg transform transition duration-500 hover:scale-105">
-            <div className="mb-20 text-center text-xl font-bold">
-              SECTEUR FROID
-            </div>
-            <div className="text-center">
-              8 LITS OCCUPÉS
-              <br />4 LITS LIBRES
-            </div>
-          </div>
-        </Link>
+          </Link>
+        ))}
       </div>
     </div>
   );

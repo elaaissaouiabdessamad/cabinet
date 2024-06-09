@@ -55,6 +55,11 @@ const Patients = () => {
     return "border-red-500 text-red-500";
   };
 
+  const calculateDaysOccupied = (startDateTime) => {
+    const daysOccupied = moment().diff(moment(startDateTime), "days");
+    return daysOccupied;
+  };
+
   return (
     <div className="p-4">
       <div className="flex items-center mb-4">
@@ -110,9 +115,9 @@ const Patients = () => {
                       {bed.currentPatient ? bed.currentPatient.nom : "Inconnu"}
                     </p>
                     <p className={`${getColorClass(bed).split(" ")[1]}`}>
-                      {`Diagnostic: ${moment(bed.startDateTime).format(
-                        "YYYY-MM-DD"
-                      )}`}
+                      {`Jours Occupés: ${calculateDaysOccupied(
+                        bed.startDateTime
+                      )} jours`}
                     </p>
                   </>
                 ) : (
