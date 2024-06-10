@@ -58,9 +58,11 @@ const DossierDetail = () => {
             {patient.prenom} {patient.nom}
           </span>
           &nbsp;
-          <span className="text-sm text-gray-500">ID : {patient.id}</span>
           <span className="text-sm text-gray-500">
-            , Ref : {patient.referenceID}
+            Ref : {patient.referenceID}
+          </span>
+          <span class="inline-block ml-6 text-white px-4 py-2 whitespace-nowrap rounded-[0.27rem] bg-primary-100 text-center align-baseline text-[0.75em] font-bold leading-none text-primary-700 dark:bg-slate-900 dark:text-primary-500">
+            Ajout/Modification dossier
           </span>
         </h2>
         <div className="grid grid-cols-3 gap-4 mt-4">

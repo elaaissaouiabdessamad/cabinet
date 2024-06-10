@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import PatientService from "../../../services/patient.service";
 import icon1 from "../../../assets/icon1.png";
+import HeaderDossier from "../../../components/HeaderDossier";
 
 const PatientIdentity = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const patient = location.state?.patient;
   const color = location.state?.color;
 
@@ -43,36 +45,19 @@ const PatientIdentity = () => {
     }
   };
 
+  const handleNext = () => {
+    navigate("/motif-hospitalisation", { state: { patient, color } });
+  };
+
+  const handleDossier = () => {
+    navigate(`/dossier/${patient.medicalDossier.id}`, {
+      state: { patient, color },
+    });
+  };
+
   return (
     <div className="flex flex-col items-center p-10">
-      <div className="flex items-center mb-6 w-full">
-        <div className="flex items-center w-full relative">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="flex-grow p-2 border border-gray-400 rounded-lg pr-10"
-          />
-          <button className="absolute right-0 top-0 mr-2 p-2 rounded-lg">
-            <i className="fas fa-search"></i>
-          </button>
-        </div>
-        <button className="p-2 ml-4 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M12 4v16m8-8H4"
-            />
-          </svg>
-        </button>
-      </div>
+      <HeaderDossier handleDossier={handleDossier} />
       <div className={`mb-6 text-${color} font-bold`}>
         Mr Patient {formData.prenom} {formData.nom}
       </div>
@@ -140,27 +125,26 @@ const PatientIdentity = () => {
             onChange={handleChange}
             className="w-full mb-2 p-2 border rounded-lg"
           />
-          <input
-            type="text"
-            name="id"
-            placeholder="ID"
-            value={formData.id}
-            onChange={handleChange}
-            className="w-full mb-2 p-2 border rounded-lg bg-gray-400"
-            readOnly
-          />
           {error && <p className="text-red-500 text-center mt-2">{error}</p>}
           {success && (
             <p className="text-green-500 text-center mt-2">{success}</p>
           )}
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white p-2 rounded-lg"
+            className="w-full bg-blue-500 text-white font-bold mt-2 p-2 rounded-lg"
             disabled={loading}
           >
-            {loading ? "Updating..." : "Update"}
+            {loading ? "Mise à jour en cours..." : "Mettre à jour"}
           </button>
         </form>
+      </div>
+      <div className="flex justify-end w-full max-w-md mt-6">
+        <button
+          onClick={handleNext}
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg"
+        >
+          Suivant
+        </button>
       </div>
     </div>
   );

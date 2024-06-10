@@ -25,6 +25,10 @@ const removePatientToBed = (bedId) => {
   return axios.post(API_URL + "remove/" + bedId);
 };
 
+const deleteBedById = (bedId) => {
+  return axios.delete(API_URL + "delete/" + bedId);
+};
+
 const BedService = {
   addBedBySectorId,
   assignPatientToBed,
@@ -32,6 +36,7 @@ const BedService = {
   getBedsBySectorId,
   getBedById,
   getBedByPatientId,
+  deleteBedById,
 };
 
 export default BedService;

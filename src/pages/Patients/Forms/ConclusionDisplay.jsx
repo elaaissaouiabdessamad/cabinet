@@ -28,20 +28,24 @@ const ConclusionDisplay = ({ patientId, conclusionUpdate }) => {
   }, [patientId, conclusionUpdate]); // Include conclusionUpdate in dependency array
 
   return (
-    <div className="m-5">
+    <div className="m-2">
       {loading ? (
         <p>Chargement de la conclusion...</p>
       ) : error ? (
         <p>Erreur : {error}</p>
       ) : conclusion ? (
-        <div className="p-4">
-          <p>
-            <strong>Conclusion :</strong>
-          </p>
-          <p className="border border-gray-300 p-4 m-2">{conclusion}</p>
+        <div className="p-2">
+          <textarea
+            readOnly
+            className="border border-gray-300 p-2 rounded-lg w-full"
+            rows={8}
+            value={conclusion}
+          />
         </div>
       ) : (
-        <p className="text-gray-500">Aucune conclusion disponible.</p>
+        <p className="mt-10 text-gray-500 text-center">
+          Aucune conclusion disponible.
+        </p>
       )}
     </div>
   );

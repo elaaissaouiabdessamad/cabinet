@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { FaUser, FaLock } from "react-icons/fa"; // Import icons from react-icons library
 import axios from "axios";
 import Logo from "../logo.png"; // Adjust the path as needed
@@ -8,6 +8,7 @@ function Login({ login }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -22,16 +23,16 @@ function Login({ login }) {
       );
       const { accessToken, id, roles, email } = response.data;
       console.log(response);
-      // Save the token and user info to local storage as a single object
       const userData = {
         token: accessToken,
         userId: id,
         email: email,
+        username: username,
         roles,
       };
       localStorage.setItem("userData", JSON.stringify(userData));
-      login(); // Notify parent component about successful login
-      navigate("/dashboard"); // Navigate to dashboard
+      login();
+      navigate("/dashboard");
     } catch (error) {
       setErrorMessage(error.response?.data?.message || "Invalid credentials");
     }
@@ -39,7 +40,9 @@ function Login({ login }) {
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
-      <img src={Logo} alt="Logo" className="mr-32 h-72 mb-6" />
+      {/*<img src={Logo} alt="Logo" className="mr-32 h-72 mb-6" />*/}
+      <img src={Logo} alt="Logo" className="mr-64 w-64 mb-6" />
+
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <form className="space-y-6" onSubmit={handleLogin}>
           <div className="relative">
@@ -73,13 +76,19 @@ function Login({ login }) {
           >
             Connexion
           </button>
-          <button
-            type="button"
-            className="w-full py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400 transition duration-300"
+          <Link
+            to="/password-reset"
+            className="w-full py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400 transition duration-300 text-center block mt-2"
           >
             Mot de passe oublié
-          </button>
+          </Link>
         </form>
+        <div className="mt-4 text-center">
+          <span className="text-gray-600">Pas encore de compte ? </span>
+          <Link to="/signup" className="text-blue-500 hover:underline">
+            Inscrivez-vous
+          </Link>
+        </div>
       </div>
     </div>
   );

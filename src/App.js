@@ -12,8 +12,8 @@ import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Patients from "./pages/Patients/Patients";
 import Sectors from "./pages/Patients/Sectors";
-import Statistiques from "./pages/Statistiques/Statistiques";
-import Administration from "./pages/Administration/Administration";
+import Historique from "./pages/Historique/Historique";
+import Facturation from "./pages/Facturation/Facturation";
 import Notifications from "./pages/Notifications/Notifications";
 import Parametres from "./pages/Parametres/Parametres";
 import Profil from "./pages/Profil/Profil";
@@ -69,16 +69,27 @@ import ExpEchoShow from "./pages/Patients/DossierDetailsShow/ExpEchoShow";
 
 import BedService from "./services/bed.service";
 import DossierDetailShow from "./pages/Patients/DossierDetailShow";
+import PasswordReset from "./components/PasswordReset";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    localStorage.getItem("isAuthenticated") === "true"
+  );
+
+  useEffect(() => {
+    const storedAuth = localStorage.getItem("isAuthenticated") === "true";
+    setIsAuthenticated(storedAuth);
+  }, []);
 
   const login = () => {
     setIsAuthenticated(true);
+    localStorage.setItem("isAuthenticated", "true");
   };
 
   const logout = () => {
     setIsAuthenticated(false);
+    localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("userData");
   };
 
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -105,7 +116,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login login={login} />} />
         <Route path="/signup" element={<Signup />} />
-
+        <Route path="/password-reset" element={<PasswordReset />} />{" "}
         <Route
           path="*"
           element={
@@ -114,6 +125,11 @@ function App() {
                 <Header
                   currentTime={currentTime}
                   formatTime={formatTime}
+                  username={
+                    localStorage.getItem("userData")
+                      ? JSON.parse(localStorage.getItem("userData")).username
+                      : ""
+                  }
                   logout={logout}
                 />
                 <div className="content">
@@ -127,11 +143,8 @@ function App() {
                         element={<Patients />}
                       />
                       <Route path="/beds/:id" element={<BedDetail />} />
-                      <Route path="/statistiques" element={<Statistiques />} />
-                      <Route
-                        path="/administration"
-                        element={<Administration />}
-                      />
+                      <Route path="/historique" element={<Historique />} />
+                      <Route path="/facturation" element={<Facturation />} />
                       <Route
                         path="/notifications"
                         element={<Notifications />}

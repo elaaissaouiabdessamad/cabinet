@@ -38,43 +38,43 @@ const AddDiagnosticForm = ({ patientId }) => {
         <label className="block text-sm font-medium text-gray-700">
           Diagnostic:
         </label>
-        <input
+        <textarea
           type="text"
           value={diagnosis}
           onChange={(e) => setDiagnosis(e.target.value)}
           required
           className="mt-1 p-2 border border-gray-300 rounded-md block w-full shadow-sm"
-        />
+        ></textarea>
       </div>
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700">
           Diagnostic différentiel:
         </label>
-        <input
+        <textarea
           type="text"
           value={diagnosisDifferentiel}
           onChange={(e) => setDiagnosisDifferentiel(e.target.value)}
           required
           className="mt-1 p-2 border border-gray-300 rounded-md block w-full shadow-sm"
-        />
-      </div>
-      {message && (
-        <div className="text-sm text-center text-gray-700 mb-8">
-          <div
-            className="bg-green-500 text-white font-bold rounded-lg p-5"
-            role="alert"
-          >
-            {message}
+        ></textarea>
+        {message && (
+          <div className="text-sm text-center text-gray-700 mb-8">
+            <div
+              className="bg-green-500 text-white font-bold rounded-lg p-5"
+              role="alert"
+            >
+              {message}
+            </div>
           </div>
-        </div>
-      )}
-      <button
-        type="submit"
-        disabled={loading}
-        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
-      >
-        {loading ? "Loading..." : "Submit"}
-      </button>
+        )}
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-4 rounded"
+        >
+          {loading ? "Chargement..." : "Soumettre"}
+        </button>
+      </div>
     </form>
   );
 };

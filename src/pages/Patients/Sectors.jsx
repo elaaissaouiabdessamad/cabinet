@@ -87,16 +87,16 @@ const Sectors = () => {
               style={{
                 backgroundImage: `linear-gradient(to bottom, ${sector.bgFrom}, ${sector.bgTo})`,
                 color: "white",
-                padding: "57px", // Adjust padding as needed
+                padding: "80px 40px", // Adjust padding as needed
                 boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
                 cursor: "pointer",
                 transition: "box-shadow 0.5s", // Add box-shadow transition
               }}
             >
-              <div className="mb-20 text-center text-xl font-bold">
+              <div className="mb-20 text-center text-2xl pr-8 pl-8">
                 {sector.name}
               </div>
-              <div className="text-center">
+              <div className="text-center text-xl">
                 {sector.occupied} LITS OCCUPÉS
                 <br />
                 {sector.empty} LITS LIBRES

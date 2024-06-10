@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MedicalService from "../../../services/medical.service";
 
 const AddHistoryDiseaseForm = ({ patientId, setHistoryDiseaseUpdate }) => {
@@ -7,11 +7,33 @@ const AddHistoryDiseaseForm = ({ patientId, setHistoryDiseaseUpdate }) => {
   const [loading, setLoading] = useState(false);
   const [successful, setSuccessful] = useState(false);
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const fetchHistoryDisease = async () => {
+      try {
+        setLoading(true);
+        const response = await MedicalService.getMedicalDossierByPatientId(
+          patientId
+        );
+        const fetchedHistoryDisease = response.data.historyDisease;
+        setHistoryDisease(fetchedHistoryDisease);
+        setLoading(false);
+        setError(null);
+      } catch (error) {
+        console.error("Error fetching history disease:", error);
+        setError("Failed to fetch history disease.");
+        setLoading(false);
+      }
+    };
+
+    fetchHistoryDisease();
+  }, [patientId]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
-      // Patch the medical dossier with the reason for hospitalization
+      // Patch the medical dossier with the history of disease
       const response = await MedicalService.patchMedicalDossier(
         null,
         historyDisease,
@@ -54,29 +76,29 @@ const AddHistoryDiseaseForm = ({ patientId, setHistoryDiseaseUpdate }) => {
           onChange={(e) => setHistoryDisease(e.target.value)}
           required
           className="mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm"
-          rows="4" // Set the number of rows
+          rows="4"
         ></textarea>
-      </div>
-      {error && <p className="text-red-500">{error}</p>}
-      {message && (
-        <div className="text-sm text-center text-gray-700 dark:text-gray-200 mb-8 m-4">
-          <div
-            className={`${
-              successful ? "bg-green-500" : "bg-red-500"
-            } text-white font-bold rounded-lg border border-white shadow-lg p-5 m-4`}
-            role="alert"
-          >
-            {message}
+        {error && <p className="text-red-500">{error}</p>}
+        {message && (
+          <div className="text-sm text-center text-gray-700 dark:text-gray-200 mb-8 m-4">
+            <div
+              className={`${
+                successful ? "bg-green-500" : "bg-red-500"
+              } text-white font-bold rounded-lg border border-white shadow-lg p-5 m-4`}
+              role="alert"
+            >
+              {message}
+            </div>
           </div>
-        </div>
-      )}{" "}
-      <button
-        type="submit"
-        disabled={loading}
-        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-      >
-        {loading ? "Loading..." : "Submit"}
-      </button>
+        )}
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-4 rounded"
+        >
+          {loading ? "Chargement..." : "Soumettre"}
+        </button>
+      </div>
     </form>
   );
 };

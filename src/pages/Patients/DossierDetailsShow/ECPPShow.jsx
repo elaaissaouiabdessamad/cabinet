@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import MedicalService from "../../../services/medical.service";
 import icon6 from "../../../assets/icon6.png";
+import HeaderDossierClinicalExamShow from "../../../components/HeaderDossierClinicalExamShow";
 
 const ECPP = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const patient = location.state?.patient;
   const color = location.state?.color;
 
@@ -32,36 +34,17 @@ const ECPP = () => {
     fetchPulmonaryExamData();
   }, [patient.id]);
 
+  const handleDossierClinicalExamShow = () => {
+    navigate(`/show/examen-clinique`, {
+      state: { patient, color },
+    });
+  };
+
   return (
     <div className="flex flex-col items-center p-10">
-      <div className="flex items-center mb-6 w-full">
-        <div className="flex items-center w-full relative">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="flex-grow p-2 border border-gray-400 rounded-lg pr-10"
-          />
-          <button className="absolute right-0 top-0 mr-2 p-2 rounded-lg">
-            <i className="fas fa-search"></i>
-          </button>
-        </div>
-        <button className="p-2 ml-4 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M12 4v16m8-8H4"
-            />
-          </svg>
-        </button>
-      </div>
+      <HeaderDossierClinicalExamShow
+        handleDossierClinicalExamShow={handleDossierClinicalExamShow}
+      />
       <div className={`mb-6 text-${color} font-bold`}>
         Mr Patient {patient?.prenom} {patient?.nom}
       </div>{" "}
@@ -81,8 +64,13 @@ const ECPP = () => {
           <div className="p-6 m-4">
             {pulmonaryExamData.map((exam, index) => (
               <div key={index} className="mb-4">
-                <p className="font-bold">Pulmonary Exam Result:</p>
-                <p>{exam.pulmonary}</p>
+                <p className="font-bold">Résultat de l'examen pulmonaire :</p>
+                <textarea
+                  readOnly
+                  className="border border-gray-300 p-2 mt-4 rounded-lg w-full"
+                  rows={4}
+                  value={exam.pulmonary}
+                />
               </div>
             ))}
           </div>

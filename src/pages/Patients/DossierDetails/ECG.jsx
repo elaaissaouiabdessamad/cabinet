@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import MedicalService from "../../../services/medical.service";
 import icon7 from "../../../assets/icon7.png";
 import iconFolder from "../../../assets/iconFolder.png";
+import HeaderDossier from "../../../components/HeaderDossier";
 
 const ECG = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const patient = location.state?.patient;
   const color = location.state?.color;
   const [imageFile, setImageFile] = useState(null);
@@ -22,12 +24,10 @@ const ECG = () => {
       const formData = new FormData();
       formData.append("imageFile", imageFile);
       formData.append("conclusion", conclusion);
-      // Call addEcg method from MedicalService to send ECG data
       const response = await MedicalService.addEcg(formData, patient.id);
       setLoading(false);
       setMessage(response.data.message);
       setSuccessful(true);
-      // Handle success (e.g., redirect to another page)
     } catch (error) {
       const resMessage =
         (error.response &&
@@ -48,39 +48,23 @@ const ECG = () => {
   const handleConclusionChange = (e) => {
     setConclusion(e.target.value);
   };
+  const handlePrevious = () => {
+    navigate("/examen-clinique", { state: { patient, color } });
+  };
+
+  const handleNext = () => {
+    navigate("/conclusion", { state: { patient, color } });
+  };
+
+  const handleDossier = () => {
+    navigate(`/dossier/${patient.medicalDossier.id}`, {
+      state: { patient, color },
+    });
+  };
 
   return (
     <div className="flex flex-col items-center p-10">
-      <div className="flex items-center w-full">
-        <div className="flex items-center mb-3 w-full">
-          <div className="flex items-center w-full relative">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="flex-grow p-2 border border-gray-400 rounded-lg pr-10"
-            />
-            <button className="absolute right-0 top-0 mr-2 p-2 rounded-lg">
-              <i className="fas fa-search"></i>
-            </button>
-          </div>
-          <button className="p-2 ml-4 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-          </button>
-        </div>
-      </div>
+      <HeaderDossier handleDossier={handleDossier} />
       <div className={`mb-6 text-${color} font-bold`}>
         Mr Patient {patient?.prenom} {patient?.nom}
       </div>{" "}
@@ -95,7 +79,7 @@ const ECG = () => {
         <form onSubmit={handleSubmit}>
           <div className="p-6 m-4 flex justify-between items-center">
             <input type="file" accept="image/*" onChange={handleImageChange} />
-            <img src={iconFolder} alt="Folder Icon" className="h-14 w-14" />
+            <img src={iconFolder} alt="icon dossier" className="h-14 w-14" />
           </div>
           <div className="p-6 m-4 text-center">
             <textarea
@@ -104,29 +88,42 @@ const ECG = () => {
               value={conclusion}
               onChange={handleConclusionChange}
             ></textarea>
-          </div>
-          {error && <p className="text-red-500">{error}</p>}
-          {message && (
-            <div className="text-sm text-center text-gray-700 dark:text-gray-200 mb-8 m-4">
-              <div
-                className={`${
-                  successful ? "bg-green-500" : "bg-red-500"
-                } text-white font-bold rounded-lg border border-white shadow-lg p-5 m-4`}
-                role="alert"
-              >
-                {message}
+            {error && <p className="text-red-500">{error}</p>}
+            {message && (
+              <div className="text-sm text-center text-gray-700 dark:text-gray-200 mb-8 m-4">
+                <div
+                  className={`${
+                    successful ? "bg-green-500" : "bg-red-500"
+                  } text-white font-bold rounded-lg border border-white shadow-lg p-5 m-4`}
+                  role="alert"
+                >
+                  {message}
+                </div>
               </div>
-            </div>
-          )}{" "}
-          <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-4 rounded"
-            disabled={loading}
-          >
-            {loading ? "Sending..." : "Send ECG"}
-          </button>
+            )}{" "}
+            <button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-4 rounded"
+              disabled={loading}
+            >
+              {loading ? "Envoi en cours..." : "Envoyer ECG"}
+            </button>
+          </div>
         </form>
-        {/* Error handling */}
+      </div>
+      <div className="flex justify-between w-full max-w-md mt-6">
+        <button
+          onClick={handlePrevious}
+          className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-lg"
+        >
+          Précédent
+        </button>
+        <button
+          onClick={handleNext}
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg"
+        >
+          Suivant
+        </button>
       </div>
     </div>
   );

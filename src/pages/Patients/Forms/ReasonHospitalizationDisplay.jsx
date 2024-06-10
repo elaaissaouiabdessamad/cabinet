@@ -32,16 +32,18 @@ const ReasonHospitalizationDisplay = ({ patientId, reasonUpdate }) => {
       {loading ? (
         <p>Chargement du motif d'hospitalisation...</p>
       ) : error ? (
-        <p>Erreur : {error}</p>
+        <p className="text-red-500">Erreur : {error}</p>
       ) : reason ? (
-        <div className="p-4">
-          <p>
-            <strong>Motif d'hospitalisation précédent :</strong>
-          </p>
-          <p className="border border-gray-300 p-4 m-2">{reason}</p>
-        </div>
+        <textarea
+          readOnly
+          className="border border-gray-300 p-2 rounded-lg w-full"
+          rows={8}
+          value={reason}
+        />
       ) : (
-        <p>Aucun motif d'hospitalisation trouvé.</p>
+        <p className="mt-10 text-gray-500 text-center">
+          Aucun motif d'hospitalisation trouvé.
+        </p>
       )}
     </div>
   );

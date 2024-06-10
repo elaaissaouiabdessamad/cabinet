@@ -32,16 +32,18 @@ const PrimaryConclusionDisplay = ({ patientId, primaryConclusionUpdate }) => {
       {loading ? (
         <p>Chargement de la conclusion primaire...</p>
       ) : error ? (
-        <p>Erreur : {error}</p>
+        <p className="text-red-500">Erreur : {error}</p>
       ) : primaryConclusion ? (
-        <div className="p-4">
-          <p>
-            <strong>Conclusion primaire:</strong>
-          </p>
-          <p className="border border-gray-300 p-4 m-2">{primaryConclusion}</p>
-        </div>
+        <textarea
+          readOnly
+          className="border border-gray-300 p-2 rounded-lg w-full"
+          rows={8}
+          value={primaryConclusion}
+        />
       ) : (
-        <p className="text-gray-500">Aucune conclusion primaire disponible.</p>
+        <p className="mt-10 text-gray-500 text-center">
+          Aucune conclusion primaire disponible.
+        </p>
       )}
     </div>
   );

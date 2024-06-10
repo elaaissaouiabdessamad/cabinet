@@ -1,12 +1,12 @@
 import React from "react";
 import iconStats from "../../assets/iconStats.png";
 
-const Administration = () => {
+const Facturation = () => {
   return (
     <div className="main-content">
       <div className="grid-container">
         <button className="grid-item add-patient">Ajouter patient</button>
-        <button className="grid-item agenda">Agenda</button>
+        <button className="grid-item agenda">Facturation</button>
         <button className="grid-item activities">Dernières activités</button>
         <button className="grid-item statistics">
           {" "}
@@ -18,4 +18,4 @@ const Administration = () => {
   );
 };
 
-export default Administration;
+export default Facturation;

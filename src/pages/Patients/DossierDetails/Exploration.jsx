@@ -1,42 +1,32 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import icon10 from "../../../assets/icon10.png";
-import { useParams, useLocation } from "react-router-dom";
+import HeaderDossier from "../../../components/HeaderDossier";
+
 const Exploration = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const patient = location.state?.patient;
   const color = location.state?.color;
-  console.log(patient);
+
+  const handlePrevious = () => {
+    navigate("/diagnostic", { state: { patient, color } });
+  };
+
+  const handleNext = () => {
+    navigate("/biologie", { state: { patient, color } });
+  };
+
+  const handleDossier = () => {
+    navigate(`/dossier/${patient.medicalDossier.id}`, {
+      state: { patient, color },
+    });
+  };
+
   return (
     <div className="flex flex-col items-center p-10">
-      <div className="flex items-center mb-6 w-full">
-        <div className="flex items-center w-full relative">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="flex-grow p-2 border border-gray-400 rounded-lg pr-10"
-          />
-          <button className="absolute right-0 top-0 mr-2 p-2 rounded-lg">
-            <i className="fas fa-search"></i>
-          </button>
-        </div>
-        <button className="p-2 ml-4 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M12 4v16m8-8H4"
-            />
-          </svg>
-        </button>
-      </div>
+      <HeaderDossier handleDossier={handleDossier} />
       <div className={`mb-6 text-${color} font-bold`}>
         Mr Patient {patient?.prenom} {patient?.nom}
       </div>{" "}
@@ -57,7 +47,7 @@ const Exploration = () => {
             state={{ patient, color }}
             className="no-underline"
           >
-            <button className="bg-gradient-to-b from-[#97bfe4] to-[#3472ab] mt-5 border border-black hover:shadow-lg hover:shadow-xl hover:shadow-2xl hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mb-4 w-full">
+            <button className="bg-gradient-to-b from-[#97bfe4] to-[#3472ab] mt-5 border border-black hover:shadow-lg hover:shadow-xl hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mb-4 w-full">
               Radio du thorax
             </button>
           </Link>
@@ -66,11 +56,25 @@ const Exploration = () => {
             state={{ patient, color }}
             className="no-underline"
           >
-            <button className="bg-gradient-to-b from-[#97bfe4] to-[#3472ab] mb-15 mt-10 border border-black hover:shadow-lg hover:shadow-xl hover:shadow-2xl hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mb-4 w-full">
-              Echocardiographie
+            <button className="bg-gradient-to-b from-[#97bfe4] to-[#3472ab] mb-15 mt-10 border border-black hover:shadow-lg hover:shadow-xl hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mb-4 w-full">
+              Échocardiographie
             </button>
           </Link>
         </div>
+      </div>
+      <div className="flex justify-between w-full max-w-md mt-6">
+        <button
+          onClick={handlePrevious}
+          className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-lg"
+        >
+          Précédent
+        </button>
+        <button
+          onClick={handleNext}
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg"
+        >
+          Suivant
+        </button>
       </div>
     </div>
   );

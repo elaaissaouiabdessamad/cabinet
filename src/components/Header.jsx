@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/Dashboard.css";
 
-const Header = ({ currentTime, formatTime }) => {
+const Header = ({ currentTime, formatTime, username, logout }) => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -14,6 +14,7 @@ const Header = ({ currentTime, formatTime }) => {
       await axios.post("http://localhost:3000/api/auth/logout");
 
       // Perform any necessary cleanup, such as removing authentication tokens
+      logout();
       navigate("/login"); // Navigate to the login page
     } catch (error) {
       console.error("Error during logout:", error);
@@ -24,7 +25,7 @@ const Header = ({ currentTime, formatTime }) => {
   return (
     <div className="header">
       <div className="profile mr-4">
-        <button className="profile-button">Dr Admin</button>
+        <button className="profile-button">Dr {username}</button>
       </div>
       <div className="search">
         <input type="text" placeholder="Search..." className="search-input" />

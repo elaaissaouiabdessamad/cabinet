@@ -32,16 +32,16 @@ const HistoryDiseaseDisplay = ({ patientId, historyDiseaseUpdate }) => {
       {loading ? (
         <p>Chargement de l'histoire de la maladie...</p>
       ) : error ? (
-        <p>Erreur : {error}</p>
+        <p className="text-red-500">Erreur : {error}</p>
       ) : historyDisease ? (
-        <div className="p-4">
-          <p>
-            <strong>Histoire de la maladie :</strong>
-          </p>
-          <p className="border border-gray-300 p-4 m-2">{historyDisease}</p>
-        </div>
+        <textarea
+          readOnly
+          className="border border-gray-300 p-2 rounded-lg w-full"
+          rows={8}
+          value={historyDisease}
+        />
       ) : (
-        <p className="text-gray-500">
+        <p className="mt-10 text-gray-500 text-center">
           Aucune histoire de la maladie disponible.
         </p>
       )}

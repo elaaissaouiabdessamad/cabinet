@@ -49,6 +49,12 @@ html, body {
   background-color: #c5cbe9;
 }
 
+.sidebar-item.active {
+  background-color: #ddd; /* or any other styles for the active item */
+  /*color: #000;*/
+  color: #777;
+}
+
 .main-content {
   flex-grow: 1;
   display: flex;
@@ -106,7 +112,7 @@ html, body {
   .grid-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 110px;
+    gap: 150px;
     padding: 20px;
   }
   
