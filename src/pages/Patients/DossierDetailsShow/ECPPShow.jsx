@@ -46,8 +46,12 @@ const ECPP = () => {
         handleDossierClinicalExamShow={handleDossierClinicalExamShow}
       />
       <div className={`mb-6 text-${color} font-bold`}>
-        Mr Patient {patient?.prenom} {patient?.nom}
-      </div>{" "}
+        Mr Patient{" "}
+        <span className="text-gray-500">
+          {patient?.prenom} {patient?.nom}
+        </span>
+        , ref:<span className="text-gray-500"> {patient?.referenceID}</span>
+      </div>
       <div className="bg-white border border-black rounded-3xl shadow-lg w-full max-w-md">
         <div className="p-6 border-b border-black justify-center w-full">
           <div className="text-center text-xl font-bold flex items-center justify-center">
@@ -57,7 +61,7 @@ const ECPP = () => {
           </div>
         </div>
         {loading ? (
-          <p>Loading...</p>
+          <p>Chargement...</p>
         ) : error ? (
           <p>{error}</p>
         ) : (

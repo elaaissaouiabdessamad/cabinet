@@ -1,32 +1,35 @@
-import axios from "axios";
+import axiosInstance from "./axiosInstance";
 
-const API_URL = "http://localhost:3000/api/beds/";
+const API_URL = "beds/";
+
 const addBedBySectorId = (sectorId) => {
-  return axios.post(API_URL + "add/" + sectorId);
+  return axiosInstance.post(API_URL + "add/" + sectorId);
 };
 
 const getBedsBySectorId = (sectorId) => {
-  return axios.get(API_URL + "sector/" + sectorId);
+  return axiosInstance.get(API_URL + "sector/" + sectorId);
 };
 
 const getBedById = (bedId) => {
-  return axios.get(API_URL + bedId);
+  return axiosInstance.get(API_URL + bedId);
 };
 
 const getBedByPatientId = (patientId) => {
-  return axios.get(API_URL + "/patient/" + patientId);
+  return axiosInstance.get(API_URL + "patient/" + patientId);
 };
 
 const assignPatientToBed = (bedId, patientId) => {
-  return axios.post(API_URL + "assign/bed/" + bedId + "/patient/" + patientId);
+  return axiosInstance.post(
+    API_URL + "assign/bed/" + bedId + "/patient/" + patientId
+  );
 };
 
 const removePatientToBed = (bedId) => {
-  return axios.post(API_URL + "remove/" + bedId);
+  return axiosInstance.post(API_URL + "remove/" + bedId);
 };
 
 const deleteBedById = (bedId) => {
-  return axios.delete(API_URL + "delete/" + bedId);
+  return axiosInstance.delete(API_URL + "delete/" + bedId);
 };
 
 const BedService = {

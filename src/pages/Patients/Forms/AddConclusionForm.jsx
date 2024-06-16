@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MedicalService from "../../../services/medical.service";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddConclusionForm = ({ patientId, setConclusionUpdate }) => {
   const [conclusion, setConclusion] = useState("");
@@ -20,8 +22,8 @@ const AddConclusionForm = ({ patientId, setConclusionUpdate }) => {
         setLoading(false);
         setError(null);
       } catch (error) {
-        console.error("Error fetching conclusion:", error);
-        setError("Failed to fetch conclusion.");
+        console.error("Échec de la récupération de la conclusion.", error);
+        setError("Échec de la récupération de la conclusion.");
         setLoading(false);
       }
     };
@@ -33,7 +35,6 @@ const AddConclusionForm = ({ patientId, setConclusionUpdate }) => {
     e.preventDefault();
     try {
       setLoading(true);
-      // Patch the medical dossier with the conclusion
       const response = await MedicalService.patchMedicalDossier(
         null,
         null,
@@ -41,12 +42,9 @@ const AddConclusionForm = ({ patientId, setConclusionUpdate }) => {
         conclusion,
         patientId
       );
-      // Reset form state
       setConclusionUpdate(conclusion);
       setLoading(false);
-      setMessage(response.data.message);
-      setSuccessful(true);
-      // Handle success (e.g., redirect to another page)
+      toast.success(`Conclusion ${response.data.message}`);
     } catch (error) {
       const resMessage =
         (error.response &&
@@ -55,13 +53,18 @@ const AddConclusionForm = ({ patientId, setConclusionUpdate }) => {
         error.message ||
         error.toString();
       setLoading(false);
-      setMessage(resMessage);
-      setSuccessful(false);
+      toast.error(resMessage);
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="max-w-sm mx-auto">
+      <ToastContainer
+        draggable
+        closeOnClick
+        position="bottom-right"
+        autoClose={5000}
+      />{" "}
       <div className="mb-4">
         <label
           htmlFor="conclusion"

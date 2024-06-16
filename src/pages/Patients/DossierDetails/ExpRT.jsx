@@ -4,7 +4,8 @@ import MedicalService from "../../../services/medical.service";
 import icon10 from "../../../assets/icon10.png";
 import iconFolder from "../../../assets/iconFolder.png";
 import HeaderDossierExploration from "../../../components/HeaderDossierExploration";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const ExpRT = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -31,8 +32,7 @@ const ExpRT = () => {
         patient.id
       );
       setLoading(false);
-      setMessage(response.data.message);
-      setSuccessful(true);
+      toast.success(`Exploration : Radio de thorax ${response.data.message}`);
     } catch (error) {
       const resMessage =
         (error.response &&
@@ -41,8 +41,7 @@ const ExpRT = () => {
         error.message ||
         error.toString();
       setLoading(false);
-      setError(resMessage);
-      setSuccessful(false);
+      toast.error(resMessage);
     }
   };
 
@@ -62,11 +61,21 @@ const ExpRT = () => {
 
   return (
     <div className="flex flex-col items-center p-10">
+      <ToastContainer
+        draggable
+        closeOnClick
+        position="bottom-right"
+        autoClose={5000}
+      />{" "}
       <HeaderDossierExploration
         handleDossierExploration={handleDossierExploration}
       />
       <div className={`mb-6 text-${color} font-bold`}>
-        Mr Patient {patient?.prenom} {patient?.nom}
+        Mr Patient{" "}
+        <span className="text-gray-500">
+          {patient?.prenom} {patient?.nom}
+        </span>
+        , ref:<span className="text-gray-500"> {patient?.referenceID}</span>
       </div>
       <div className="bg-white border border-black rounded-3xl shadow-lg w-full max-w-md">
         <div className="p-6 border-b border-black flex justify-center w-full">

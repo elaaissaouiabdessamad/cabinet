@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import icon3 from "../../../assets/icon3.png";
-import AddAntecedentForm from "../Forms/AddAntecedentForm"; // Import the new form component
+import AddAntecedentForm from "../Forms/AddAntecedentForm";
 import HeaderDossier from "../../../components/HeaderDossier";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const CaseHistory = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -30,7 +30,11 @@ const CaseHistory = () => {
       <HeaderDossier handleDossier={handleDossier} />
 
       <div className={`mb-6 text-${color} font-bold`}>
-        Mr Patient {patient?.prenom} {patient?.nom}
+        Mr Patient{" "}
+        <span className="text-gray-500">
+          {patient?.prenom} {patient?.nom}
+        </span>
+        , ref:<span className="text-gray-500"> {patient?.referenceID}</span>
       </div>
       <div className="bg-white border border-black rounded-3xl shadow-lg w-full max-w-md">
         <div className="p-6 border-b border-black justify-center w-full">
@@ -57,7 +61,7 @@ const CaseHistory = () => {
           onClick={handleNext}
           className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg"
         >
-          Suivant
+          <FontAwesomeIcon icon="fa-duotone fa-arrow-right" /> Suivant
         </button>
       </div>
     </div>

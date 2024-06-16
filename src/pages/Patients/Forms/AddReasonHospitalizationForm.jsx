@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MedicalService from "../../../services/medical.service";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddReasonHospitalizationForm = ({ patientId, setReasonUpdate }) => {
   const [reason, setReason] = useState("");
@@ -20,8 +22,11 @@ const AddReasonHospitalizationForm = ({ patientId, setReasonUpdate }) => {
         setLoading(false);
         setError(null);
       } catch (error) {
-        console.error("Error fetching reason for hospitalization:", error);
-        setError("Failed to fetch reason for hospitalization.");
+        console.error(
+          "Échec de la récupération de la raison de l'hospitalisation:",
+          error
+        );
+        setError("Échec de la récupération de la raison de l'hospitalisation.");
         setLoading(false);
       }
     };
@@ -33,7 +38,6 @@ const AddReasonHospitalizationForm = ({ patientId, setReasonUpdate }) => {
     e.preventDefault();
     try {
       setLoading(true);
-      // Patch the medical dossier with the reason for hospitalization
       const response = await MedicalService.patchMedicalDossier(
         reason,
         null,
@@ -41,13 +45,9 @@ const AddReasonHospitalizationForm = ({ patientId, setReasonUpdate }) => {
         null,
         patientId
       );
-      // Reset form state
-      setReason("");
       setReasonUpdate(reason);
       setLoading(false);
-      setMessage(response.data.message);
-      setSuccessful(true);
-      // Handle success (e.g., redirect to another page)
+      toast.success(`Motif d'hospitalisation ${response.data.message}`);
     } catch (error) {
       const resMessage =
         (error.response &&
@@ -56,13 +56,18 @@ const AddReasonHospitalizationForm = ({ patientId, setReasonUpdate }) => {
         error.message ||
         error.toString();
       setLoading(false);
-      setMessage(resMessage);
-      setSuccessful(false);
+      toast.error(resMessage);
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="max-w-sm mx-auto">
+      <ToastContainer
+        draggable
+        closeOnClick
+        position="bottom-right"
+        autoClose={5000}
+      />
       <div className="mb-4">
         <label
           htmlFor="reason"

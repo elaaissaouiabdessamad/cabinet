@@ -4,7 +4,10 @@ import MedicalService from "../../../services/medical.service";
 import icon11 from "../../../assets/icon11.png";
 import iconFolder from "../../../assets/iconFolder.png";
 import HeaderDossier from "../../../components/HeaderDossier";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit } from "@fortawesome/free-solid-svg-icons";
 const Biology = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -27,8 +30,7 @@ const Biology = () => {
       formData.append("conclusion", conclusion);
       const response = await MedicalService.addBiology(formData, patient.id);
       setLoading(false);
-      setMessage(response.data.message);
-      setSuccessful(true);
+      toast.success(response.data.message);
     } catch (error) {
       const resMessage =
         (error.response &&
@@ -37,10 +39,11 @@ const Biology = () => {
         error.message ||
         error.toString();
       setLoading(false);
-      setMessage(resMessage);
-      setSuccessful(false);
+      toast.error(resMessage);
     }
   };
+  console.log("Voir details patient--faut medical dossier");
+  console.log(patient);
 
   const handleFileChange = (e) => {
     setBilanFile(e.target.files[0]);
@@ -67,9 +70,19 @@ const Biology = () => {
   };
   return (
     <div className="flex flex-col items-center p-10">
+      <ToastContainer
+        draggable
+        closeOnClick
+        position="bottom-right"
+        autoClose={5000}
+      />
       <HeaderDossier handleDossier={handleDossier} />
       <div className={`mb-6 text-${color} font-bold`}>
-        Mr Patient {patient?.prenom} {patient?.nom}
+        Mr Patient{" "}
+        <span className="text-gray-500">
+          {patient?.prenom} {patient?.nom}
+        </span>
+        , ref:<span className="text-gray-500"> {patient?.referenceID}</span>
       </div>
       <div className="bg-white border border-black rounded-3xl shadow-lg w-full max-w-md">
         <div className="p-6 border-b border-black flex justify-center w-full">
@@ -128,7 +141,9 @@ const Biology = () => {
           onClick={handleDossierRead}
           className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg"
         >
-          Consulter dossier du patient {patient?.referenceID}
+          {" "}
+          <FontAwesomeIcon icon={faEdit} className="ml-1" />
+          &nbsp; Consulter dossier du patient
         </button>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MedicalService from "../../../services/medical.service";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const AddHistoryDiseaseForm = ({ patientId, setHistoryDiseaseUpdate }) => {
   const [historyDisease, setHistoryDisease] = useState("");
   const [error, setError] = useState(null);
@@ -20,8 +21,11 @@ const AddHistoryDiseaseForm = ({ patientId, setHistoryDiseaseUpdate }) => {
         setLoading(false);
         setError(null);
       } catch (error) {
-        console.error("Error fetching history disease:", error);
-        setError("Failed to fetch history disease.");
+        console.error(
+          "Échec de la récupération de l'historique des maladies.:",
+          error
+        );
+        setError("Échec de la récupération de l'historique des maladies.");
         setLoading(false);
       }
     };
@@ -45,8 +49,7 @@ const AddHistoryDiseaseForm = ({ patientId, setHistoryDiseaseUpdate }) => {
       setHistoryDisease("");
       setHistoryDiseaseUpdate(historyDisease);
       setLoading(false);
-      setMessage(response.data.message);
-      setSuccessful(true);
+      toast.success(`Histoire de la maladie ${response.data.message}`);
       // Handle success (e.g., redirect to another page)
     } catch (error) {
       const resMessage =
@@ -56,13 +59,18 @@ const AddHistoryDiseaseForm = ({ patientId, setHistoryDiseaseUpdate }) => {
         error.message ||
         error.toString();
       setLoading(false);
-      setMessage(resMessage);
-      setSuccessful(false);
+      toast.error(resMessage);
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="max-w-sm mx-auto">
+      <ToastContainer
+        draggable
+        closeOnClick
+        position="bottom-right"
+        autoClose={5000}
+      />{" "}
       <div className="mb-4">
         <label
           htmlFor="historyDisease"

@@ -48,7 +48,11 @@ const DiagnosticShow = () => {
     <div className="flex flex-col items-center p-10">
       <HeaderDossierShow handleDossierShow={handleDossierShow} />
       <div className={`mb-6 text-${color} font-bold`}>
-        Mr Patient {patient?.prenom} {patient?.nom}
+        Mr Patient{" "}
+        <span className="text-gray-500">
+          {patient?.prenom} {patient?.nom}
+        </span>
+        , ref:<span className="text-gray-500"> {patient?.referenceID}</span>
       </div>
       <div className="bg-white border border-black rounded-3xl shadow-lg w-full max-w-md">
         <div className="p-6 border-b border-black justify-center w-full">
@@ -58,18 +62,18 @@ const DiagnosticShow = () => {
           </div>
         </div>
         {loading ? (
-          <div className="p-6 mt-7">Loading...</div>
+          <div className="pb-6 m-6">Chargement...</div>
         ) : error ? (
-          <div className="p-6 mt-7">{error}</div>
+          <div className="pb-6 m-6">{error}</div>
         ) : (
-          <div className="p-6 mt-7">
+          <div className="pb-6 m-6">
             {diagnosis.map((item, index) => (
               <div
                 key={index}
                 className="border border-gray-400 rounded-md p-4 mb-4"
               >
-                <div>Diagnosis: {item.diagnosis}</div>
-                <div>Differential Diagnosis: {item.diagnosisDifferentiel}</div>
+                <div>Diagnostic: {item.diagnosis}</div>
+                <div>Diagnostic Différentiel: {item.diagnosisDifferentiel}</div>
               </div>
             ))}
           </div>

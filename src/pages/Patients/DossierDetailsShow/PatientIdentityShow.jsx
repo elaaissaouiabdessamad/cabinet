@@ -1,6 +1,14 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import icon1 from "../../../assets/icon1.png";
+import {
+  FaUser,
+  FaMapMarkerAlt,
+  FaBriefcase,
+  FaIdCard,
+  FaMoneyBillAlt,
+} from "react-icons/fa";
+
 import HeaderDossierShow from "../../../components/HeaderDossierShow";
 
 const PatientIdentity = () => {
@@ -22,7 +30,11 @@ const PatientIdentity = () => {
     <div className="flex flex-col items-center p-10">
       <HeaderDossierShow handleDossierShow={handleDossierShow} />
       <div className={`mb-6 text-${color} font-bold`}>
-        Mr Patient {patient?.prenom} {patient?.nom}
+        Mr Patient{" "}
+        <span className="text-gray-500">
+          {patient?.prenom} {patient?.nom}
+        </span>
+        , ref:<span className="text-gray-500"> {patient?.referenceID}</span>
       </div>
       <div className="bg-white border border-black rounded-3xl shadow-lg w-full max-w-md">
         <div className="p-6 border-b border-black justify-center w-full">
@@ -32,48 +44,34 @@ const PatientIdentity = () => {
           </div>
         </div>
         <div className="p-6">
-          <input
-            type="text"
-            placeholder="Nom"
-            value={patient?.nom || ""}
-            className="w-full mb-2 p-2 border rounded-lg"
-          />
-          <input
-            type="text"
-            placeholder="Prénom"
-            value={patient?.prenom || ""}
-            className="w-full mb-2 p-2 border rounded-lg"
-          />
-          <input
-            type="text"
-            placeholder="Age"
-            value={patient?.age || ""}
-            className="w-full mb-2 p-2 border rounded-lg"
-          />
-          <input
-            type="text"
-            placeholder="Ville"
-            value={patient?.ville || ""}
-            className="w-full mb-2 p-2 border rounded-lg"
-          />
-          <input
-            type="text"
-            placeholder="Profession"
-            value={patient?.profession || ""}
-            className="w-full mb-2 p-2 border rounded-lg"
-          />
-          <input
-            type="text"
-            placeholder="Assurance"
-            value={patient?.assurance || ""}
-            className="w-full mb-2 p-2 border rounded-lg"
-          />
-          <input
-            type="text"
-            placeholder="ID"
-            value={patient?.id || ""}
-            className="w-full mb-2 p-2 border rounded-lg"
-          />
+          <div className="flex items-center mb-2">
+            <FaIdCard className="text-gray-500 mr-2" />
+            <span className="text-lg">{patient?.nom}</span>
+          </div>
+          <div className="flex items-center mb-2">
+            <FaIdCard className="text-gray-500 mr-2" />
+            <span className="text-lg">{patient?.prenom}</span>
+          </div>
+          <div className="flex items-center mb-2">
+            <FaIdCard className="text-gray-500 mr-2" />
+            <span className="text-lg">{patient?.age}</span>
+          </div>
+          <div className="flex items-center mb-2">
+            <FaMapMarkerAlt className="text-gray-500 mr-2" />
+            <span className="text-lg">{patient?.ville}</span>
+          </div>
+          <div className="flex items-center mb-2">
+            <FaBriefcase className="text-gray-500 mr-2" />
+            <span className="text-lg">{patient?.profession}</span>
+          </div>
+          <div className="flex items-center mb-2">
+            <FaMoneyBillAlt className="text-gray-500 mr-2" />
+            <span className="text-lg">{patient?.assurance}</span>
+          </div>
+          <div className="flex items-center mb-2">
+            <FaIdCard className="text-gray-500 mr-2" />
+            <span className="text-lg">{patient?.id}</span>
+          </div>
         </div>
       </div>
       <div className="flex justify-end w-full max-w-md mt-6">

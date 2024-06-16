@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import MedicalService from "../../../services/medical.service";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const AddDiagnosticForm = ({ patientId }) => {
   const [diagnosis, setDiagnosis] = useState("");
   const [diagnosisDifferentiel, setDiagnosisDifferentiel] = useState("");
@@ -19,7 +20,7 @@ const AddDiagnosticForm = ({ patientId }) => {
       setDiagnosis("");
       setDiagnosisDifferentiel("");
       setLoading(false);
-      setMessage("Diagnostic added successfully.");
+      toast.success("Diagnostics ajoutés avec succès.");
     } catch (error) {
       const resMessage =
         (error.response &&
@@ -28,12 +29,18 @@ const AddDiagnosticForm = ({ patientId }) => {
         error.message ||
         error.toString();
       setLoading(false);
-      setMessage(resMessage);
+      toast.error(resMessage);
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="max-w-md mx-auto">
+      <ToastContainer
+        draggable
+        closeOnClick
+        position="bottom-right"
+        autoClose={5000}
+      />{" "}
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700">
           Diagnostic:
@@ -58,7 +65,7 @@ const AddDiagnosticForm = ({ patientId }) => {
           className="mt-1 p-2 border border-gray-300 rounded-md block w-full shadow-sm"
         ></textarea>
         {message && (
-          <div className="text-sm text-center text-gray-700 mb-8">
+          <div className="text-sm text-center text-gray-700 mb-2 mt-6">
             <div
               className="bg-green-500 text-white font-bold rounded-lg p-5"
               role="alert"

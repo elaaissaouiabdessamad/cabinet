@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import PatientService from "../../services/patient.service";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const AddPatientForm = ({ onPatientAdded }) => {
+const AddPatientForm = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     nom: "",
     prenom: "",
@@ -13,7 +16,6 @@ const AddPatientForm = ({ onPatientAdded }) => {
     profession: "",
     referenceID: "",
   });
-  const [errorMessage, setErrorMessage] = useState(""); // State to hold error message
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,113 +24,144 @@ const AddPatientForm = ({ onPatientAdded }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const response = await PatientService.addPatient(formData);
-      const createdPatient = response.data;
-      onPatientAdded();
-      console.log(createdPatient);
-
-      if (createdPatient.medicalDossier && createdPatient.medicalDossier.id) {
-        navigate(`/dossier/${createdPatient.medicalDossier.id}`, {
-          state: { patient: createdPatient },
-        });
+      if (response && response.data) {
+        const createdPatient = response.data;
+        console.log(createdPatient);
+        toast.success(response.data.message);
+        if (createdPatient.medicalDossier && createdPatient.medicalDossier.id) {
+          navigate(`/dossier/${createdPatient.medicalDossier.id}`, {
+            state: { patient: createdPatient, fromAddPatient: true },
+          });
+        } else {
+          console.error(
+            "Identifiant du dossier médical non trouvé dans la réponse."
+          );
+        }
       } else {
-        console.error("Medical dossier ID not found in response.");
+        console.error("Réponse inattendue:", response);
+        toast.error("Une erreur inattendue s'est produite.");
       }
     } catch (error) {
-      console.error("Error adding patient:", error.response.data.message);
-      setErrorMessage(error.response.data.message); // Set error message state
+      console.error("Erreur lors de l'ajout du patient:", error);
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Une erreur s'est produite lors de l'ajout du patient.");
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      {/* Form fields */}
-      <div>
-        <label className="block text-gray-700">Nom</label>
-        <input
-          type="text"
-          name="nom"
-          value={formData.nom}
-          onChange={handleChange}
-          className="mt-1 p-2 w-full border rounded-lg"
-          required
-        />
+    <div className="flex justify-center items-center min-h-screen p-6">
+      <ToastContainer
+        draggable
+        closeOnClick
+        position="bottom-right"
+        autoClose={5000}
+      />
+      <div className="bg-white p-8 rounded-lg shadow-lg border w-full max-w-lg">
+        <h2 className="text-2xl font-semibold text-center mb-6">
+          Formulaire d'ajout d'un nouveau patient
+        </h2>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block text-gray-700">Nom</label>
+            <input
+              type="text"
+              name="nom"
+              value={formData.nom}
+              onChange={handleChange}
+              className="w-full p-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-gray-700">Prénom</label>
+            <input
+              type="text"
+              name="prenom"
+              value={formData.prenom}
+              onChange={handleChange}
+              className="w-full p-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-gray-700">Âge</label>
+            <input
+              type="number"
+              name="age"
+              value={formData.age}
+              onChange={handleChange}
+              className="w-full p-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-gray-700">Ville</label>
+            <input
+              type="text"
+              name="ville"
+              value={formData.ville}
+              onChange={handleChange}
+              className="w-full p-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-gray-700">Assurance</label>
+            <input
+              type="text"
+              name="assurance"
+              value={formData.assurance}
+              onChange={handleChange}
+              className="w-full p-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-gray-700">Profession</label>
+            <input
+              type="text"
+              name="profession"
+              value={formData.profession}
+              onChange={handleChange}
+              className="w-full p-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          {/*<div>
+            <label className="block text-gray-700">Reference ID</label>
+            <input
+              disabled
+              type="text"
+              name="referenceID"
+              value={formData.referenceID}
+              onChange={handleChange}
+              className="w-full p-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>*/}
+          <button
+            type="submit"
+            className="w-full py-3 bg-[#8f8df2] text-white rounded-lg hover:bg-[#7e8ce1] transition duration-200"
+            //className="w-full py-3 bg-[#7f9df0] text-white rounded-lg hover:bg-[#7e8ce1] transition duration-200"
+            disabled={isLoading}
+          >
+            {isLoading ? "Chargement..." : "Ajouter patient"}{" "}
+          </button>
+        </form>
       </div>
-      <div>
-        <label className="block text-gray-700">Prénom</label>
-        <input
-          type="text"
-          name="prenom"
-          value={formData.prenom}
-          onChange={handleChange}
-          className="mt-1 p-2 w-full border rounded-lg"
-          required
-        />
-      </div>
-      <div>
-        <label className="block text-gray-700">Âge</label>
-        <input
-          type="number"
-          name="age"
-          value={formData.age}
-          onChange={handleChange}
-          className="mt-1 p-2 w-full border rounded-lg"
-          required
-        />
-      </div>
-      <div>
-        <label className="block text-gray-700">Ville</label>
-        <input
-          type="text"
-          name="ville"
-          value={formData.ville}
-          onChange={handleChange}
-          className="mt-1 p-2 w-full border rounded-lg"
-          required
-        />
-      </div>
-      <div>
-        <label className="block text-gray-700">Assurance</label>
-        <input
-          type="text"
-          name="assurance"
-          value={formData.assurance}
-          onChange={handleChange}
-          className="mt-1 p-2 w-full border rounded-lg"
-          required
-        />
-      </div>
-      <div>
-        <label className="block text-gray-700">Profession</label>
-        <input
-          type="text"
-          name="profession"
-          value={formData.profession}
-          onChange={handleChange}
-          className="mt-1 p-2 w-full border rounded-lg"
-          required
-        />
-      </div>
-      <div>
-        <label className="block text-gray-700">Reference ID</label>
-        <input
-          type="text"
-          name="referenceID"
-          value={formData.referenceID}
-          onChange={handleChange}
-          className="mt-1 p-2 w-full border rounded-lg"
-          required
-        />
-      </div>
-      {errorMessage && <p className="text-red-500">{errorMessage}</p>}{" "}
-      <button
-        type="submit"
-        className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200"
-      >
-        Ajouter
-      </button>
-    </form>
+    </div>
   );
 };
 

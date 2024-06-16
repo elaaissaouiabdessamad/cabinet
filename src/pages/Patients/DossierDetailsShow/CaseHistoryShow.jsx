@@ -49,7 +49,11 @@ const CaseHistoryShow = () => {
     <div className="flex flex-col items-center p-10">
       <HeaderDossierShow handleDossierShow={handleDossierShow} />
       <div className={`mb-6 text-${color} font-bold`}>
-        Mr Patient {patient?.prenom} {patient?.nom}
+        Mr Patient{" "}
+        <span className="text-gray-500">
+          {patient?.prenom} {patient?.nom}
+        </span>
+        , ref:<span className="text-gray-500"> {patient?.referenceID}</span>
       </div>
       <div className="bg-white border border-black rounded-3xl shadow-lg w-full max-w-md">
         <div className="p-6 border-b border-black justify-center w-full">
@@ -59,7 +63,7 @@ const CaseHistoryShow = () => {
           </div>
         </div>
         <div className="p-6">
-          {loading && <p className="text-center">Loading...</p>}
+          {loading && <p className="text-center">Chargement...</p>}
           {error && <p className="text-center text-red-500">{error}</p>}
           {!loading && !error && (
             <div>
@@ -69,20 +73,21 @@ const CaseHistoryShow = () => {
                   className="mb-4 border border-gray-200 p-4 rounded-lg"
                 >
                   <h3 className="mb-2">
-                    <strong>Personal: </strong>
+                    <strong>Personnel: </strong>
                     {antecedent.personal}
                   </h3>
                   <p className="mb-2">
-                    <strong>Familial: </strong> {antecedent.familial}
+                    <strong>Relatif à la famille: </strong>{" "}
+                    {antecedent.familial}
                   </p>
                   <p>
-                    <strong>Cardiovascular Risk Factors:</strong>{" "}
+                    <strong>Facteurs de Risque Cardiovasculaire:</strong>{" "}
                     {antecedent.cardiovascularRiskFactors}
                   </p>
                 </div>
               ))}
               {antecedents.length === 0 && (
-                <p className="text-center">No antecedents found.</p>
+                <p className="text-center">Antécédents non trouvés.</p>
               )}
             </div>
           )}

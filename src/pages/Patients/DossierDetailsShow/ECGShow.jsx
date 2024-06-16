@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import MedicalService from "../../../services/medical.service";
 import icon7 from "../../../assets/icon7.png";
-import iconFolder from "../../../assets/iconFolder.png";
 import HeaderDossierShow from "../../../components/HeaderDossierShow";
+import AuthorizedImage from "../../../services/authorizedImage"; // Import the new component
 
 const ECG = () => {
   const location = useLocation();
@@ -49,9 +49,12 @@ const ECG = () => {
   return (
     <div className="flex flex-col items-center p-10 max-h-width">
       <HeaderDossierShow handleDossierShow={handleDossierShow} />
-
       <div className={`mb-6 text-${color} font-bold`}>
-        Mr Patient {patient?.prenom} {patient?.nom}
+        Mr Patient{" "}
+        <span className="text-gray-500">
+          {patient?.prenom} {patient?.nom}
+        </span>
+        , ref:<span className="text-gray-500"> {patient?.referenceID}</span>
       </div>
       <div className="bg-white border border-black rounded-3xl shadow-lg w-full max-w-3xl">
         {" "}
@@ -63,14 +66,14 @@ const ECG = () => {
           </div>
         </div>
         {loading ? (
-          <p>Loading...</p>
+          <p>Chargement...</p>
         ) : error ? (
           <p>{error}</p>
         ) : (
           <div className="p-6 m-4 grid grid-cols-1 md:grid-cols-1 gap-4">
             {ecgs.map((ecg, index) => (
               <div key={index} className="flex flex-col items-center">
-                <img
+                <AuthorizedImage
                   src={ecg.imageUrl}
                   alt="ECG Image"
                   className="h-64 w-auto"

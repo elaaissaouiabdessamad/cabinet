@@ -45,7 +45,11 @@ const ECVVShow = () => {
         handleDossierClinicalExamShow={handleDossierClinicalExamShow}
       />
       <div className={`mb-6 text-${color} font-bold`}>
-        Mr Patient {patient?.prenom} {patient?.nom}
+        Mr Patient{" "}
+        <span className="text-gray-500">
+          {patient?.prenom} {patient?.nom}
+        </span>
+        , ref:<span className="text-gray-500"> {patient?.referenceID}</span>
       </div>
       <div className="bg-white border border-black rounded-3xl shadow-lg w-full max-w-md">
         <div className="p-6 border-b border-black justify-center w-full">
@@ -67,15 +71,15 @@ const ECVVShow = () => {
                 className="mb-4 p-4 border border-gray-300 rounded-lg"
               >
                 <div className="mb-2">
-                  <p className="font-bold">General Exam:</p>
+                  <p className="font-bold">Examen Général :</p>
                   <p>{exam.generalExam}</p>
                 </div>
                 <div className="mb-2">
-                  <p className="font-bold">Functional Signs:</p>
+                  <p className="font-bold">Signes Fonctionnels :</p>
                   <p>{exam.functionalSigns}</p>
                 </div>
                 <div className="mb-2">
-                  <p className="font-bold">Physical Signs:</p>
+                  <p className="font-bold">Signes Physiques :</p>
                   <p>{exam.physicalSigns}</p>
                 </div>
               </div>

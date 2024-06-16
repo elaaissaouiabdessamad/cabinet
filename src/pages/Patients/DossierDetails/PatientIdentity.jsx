@@ -3,11 +3,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import PatientService from "../../../services/patient.service";
 import icon1 from "../../../assets/icon1.png";
 import HeaderDossier from "../../../components/HeaderDossier";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const PatientIdentity = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const patient = location.state?.patient;
+  const [patient, setPatient] = useState(location.state?.patient);
   const color = location.state?.color;
 
   const [formData, setFormData] = useState({
@@ -22,8 +24,6 @@ const PatientIdentity = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,12 +34,20 @@ const PatientIdentity = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await PatientService.updatePatient(patient.id, formData);
-      setSuccess("Patient details updated successfully");
-      setError(null);
+      const updatedPatientData = await PatientService.updatePatient(
+        patient.id,
+        formData
+      );
+      const updatedPatient = {
+        ...patient,
+        ...updatedPatientData.data,
+        bedAssignmentHistories: patient.bedAssignmentHistories,
+        medicalDossier: patient.medicalDossier,
+      };
+      setPatient(updatedPatient); // Synchroniser le patient mis à jour
+      toast.success("Patient mis à jour avec succès !");
     } catch (err) {
-      setError("Failed to update patient details");
-      setSuccess(null);
+      toast.error("Échec de la mise à jour des détails du patient !");
     } finally {
       setLoading(false);
     }
@@ -57,9 +65,20 @@ const PatientIdentity = () => {
 
   return (
     <div className="flex flex-col items-center p-10">
+      <ToastContainer
+        draggable
+        closeOnClick
+        position="bottom-right"
+        autoClose={5000}
+      />
+
       <HeaderDossier handleDossier={handleDossier} />
       <div className={`mb-6 text-${color} font-bold`}>
-        Mr Patient {formData.prenom} {formData.nom}
+        Mr Patient{" "}
+        <span className="text-gray-500">
+          {patient?.prenom} {patient?.nom}
+        </span>
+        , ref:<span className="text-gray-500"> {patient?.referenceID}</span>
       </div>
       <div className="bg-white border border-black rounded-3xl shadow-lg w-full max-w-md">
         <div className="p-6 border-b border-black justify-center w-full">
@@ -125,10 +144,6 @@ const PatientIdentity = () => {
             onChange={handleChange}
             className="w-full mb-2 p-2 border rounded-lg"
           />
-          {error && <p className="text-red-500 text-center mt-2">{error}</p>}
-          {success && (
-            <p className="text-green-500 text-center mt-2">{success}</p>
-          )}
           <button
             type="submit"
             className="w-full bg-blue-500 text-white font-bold mt-2 p-2 rounded-lg"

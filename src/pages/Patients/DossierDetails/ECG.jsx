@@ -4,7 +4,8 @@ import MedicalService from "../../../services/medical.service";
 import icon7 from "../../../assets/icon7.png";
 import iconFolder from "../../../assets/iconFolder.png";
 import HeaderDossier from "../../../components/HeaderDossier";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const ECG = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -26,8 +27,7 @@ const ECG = () => {
       formData.append("conclusion", conclusion);
       const response = await MedicalService.addEcg(formData, patient.id);
       setLoading(false);
-      setMessage(response.data.message);
-      setSuccessful(true);
+      toast.success(response.data.message);
     } catch (error) {
       const resMessage =
         (error.response &&
@@ -36,8 +36,7 @@ const ECG = () => {
         error.message ||
         error.toString();
       setLoading(false);
-      setMessage(resMessage);
-      setSuccessful(false);
+      toast.error(resMessage);
     }
   };
 
@@ -64,10 +63,20 @@ const ECG = () => {
 
   return (
     <div className="flex flex-col items-center p-10">
+      <ToastContainer
+        draggable
+        closeOnClick
+        position="bottom-right"
+        autoClose={5000}
+      />{" "}
       <HeaderDossier handleDossier={handleDossier} />
       <div className={`mb-6 text-${color} font-bold`}>
-        Mr Patient {patient?.prenom} {patient?.nom}
-      </div>{" "}
+        Mr Patient{" "}
+        <span className="text-gray-500">
+          {patient?.prenom} {patient?.nom}
+        </span>
+        , ref:<span className="text-gray-500"> {patient?.referenceID}</span>
+      </div>
       <div className="bg-white border border-black rounded-3xl shadow-lg w-full max-w-md">
         <div className="p-6 border-b border-black flex justify-center w-full">
           <div className="text-center text-xl font-bold flex items-center justify-center">

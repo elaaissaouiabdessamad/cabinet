@@ -4,7 +4,9 @@ import MedicalService from "../../../services/medical.service";
 import icon11 from "../../../assets/icon11.png";
 import iconFolder from "../../../assets/iconFolder.png";
 import HeaderDossierShow from "../../../components/HeaderDossierShow";
-
+import AuthorizedImage from "../../../services/authorizedImage";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
 const Biology = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -50,42 +52,52 @@ const Biology = () => {
     });
   };
 
-  const downloadFile = async (fileUrl) => {
+  const downloadFile = async (fileUrl, isPDF) => {
     try {
-      setDownloading(true);
-      const response = await fetch(fileUrl);
-      if (!response.ok) {
-        throw new Error(
-          `Failed to download file: ${response.status} ${response.statusText}`
-        );
-      }
-      const fileExtension = fileUrl.split(".").pop().toLowerCase();
-      const isPDF = fileExtension === "pdf";
-
       if (isPDF) {
+        window.open(fileUrl, "_blank");
+      } else {
+        setDownloading(true);
+        const response = await fetch(fileUrl);
+        if (!response.ok) {
+          throw new Error(
+            `Erreur lors du téléchargement du fichier: ${response.status} ${response.statusText}`
+          );
+        }
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "file.pdf";
+        a.download = "file";
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
+        setDownloading(false);
       }
-      setError(null); // Reset error state after successful download
+      setError(null);
     } catch (error) {
-      console.error("Error downloading file:", error);
-      setError("Failed to download file. Please try again later.");
-    } finally {
+      console.error("Erreur lors du téléchargement du fichier: ", error);
+      setError(
+        "Échec du téléchargement du fichier. Veuillez réessayer ultérieurement."
+      );
       setDownloading(false);
     }
+  };
+
+  const previewPDF = (fileUrl) => {
+    console.log(fileUrl);
+    window.open(`/preview-pdf?url=${encodeURIComponent(fileUrl)}`, "_blank");
   };
 
   return (
     <div className="flex flex-col items-center p-10">
       <HeaderDossierShow handleDossierShow={handleDossierShow} />
       <div className={`mb-6 text-${color} font-bold`}>
-        Mr Patient {patient?.prenom} {patient?.nom}
+        Mr Patient{" "}
+        <span className="text-gray-500">
+          {patient?.prenom} {patient?.nom}
+        </span>
+        , ref:<span className="text-gray-500"> {patient?.referenceID}</span>
       </div>
       <div className="bg-white border border-black rounded-3xl shadow-lg w-full max-w-md">
         <div className="p-6 border-b border-black flex justify-center w-full">
@@ -120,14 +132,24 @@ const Biology = () => {
                     <span className="ml-4">{biology.conclusion}</span>
                   </div>
                   {isPDF ? (
-                    <button
-                      className="text-blue-500 hover:underline"
-                      onClick={() => downloadFile(biology.bilanImageUrl)}
-                    >
-                      Consulter
-                    </button>
+                    <div>
+                      <button
+                        className="text-blue-500 hover:underline mr-2"
+                        onClick={() =>
+                          downloadFile(biology.bilanImageUrl, true)
+                        }
+                      >
+                        Télécharger
+                      </button>
+                      <button
+                        className="text-blue-500 hover:underline"
+                        onClick={() => previewPDF(biology.bilanImageUrl)}
+                      >
+                        Prévisualiser
+                      </button>
+                    </div>
                   ) : (
-                    <img
+                    <AuthorizedImage
                       src={biology.bilanImageUrl}
                       alt={biology.conclusion}
                       className="h-14 w-14"
@@ -150,7 +172,8 @@ const Biology = () => {
           onClick={handleDossierEdit}
           className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg"
         >
-          Éditer dossier du patient {patient?.referenceID}
+          <FontAwesomeIcon icon={faEye} className="ml-1" />
+          &nbsp; Éditer dossier du patient
         </button>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import MedicalService from "../../../services/medical.service";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const AddAntecedentForm = ({ patientId, setAntecedentUpdate }) => {
   const [personal, setPersonal] = useState("");
   const [familial, setFamilial] = useState("");
@@ -23,8 +24,8 @@ const AddAntecedentForm = ({ patientId, setAntecedentUpdate }) => {
       setFamilial("");
       setCardiovascularRiskFactors("");
       setLoading(false);
-      setMessage("Antecedents added successfully.");
-      setAntecedentUpdate(Date.now()); // Update the state to trigger a re-fetch
+      toast.success("Antecedents ajoutés avec succès.");
+      setAntecedentUpdate(Date.now());
     } catch (error) {
       const resMessage =
         (error.response &&
@@ -33,12 +34,18 @@ const AddAntecedentForm = ({ patientId, setAntecedentUpdate }) => {
         error.message ||
         error.toString();
       setLoading(false);
-      setMessage(resMessage);
+      toast.error(resMessage);
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="max-w-md mx-auto">
+      <ToastContainer
+        draggable
+        closeOnClick
+        position="bottom-right"
+        autoClose={5000}
+      />{" "}
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700">
           Personnels :
@@ -75,7 +82,7 @@ const AddAntecedentForm = ({ patientId, setAntecedentUpdate }) => {
           className="mt-1 p-2 border border-gray-300 rounded-md block w-full shadow-sm"
         ></textarea>
         {message && (
-          <div className="text-sm text-center text-gray-700 mb-8">
+          <div className="text-sm text-center text-gray-700 mb-2 mt-4">
             <div
               className="bg-green-500 text-white font-bold rounded-lg p-5"
               role="alert"

@@ -13,7 +13,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import Patients from "./pages/Patients/Patients";
 import Sectors from "./pages/Patients/Sectors";
 import Historique from "./pages/Historique/Historique";
-import Facturation from "./pages/Facturation/Facturation";
+import Facturation from "./pages/Pharmacie/Pharmacie";
 import Notifications from "./pages/Notifications/Notifications";
 import Parametres from "./pages/Parametres/Parametres";
 import Profil from "./pages/Profil/Profil";
@@ -70,6 +70,13 @@ import ExpEchoShow from "./pages/Patients/DossierDetailsShow/ExpEchoShow";
 import BedService from "./services/bed.service";
 import DossierDetailShow from "./pages/Patients/DossierDetailShow";
 import PasswordReset from "./components/PasswordReset";
+import AddPatientPage from "./pages/Dashboard/AddPatientPage";
+import PatientListPage from "./pages/Dashboard/PatientListPage";
+import NotFound from "./components/NotFound";
+import PreviewPDF from "./components/PreviewPDF";
+import ArchivedPatientListTable from "./pages/Dashboard/ArchivedPatientListTable";
+import Agenda from "./pages/Agenda/Agenda";
+import Pharmacie from "./pages/Pharmacie/Pharmacie";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -137,6 +144,21 @@ function App() {
                   <div className="flex-1 bg-gradient-to-b from-white to-blue-100">
                     <Routes>
                       <Route path="/dashboard" element={<Dashboard />} />
+                      <Route
+                        exact
+                        path="/add-patient"
+                        element={<AddPatientPage />}
+                      />
+                      <Route
+                        exact
+                        path="/patient-list"
+                        element={<PatientListPage />}
+                      />
+                      <Route
+                        exact
+                        path="/archived-patients"
+                        element={<ArchivedPatientListTable />}
+                      />
                       <Route path="/sectors" element={<Sectors />} />
                       <Route
                         path="/patients/:sectorId"
@@ -145,6 +167,8 @@ function App() {
                       <Route path="/beds/:id" element={<BedDetail />} />
                       <Route path="/historique" element={<Historique />} />
                       <Route path="/facturation" element={<Facturation />} />
+                      <Route path="/agenda" element={<Agenda />} />
+                      <Route path="/pharmacie" element={<Pharmacie />} />
                       <Route
                         path="/notifications"
                         element={<Notifications />}
@@ -175,6 +199,7 @@ function App() {
                         path="/show/antecedents"
                         element={<CaseHistoryShow />}
                       />
+                      <Route path="/preview-pdf" element={<PreviewPDF />} />
 
                       <Route
                         path="histoire-maladie"
@@ -185,6 +210,7 @@ function App() {
                         path="/show/histoire-maladie"
                         element={<HistoryDiseaseShow />}
                       />
+
                       <Route
                         path="examen-clinique"
                         element={<ClinicalExamination />}
@@ -263,6 +289,7 @@ function App() {
                       />
                       <Route path="/parametres" element={<Parametres />} />
                       <Route path="/profil" element={<Profil />} />
+                      <Route path="*" element={<NotFound />} />
                       {/*<Route path="*" element={<Navigate to="/dashboard" />} />*/}
                     </Routes>
                   </div>

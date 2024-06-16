@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
 const HeaderDossierShow = ({ handleDossierShow }) => {
   return (
     <div className="flex items-center mb-6 w-full">
@@ -7,7 +9,8 @@ const HeaderDossierShow = ({ handleDossierShow }) => {
           onClick={handleDossierShow}
           className="mr-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg flex items-center"
         >
-          <i class="fa fa-angle-double-left"></i>&nbsp; Au dossier mode lecture
+          <i class="fa fa-angle-double-left"></i>&nbsp; Au dossier mode
+          <FontAwesomeIcon icon={faEye} className="ml-1" />
         </button>
         <input
           type="text"

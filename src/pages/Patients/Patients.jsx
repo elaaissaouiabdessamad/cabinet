@@ -2,10 +2,17 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import BedService from "../../services/bed.service";
 import moment from "moment";
+import ModalDeleteBed from "../../components/ModalDelete";
+import ModalDeleteAssignment from "../../components/ModalDelete";
 
 const Patients = () => {
   const { sectorId } = useParams();
   const [beds, setBeds] = useState([]);
+  const [isDeleteModalBedOpen, setIsDeleteModalBedOpen] = useState(false);
+  const [deleteBedId, setDeleteBedId] = useState(null);
+  const [deleteAssignmentByBedId, setDeleteAssignmentByBedId] = useState(null);
+  const [isDeleteModalAssignmentOpen, setIsDeleteModalAssignmentOpen] =
+    useState(false);
 
   useEffect(() => {
     const fetchBeds = async () => {
@@ -25,7 +32,6 @@ const Patients = () => {
   const handleAddBed = async () => {
     try {
       await BedService.addBedBySectorId(sectorId);
-      // Refresh beds after adding a new bed
       const response = await BedService.getBedsBySectorId(sectorId);
       setBeds(response.data);
     } catch (error) {
@@ -33,25 +39,25 @@ const Patients = () => {
     }
   };
 
-  const handleRemovePatient = async (bedId) => {
+  const handleRemovePatient = async () => {
     try {
-      await BedService.removePatientToBed(bedId);
-      // Refresh beds after removing the patient
+      await BedService.removePatientToBed(deleteAssignmentByBedId);
       const response = await BedService.getBedsBySectorId(sectorId);
       setBeds(response.data);
     } catch (error) {
       console.error("Error removing patient from bed:", error);
     }
+    setIsDeleteModalAssignmentOpen(false);
   };
 
-  const handleDeleteBed = async (bedId) => {
+  const handleDeleteBed = async () => {
     try {
-      await BedService.deleteBedById(bedId);
-      // Remove the deleted bed from the local state
-      setBeds(beds.filter((bed) => bed.id !== bedId));
+      await BedService.deleteBedById(deleteBedId);
+      setBeds(beds.filter((bed) => bed.id !== deleteBedId));
     } catch (error) {
       console.error("Error deleting bed:", error);
     }
+    setIsDeleteModalBedOpen(false);
   };
 
   const getColorClass = (bed) => {
@@ -109,7 +115,10 @@ const Patients = () => {
               }`}
             >
               <button
-                onClick={() => handleDeleteBed(bed.id)}
+                onClick={() => {
+                  setDeleteBedId(bed.id);
+                  setIsDeleteModalBedOpen(true);
+                }}
                 className="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 align-center text-center flex items-center justify-center rounded-full hover:bg-red-600 transition duration-200 z-10"
               >
                 <i className="fas fa-trash-alt"></i>
@@ -126,18 +135,30 @@ const Patients = () => {
               {bed.state === "OCCUPIED" ? (
                 <>
                   <p className={`${getColorClass(bed).split(" ")[1]} mt-2`}>
-                    {bed.currentPatient ? bed.currentPatient.nom : "Inconnu"}
+                    {bed.currentPatient
+                      ? `${bed.currentPatient.prenom} ${bed.currentPatient.nom}`
+                      : "Inconnu"}
                   </p>
                   <p className={`${getColorClass(bed).split(" ")[1]}`}>
-                    {`Jours Occupés: ${calculateDaysOccupied(
-                      bed.startDateTime
-                    )} jours`}
+                    {calculateDaysOccupied(bed.startDateTime) > 0
+                      ? `Jours Occupés: ${calculateDaysOccupied(
+                          bed.startDateTime
+                        )} ${
+                          calculateDaysOccupied(bed.startDateTime) > 1
+                            ? "jours"
+                            : "jour"
+                        }`
+                      : "Occupé aujourd'hui"}
                   </p>
                   <button
-                    onClick={() => handleRemovePatient(bed.id)}
+                    onClick={() => {
+                      setDeleteAssignmentByBedId(bed.id);
+                      setIsDeleteModalAssignmentOpen(true);
+                    }}
                     className="mt-2 p-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition duration-200"
                   >
-                    <i className="fas fa-user-minus mr-1"></i> Remove Assignment
+                    <i className="fas fa-user-minus mr-1"></i> Retirer
+                    l’affectation
                   </button>
                 </>
               ) : (
@@ -167,6 +188,18 @@ const Patients = () => {
           </button>
         </div>
       </div>
+      <ModalDeleteBed
+        isOpen={isDeleteModalBedOpen}
+        onRequestClose={() => setIsDeleteModalBedOpen(false)}
+        handleDelete={handleDeleteBed}
+        message="supprimer lit"
+      />
+      <ModalDeleteAssignment
+        isOpen={isDeleteModalAssignmentOpen}
+        onRequestClose={() => setIsDeleteModalAssignmentOpen(false)}
+        handleDelete={handleRemovePatient}
+        message="retirer l’affectation"
+      />
     </div>
   );
 };

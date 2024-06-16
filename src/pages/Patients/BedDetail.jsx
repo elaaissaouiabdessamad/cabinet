@@ -165,9 +165,15 @@ const BedDetail = () => {
               <>
                 <div className="flex justify-between">
                   <span className="font-semibold">Motif d'hospitalisation</span>
-                  <span>
+                  <span className="ml-1 text-right">
                     {currentPatient.medicalDossier.hospitalization
-                      ? currentPatient.medicalDossier.hospitalization
+                      ? currentPatient.medicalDossier.hospitalization.length >
+                        60 // Change 50 to your desired character limit
+                        ? `${currentPatient.medicalDossier.hospitalization.substring(
+                            0,
+                            60
+                          )}...`
+                        : currentPatient.medicalDossier.hospitalization
                       : "N/A"}
                   </span>
                 </div>

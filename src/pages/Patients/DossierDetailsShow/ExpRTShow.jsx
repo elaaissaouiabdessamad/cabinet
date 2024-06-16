@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import MedicalService from "../../../services/medical.service";
 import icon10 from "../../../assets/icon10.png";
 import HeaderDossierExplorationShow from "../../../components/HeaderDossierExplorationShow";
+import AuthorizedImage from "../../../services/authorizedImage";
 
 const ExpRTShow = () => {
   const location = useLocation();
@@ -44,7 +45,11 @@ const ExpRTShow = () => {
         handleDossierExplorationShow={handleDossierExplorationShow}
       />
       <div className={`mb-6 text-${color} font-bold`}>
-        Mr Patient {patient?.prenom} {patient?.nom}
+        Mr Patient{" "}
+        <span className="text-gray-500">
+          {patient?.prenom} {patient?.nom}
+        </span>
+        , ref:<span className="text-gray-500"> {patient?.referenceID}</span>
       </div>
       <div className="bg-white border border-black rounded-3xl shadow-lg w-full max-w-md">
         <div className="p-6 border-b border-black flex justify-center w-full">
@@ -58,14 +63,14 @@ const ExpRTShow = () => {
           </div>
         </div>
         {loading ? (
-          <p>Loading...</p>
+          <p>Chargement...</p>
         ) : error ? (
           <p>{error}</p>
         ) : (
           <div className="p-6 m-4">
             {explorations.map((exploration, index) => (
               <div key={index} className="mb-4">
-                <img
+                <AuthorizedImage
                   src={exploration.imageUrl}
                   alt={`Exploration ${index + 1}`}
                   className="w-full"

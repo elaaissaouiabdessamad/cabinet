@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import MedicalService from "../../../services/medical.service";
 import icon6 from "../../../assets/icon6.png";
 import HeaderDossierClinicalExam from "../../../components/HeaderDossierClinicalExam";
@@ -15,7 +17,17 @@ const ECVV = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [successful, setSuccessful] = useState(false);
-  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    let timer;
+    if (error || successful) {
+      timer = setTimeout(() => {
+        setError(null);
+        setSuccessful(false);
+      }, 5000);
+    }
+    return () => clearTimeout(timer);
+  }, [error, successful]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,8 +42,9 @@ const ECVV = () => {
         patient.id
       );
       setLoading(false);
-      setMessage(response.data.message);
-      setSuccessful(true);
+      toast.success(
+        `Examen clinique : cardio vasculaire ${response.data.message}`
+      );
     } catch (error) {
       const resMessage =
         (error.response &&
@@ -40,8 +53,7 @@ const ECVV = () => {
         error.message ||
         error.toString();
       setLoading(false);
-      setMessage(resMessage);
-      setSuccessful(false);
+      toast.error(resMessage);
     }
   };
 
@@ -53,11 +65,21 @@ const ECVV = () => {
 
   return (
     <div className="flex flex-col items-center p-10">
+      <ToastContainer
+        draggable
+        closeOnClick
+        position="bottom-right"
+        autoClose={5000}
+      />{" "}
       <HeaderDossierClinicalExam
         handleDossierClinicalExam={handleDossierClinicalExam}
       />
       <div className={`mb-6 text-${color} font-bold`}>
-        Mr Patient {patient?.prenom} {patient?.nom}
+        Mr Patient{" "}
+        <span className="text-gray-500">
+          {patient?.prenom} {patient?.nom}
+        </span>
+        , ref:<span className="text-gray-500"> {patient?.referenceID}</span>
       </div>
       <div className="bg-white border border-black rounded-3xl shadow-lg w-full max-w-md">
         <div className="p-6 border-b border-black justify-center w-full">
@@ -71,6 +93,7 @@ const ECVV = () => {
           <div className="p-6">
             <textarea
               type="text"
+              required
               placeholder="Examen général"
               className="w-full mb-6 p-4 border border-black"
               value={generalExam}
@@ -78,6 +101,7 @@ const ECVV = () => {
             ></textarea>
             <textarea
               type="text"
+              required
               placeholder="Signes fonctionnels"
               className="w-full mb-6 p-4 border border-black"
               value={functionalSigns}
@@ -85,24 +109,13 @@ const ECVV = () => {
             ></textarea>
             <textarea
               type="text"
+              required
               placeholder="Signes physiques"
               className="w-full p-4 border border-black"
               value={physicalSigns}
               onChange={(e) => setPhysicalSigns(e.target.value)}
             ></textarea>
             {error && <p className="text-red-500">{error}</p>}
-            {message && (
-              <div className="text-sm text-center text-gray-700 dark:text-gray-200 mb-8 m-4">
-                <div
-                  className={`${
-                    successful ? "bg-green-500" : "bg-red-500"
-                  } text-white font-bold rounded-lg border border-white shadow-lg p-5 m-4`}
-                  role="alert"
-                >
-                  {message}
-                </div>
-              </div>
-            )}
             <button
               type="submit"
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-4 rounded"

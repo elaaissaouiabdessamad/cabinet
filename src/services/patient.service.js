@@ -1,31 +1,30 @@
-import axios from "axios";
+import axiosInstance from "./axiosInstance";
 
-const API_URL = "http://localhost:3000/api/patients/";
+const API_URL = "patients/";
+const API_URLn = "patients";
 
 const addPatient = (patientData) => {
-  return axios.post(API_URL + "add", patientData);
+  return axiosInstance.post(API_URL + "add", patientData);
 };
 
 const updatePatient = (patientId, formData) => {
-  return axios.put(API_URL + patientId, formData);
+  return axiosInstance.put(API_URL + patientId, formData);
 };
 
 const getPatientById = (patientId) => {
-  return axios.get(API_URL + patientId);
+  return axiosInstance.get(API_URL + patientId);
 };
 
 const getPatientWithoutBed = () => {
-  return axios.get(API_URL + "without-bed");
+  return axiosInstance.get(API_URL + "without-bed");
 };
 
-const API_URLAllget = "http://localhost:3000/api/patients";
-
 const getAllPatients = () => {
-  return axios.get(API_URLAllget);
+  return axiosInstance.get(API_URLn);
 };
 
 const deletePatient = (patientId) => {
-  return axios.delete(API_URL + patientId);
+  return axiosInstance.delete(API_URL + patientId);
 };
 
 const PatientService = {
