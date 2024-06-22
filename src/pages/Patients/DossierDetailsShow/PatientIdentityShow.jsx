@@ -6,9 +6,12 @@ import {
   FaMapMarkerAlt,
   FaBriefcase,
   FaIdCard,
+  FaRegIdBadge,
+  FaCalendarAlt,
   FaMoneyBillAlt,
 } from "react-icons/fa";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import HeaderDossierShow from "../../../components/HeaderDossierShow";
 
 const PatientIdentity = () => {
@@ -44,33 +47,38 @@ const PatientIdentity = () => {
           </div>
         </div>
         <div className="p-6">
-          <div className="flex items-center mb-2">
-            <FaIdCard className="text-gray-500 mr-2" />
-            <span className="text-lg">{patient?.nom}</span>
+          <div className="flex items-center mb-4">
+            <FaUser className="text-blue-500 mr-3 text-xl" />
+            <span className="text-lg">
+              Nom complet:&nbsp;
+              {patient?.nom} {patient?.prenom}
+            </span>
           </div>
-          <div className="flex items-center mb-2">
-            <FaIdCard className="text-gray-500 mr-2" />
-            <span className="text-lg">{patient?.prenom}</span>
+          <div className="flex items-center mb-4">
+            <FaCalendarAlt className="text-green-500 mr-3 text-xl" />
+            <span className="text-lg">Âge:&nbsp; {patient?.age} années</span>
           </div>
-          <div className="flex items-center mb-2">
-            <FaIdCard className="text-gray-500 mr-2" />
-            <span className="text-lg">{patient?.age}</span>
+          <div className="flex items-center mb-4">
+            <FaMapMarkerAlt className="text-red-500 mr-3 text-xl" />
+            <span className="text-lg">Ville:&nbsp;{patient?.ville}</span>
           </div>
-          <div className="flex items-center mb-2">
-            <FaMapMarkerAlt className="text-gray-500 mr-2" />
-            <span className="text-lg">{patient?.ville}</span>
+          <div className="flex items-center mb-4">
+            <FaBriefcase className="text-purple-500 mr-3 text-xl" />
+            <span className="text-lg">
+              Profession:&nbsp;{patient?.profession}
+            </span>
           </div>
-          <div className="flex items-center mb-2">
-            <FaBriefcase className="text-gray-500 mr-2" />
-            <span className="text-lg">{patient?.profession}</span>
+          <div className="flex items-center mb-4">
+            <FaMoneyBillAlt className="text-yellow-500 mr-3 text-xl" />
+            <span className="text-lg">
+              Assurance:&nbsp;{patient?.assurance}
+            </span>
           </div>
-          <div className="flex items-center mb-2">
-            <FaMoneyBillAlt className="text-gray-500 mr-2" />
-            <span className="text-lg">{patient?.assurance}</span>
-          </div>
-          <div className="flex items-center mb-2">
-            <FaIdCard className="text-gray-500 mr-2" />
-            <span className="text-lg">{patient?.id}</span>
+          <div className="flex items-center mb-4">
+            <FaRegIdBadge className="text-gray-500 mr-3 text-xl" />
+            <span className="text-lg">
+              Reference ID:&nbsp; {patient?.referenceID}
+            </span>
           </div>
         </div>
       </div>
@@ -79,7 +87,7 @@ const PatientIdentity = () => {
           onClick={handleNext}
           className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg"
         >
-          Suivant
+          Suivant <FontAwesomeIcon icon={faArrowRight} />
         </button>
       </div>
     </div>

@@ -6,7 +6,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import Login from "./components/Login";
-import Signup from "./components/Signup"; // Import Signup component
+import Signup from "./components/Signup";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard/Dashboard";
@@ -21,7 +21,8 @@ import DossierDetail from "./pages/Patients/DossierDetail";
 import BedDetail from "./pages/Patients/BedDetail";
 import PatientIdentity from "./pages/Patients/DossierDetails/PatientIdentity";
 import PatientIdentityShow from "./pages/Patients/DossierDetailsShow/PatientIdentityShow";
-
+import SalleCatheterisme from "./pages/Agenda/SalleCatheterisme";
+import BlocRythmologie from "./pages/Agenda/BlocRythmologie";
 import ReasonHospitalization from "./pages/Patients/DossierDetails/ReasonHospitalization";
 import ReasonHospitalizationShow from "./pages/Patients/DossierDetailsShow/ReasonHospitalizationShow";
 
@@ -67,16 +68,19 @@ import ExpRTShow from "./pages/Patients/DossierDetailsShow/ExpRTShow";
 import ExpEcho from "./pages/Patients/DossierDetails/ExpEcho";
 import ExpEchoShow from "./pages/Patients/DossierDetailsShow/ExpEchoShow";
 
-import BedService from "./services/bed.service";
 import DossierDetailShow from "./pages/Patients/DossierDetailShow";
 import PasswordReset from "./components/PasswordReset";
-import AddPatientPage from "./pages/Dashboard/AddPatientPage";
 import PatientListPage from "./pages/Dashboard/PatientListPage";
 import NotFound from "./components/NotFound";
 import PreviewPDF from "./components/PreviewPDF";
 import ArchivedPatientListTable from "./pages/Dashboard/ArchivedPatientListTable";
 import Agenda from "./pages/Agenda/Agenda";
 import Pharmacie from "./pages/Pharmacie/Pharmacie";
+import DoctorShifts from "./pages/Agenda/DoctorShifts";
+import NurseShifts from "./pages/Agenda/NurseShifts";
+import AddPatientForm from "./pages/Dashboard/AddPatientForm";
+import RequestPasswordReset from "./components/RequestPasswordReset";
+import ResetPassword from "./components/ResetPassword";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -121,9 +125,21 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route
+          path="/"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/dashboard" />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />{" "}
         <Route path="/login" element={<Login login={login} />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/password-reset" element={<PasswordReset />} />{" "}
+        {/*<Route path="/password-reset" element={<PasswordReset />} />*/}
+        <Route path="/password-reset" element={<RequestPasswordReset />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route
           path="*"
           element={
@@ -147,7 +163,7 @@ function App() {
                       <Route
                         exact
                         path="/add-patient"
-                        element={<AddPatientPage />}
+                        element={<AddPatientForm />}
                       />
                       <Route
                         exact
@@ -289,6 +305,22 @@ function App() {
                       />
                       <Route path="/parametres" element={<Parametres />} />
                       <Route path="/profil" element={<Profil />} />
+                      <Route
+                        path="/salle-catheterisme"
+                        element={<SalleCatheterisme />}
+                      />
+                      <Route
+                        path="/bloc-rythmologie"
+                        element={<BlocRythmologie />}
+                      />
+                      <Route
+                        path="/garde-des-medecins"
+                        element={<DoctorShifts />}
+                      />
+                      <Route
+                        path="/garde-des-infirmieres"
+                        element={<NurseShifts />}
+                      />
                       <Route path="*" element={<NotFound />} />
                       {/*<Route path="*" element={<Navigate to="/dashboard" />} />*/}
                     </Routes>

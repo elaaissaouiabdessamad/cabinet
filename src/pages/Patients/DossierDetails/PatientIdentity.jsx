@@ -5,6 +5,8 @@ import icon1 from "../../../assets/icon1.png";
 import HeaderDossier from "../../../components/HeaderDossier";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 const PatientIdentity = () => {
   const location = useLocation();
@@ -44,7 +46,7 @@ const PatientIdentity = () => {
         bedAssignmentHistories: patient.bedAssignmentHistories,
         medicalDossier: patient.medicalDossier,
       };
-      setPatient(updatedPatient); // Synchroniser le patient mis à jour
+      setPatient(updatedPatient);
       toast.success("Patient mis à jour avec succès !");
     } catch (err) {
       toast.error("Échec de la mise à jour des détails du patient !");
@@ -88,62 +90,33 @@ const PatientIdentity = () => {
           </div>
         </div>
         <form className="p-6" onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="nom"
-            placeholder="Nom"
-            value={formData.nom}
-            onChange={handleChange}
-            className="w-full mb-2 p-2 border rounded-lg"
-          />
-          <input
-            type="text"
-            name="prenom"
-            placeholder="Prénom"
-            value={formData.prenom}
-            onChange={handleChange}
-            className="w-full mb-2 p-2 border rounded-lg"
-          />
-          <input
-            type="text"
-            name="age"
-            placeholder="Age"
-            value={formData.age}
-            onChange={handleChange}
-            className="w-full mb-2 p-2 border rounded-lg"
-          />
-          <input
-            type="text"
-            name="ville"
-            placeholder="Ville"
-            value={formData.ville}
-            onChange={handleChange}
-            className="w-full mb-2 p-2 border rounded-lg"
-          />
-          <input
-            type="text"
-            name="profession"
-            placeholder="Profession"
-            value={formData.profession}
-            onChange={handleChange}
-            className="w-full mb-2 p-2 border rounded-lg"
-          />
-          <input
-            type="text"
-            name="assurance"
-            placeholder="Assurance"
-            value={formData.assurance}
-            onChange={handleChange}
-            className="w-full mb-2 p-2 border rounded-lg"
-          />
-          <input
-            type="text"
-            name="referenceID"
-            placeholder="Reference ID"
-            value={formData.referenceID}
-            onChange={handleChange}
-            className="w-full mb-2 p-2 border rounded-lg"
-          />
+          {[
+            "nom",
+            "prenom",
+            "age",
+            "ville",
+            "profession",
+            "assurance",
+            "referenceID",
+          ].map((field) => (
+            <div className="relative mb-4" key={field}>
+              <input
+                type="text"
+                name={field}
+                value={formData[field]}
+                onChange={handleChange}
+                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 peer"
+                placeholder=" "
+                id={field}
+              />
+              <label
+                htmlFor={field}
+                className="absolute left-2 -top-3 text-gray-500 transition-all transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-gray-400 peer-focus:-top-4 peer-focus:text-blue-500 bg-white px-1"
+              >
+                {field.charAt(0).toUpperCase() + field.slice(1)}
+              </label>
+            </div>
+          ))}
           <button
             type="submit"
             className="w-full bg-blue-500 text-white font-bold mt-2 p-2 rounded-lg"
@@ -158,7 +131,7 @@ const PatientIdentity = () => {
           onClick={handleNext}
           className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg"
         >
-          Suivant
+          Suivant <FontAwesomeIcon icon={faArrowRight} />
         </button>
       </div>
     </div>

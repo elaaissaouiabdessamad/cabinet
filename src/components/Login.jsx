@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { FaUser, FaLock } from "react-icons/fa"; // Import icons from react-icons library
+import { FaUser, FaLock } from "react-icons/fa";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Logo from "../logo.png"; // Adjust the path as needed
 
 function Login({ login }) {
@@ -22,7 +24,6 @@ function Login({ login }) {
         }
       );
       const { accessToken, id, roles, email } = response.data;
-      console.log(response);
       const userData = {
         token: accessToken,
         userId: id,
@@ -35,14 +36,14 @@ function Login({ login }) {
       navigate("/dashboard");
     } catch (error) {
       setErrorMessage(error.response?.data?.message || "Invalid credentials");
+      toast.error(error.response?.data?.message || "Invalid credentials");
     }
   };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
-      {/*<img src={Logo} alt="Logo" className="mr-32 h-72 mb-6" />*/}
+      <ToastContainer position="top-right" autoClose={5000} hideProgressBar />
       <img src={Logo} alt="Logo" className="mr-64 w-64 mb-6" />
-
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <form className="space-y-6" onSubmit={handleLogin}>
           <div className="relative">
@@ -69,7 +70,9 @@ function Login({ login }) {
               className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
             />
           </div>
-          {errorMessage && <div className="text-red-500">{errorMessage}</div>}
+          {errorMessage && (
+            <div className="text-center text-red-500">{errorMessage}</div>
+          )}
           <button
             type="submit"
             className="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300"

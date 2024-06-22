@@ -7,6 +7,8 @@ import HeaderDossierShow from "../../../components/HeaderDossierShow";
 import AuthorizedImage from "../../../services/authorizedImage";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+
 const Biology = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -114,7 +116,7 @@ const Biology = () => {
           <p>Chargement...</p>
         ) : error ? (
           <p>{error}</p>
-        ) : (
+        ) : biologies.length > 0 ? (
           <div className="p-6 m-4">
             {biologies.map((biology, index) => {
               const fileExtension = biology.bilanImageUrl
@@ -159,14 +161,18 @@ const Biology = () => {
               );
             })}
           </div>
+        ) : (
+          <p className="mb-10 mt-10 text-gray-500 text-center">
+            Aucune biologie disponible.
+          </p>
         )}
       </div>
       <div className="flex justify-between w-full max-w-md mt-6">
         <button
           onClick={handlePrevious}
-          className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-lg"
+          className="bg-white hover:bg-blue-200 border-white hover:border-blue-200 border text-blue-500 font-bold py-2 px-4 rounded-lg"
         >
-          Précédent
+          <FontAwesomeIcon icon={faArrowLeft} /> Précédent
         </button>
         <button
           onClick={handleDossierEdit}

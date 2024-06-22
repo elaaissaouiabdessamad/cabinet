@@ -106,10 +106,8 @@ const DossierDetailShow = () => {
           <span className="text-gray-500">
             {patient.prenom} {patient.nom}
           </span>
-          &nbsp;
-          <span className="text-sm text-gray-500">
-            Ref : {patient.referenceID}
-          </span>
+          &nbsp; <span className="text-sm">Ref</span>&nbsp;
+          <span className="text-sm text-gray-500">{patient.referenceID}</span>
           <a
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}

@@ -3,6 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import moment from "moment";
 import BedService from "../../services/bed.service";
 import PatientService from "../../services/patient.service";
+import DoctorService from "../../services/doctor.service";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const BedDetail = () => {
   const { id } = useParams();
@@ -12,6 +15,8 @@ const BedDetail = () => {
   const [error, setError] = useState(null);
   const [patientsWithoutBed, setPatientsWithoutBed] = useState([]);
   const [selectedPatientId, setSelectedPatientId] = useState("");
+  const [doctors, setDoctors] = useState([]);
+  const [selectedDoctorId, setSelectedDoctorId] = useState("");
 
   useEffect(() => {
     const fetchBed = async () => {
@@ -34,20 +39,55 @@ const BedDetail = () => {
         const response = await PatientService.getPatientWithoutBed();
         setPatientsWithoutBed(response.data);
       } catch (error) {
-        console.error("Error fetching patients without bed:", error);
+        console.error(
+          "Erreur lors de la récupération des patients sans lit:",
+          error
+        );
       }
     };
 
     fetchPatientsWithoutBed();
   }, []);
 
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const response = await DoctorService.getAllDoctors();
+        setDoctors(response.data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des médecins:", error);
+      }
+    };
+
+    fetchDoctors();
+  }, []);
+
   const handleAssignPatient = async () => {
+    if (!selectedPatientId && !selectedDoctorId) {
+      toast.error("Veuillez sélectionner un patient et un médecin.");
+      return;
+    }
+    if (!selectedPatientId) {
+      toast.error("Veuillez sélectionner un patient.");
+      return;
+    }
+    if (!selectedDoctorId) {
+      toast.error("Veuillez sélectionner un médecin.");
+      return;
+    }
+
     try {
-      await BedService.assignPatientToBed(bed.id, selectedPatientId);
+      await BedService.assignPatientToBed(
+        bed.id,
+        selectedPatientId,
+        selectedDoctorId
+      );
       const updatedBed = await BedService.getBedById(bed.id);
       setBed(updatedBed.data);
+      toast.success("Patient et médecin assignés avec succès.");
     } catch (error) {
-      console.error("Error assigning patient to bed:", error);
+      console.error("Erreur lors de l'attribution du patient au lit:", error);
+      toast.error("Échec de l'attribution du patient et du médecin.");
     }
   };
 
@@ -64,15 +104,15 @@ const BedDetail = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>Chargement...</div>;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div>Erreur: {error}</div>;
   }
 
   if (!bed) {
-    return <div>Bed not found</div>;
+    return <div>Lit pas trouvé</div>;
   }
 
   const { currentPatient } = bed;
@@ -94,7 +134,7 @@ const BedDetail = () => {
   };
 
   return (
-    <div className="p-4 flex flex-col items-center min-h-screen">
+    <div className="p-4 flex flex-col items-center">
       <div className="flex items-center mb-4 w-full">
         <div className="flex items-center w-full relative">
           <input
@@ -123,14 +163,24 @@ const BedDetail = () => {
           </svg>
         </button>
       </div>
-
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <h2
         className={`shadow-md text-xl font-bold text-center bg-${getBgColor()} text-white py-2 w-full max-w-md`}
       >
         LIT {bed.id}
-        <span className="block text-sm mt-1">
-          Patient ref ID :{" "}
-          {currentPatient ? currentPatient.referenceID : bed.id}
+        <span className="block text-sm">
+          {currentPatient
+            ? "Patient ref ID : " + currentPatient.referenceID
+            : ""}
         </span>
       </h2>
       <div className="shadow-md bg-white space-y-2 p-6 w-full max-w-md">
@@ -168,7 +218,7 @@ const BedDetail = () => {
                   <span className="ml-1 text-right">
                     {currentPatient.medicalDossier.hospitalization
                       ? currentPatient.medicalDossier.hospitalization.length >
-                        60 // Change 50 to your desired character limit
+                        60
                         ? `${currentPatient.medicalDossier.hospitalization.substring(
                             0,
                             60
@@ -190,38 +240,58 @@ const BedDetail = () => {
               </>
             ) : (
               <div className="text-center text-gray-500">
-                No medical dossier found
+                Aucun dossier médical trouvé
               </div>
             )}
           </>
         ) : (
           <div className="text-center text-gray-500">
-            No patient assigned to this bed
+            Aucun patient n'est assigné à ce lit
           </div>
         )}
       </div>
       {bed.state === "EMPTY" && (
         <div className="mt-4 w-full max-w-md">
-          <label className="block text-gray-700">Select Patient:</label>
+          <label className="block text-gray-700">
+            Sélectionner un patient:
+          </label>
           <select
             className="mt-1 p-2 w-full border rounded-lg"
             value={selectedPatientId}
             onChange={(e) => setSelectedPatientId(e.target.value)}
           >
-            <option value="">Select a patient</option>
+            <option value="" disabled>
+              👤Choisissez un patient
+            </option>
+
             {patientsWithoutBed.map((patient) => (
               <option key={patient.id} value={patient.id}>
-                {patient.id}-{patient.nom} {patient.prenom} -{" "}
-                {patient.referenceID}
+                {patient.prenom} {patient.nom} - ref: {patient.referenceID}
+              </option>
+            ))}
+          </select>
+          <label className="block text-gray-700 mt-4">
+            Sélectionner un médecin:
+          </label>
+          <select
+            className="mt-1 p-2 w-full border rounded-lg"
+            value={selectedDoctorId}
+            onChange={(e) => setSelectedDoctorId(e.target.value)}
+          >
+            <option value="" disabled>
+              ⚕️Choisissez un médecin
+            </option>{" "}
+            {doctors.map((doctor) => (
+              <option key={doctor.id} value={doctor.id}>
+                {doctor.prenom} {doctor.nom} - {doctor.specialty}
               </option>
             ))}
           </select>
           <button
-            className="mt-2 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200"
+            className="mt-6 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200"
             onClick={handleAssignPatient}
-            disabled={!selectedPatientId}
           >
-            Assign Patient
+            Attribuer le patient et le médecin
           </button>
         </div>
       )}

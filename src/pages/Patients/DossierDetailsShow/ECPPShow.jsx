@@ -61,10 +61,10 @@ const ECPP = () => {
           </div>
         </div>
         {loading ? (
-          <p>Chargement...</p>
+          <p className="p-6 justify-center">Chargement...</p>
         ) : error ? (
           <p>{error}</p>
-        ) : (
+        ) : pulmonaryExamData.length > 0 ? (
           <div className="p-6 m-4">
             {pulmonaryExamData.map((exam, index) => (
               <div key={index} className="mb-4">
@@ -78,6 +78,10 @@ const ECPP = () => {
               </div>
             ))}
           </div>
+        ) : (
+          <p className="mb-10 mt-10 text-gray-500 text-center">
+            Aucun examen clinique pleuro pulmonaire disponible.
+          </p>
         )}
       </div>
     </div>

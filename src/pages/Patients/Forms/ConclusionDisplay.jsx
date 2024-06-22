@@ -25,7 +25,7 @@ const ConclusionDisplay = ({ patientId, conclusionUpdate }) => {
     };
 
     fetchConclusion();
-  }, [patientId, conclusionUpdate]); // Include conclusionUpdate in dependency array
+  }, [patientId, conclusionUpdate]);
 
   return (
     <div className="m-2">

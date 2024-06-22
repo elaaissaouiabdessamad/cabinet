@@ -10,15 +10,12 @@ const Header = ({ currentTime, formatTime, username, logout }) => {
 
   const handleLogout = async () => {
     try {
-      // Call the logout endpoint
       await axios.post("http://localhost:3000/api/auth/logout");
 
-      // Perform any necessary cleanup, such as removing authentication tokens
       logout();
-      navigate("/login"); // Navigate to the login page
+      navigate("/login");
     } catch (error) {
       console.error("Error during logout:", error);
-      // Handle the error, show a message to the user, etc.
     }
   };
 

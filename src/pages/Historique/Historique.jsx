@@ -147,155 +147,363 @@ const Historique = () => {
         </div>
       </div>
       <div className="bg-white shadow-md rounded-md p-4">
-        {patients
-          .filter((patient) => {
-            const lastHistory = getLastBedAssignment(
-              patient.bedAssignmentHistories
-            );
-            const patientStatus = getPatientStatus(patient, lastHistory);
-            return isPatientVisible(patientStatus);
-          })
-          .map((patient) => {
-            const lastHistory = getLastBedAssignment(
-              patient.bedAssignmentHistories
-            );
-            const patientStatus = getPatientStatus(patient, lastHistory);
+        {patients.filter((patient) => {
+          const lastHistory = getLastBedAssignment(
+            patient.bedAssignmentHistories
+          );
+          const patientStatus = getPatientStatus(patient, lastHistory);
+          return isPatientVisible(patientStatus);
+        }).length === 0 ? (
+          <div className="text-center text-gray-500 py-4">
+            Aucun patient trouvé.
+          </div>
+        ) : (
+          patients
+            .filter((patient) => {
+              const lastHistory = getLastBedAssignment(
+                patient.bedAssignmentHistories
+              );
+              const patientStatus = getPatientStatus(patient, lastHistory);
+              return isPatientVisible(patientStatus);
+            })
+            .map((patient) => {
+              const lastHistory = getLastBedAssignment(
+                patient.bedAssignmentHistories
+              );
+              const patientStatus = getPatientStatus(patient, lastHistory);
 
-            return (
-              <div
-                key={patient.id}
-                className="mb-8 border border-gray-200 rounded-lg"
-              >
-                <div className="flex items-center justify-between border-b border-gray-200 py-4 px-4 bg-gray-50 rounded-t-lg">
-                  <div className="flex flex-col md:flex-row md:items-center">
-                    <span className="font-semibold text-lg mr-2">
-                      {`Patient ${patient.prenom} ${patient.nom} - ${patient.referenceID}`}
-                    </span>
-                    <span
-                      className={`${getStatusColorClass(
-                        patientStatus
-                      )} flex items-center`}
-                    >
-                      {getStatusIcon(patientStatus)}
-                      <strong className="ml-1"> {patientStatus}</strong>
-                    </span>
-                    {lastHistory && (
-                      <div className="mt-2 md:mt-0 md:ml-4">
-                        {lastHistory.startDateTime &&
-                          !lastHistory.endDateTime && (
-                            <span>
-                              <span className="font-semibold">Entré le </span>
-                              {new Date(
-                                lastHistory.startDateTime
-                              ).toLocaleDateString("fr-FR")}
-                            </span>
-                          )}
-                        {lastHistory.endDateTime && (
-                          <span>
-                            <span className="font-semibold">Sorti le </span>
-                            {new Date(
-                              lastHistory.endDateTime
-                            ).toLocaleDateString("fr-FR")}
-                          </span>
-                        )}
-                        {/*lastHistory.endDateTime &&
-                          new Date(
-                            lastHistory.startDateTime
-                          ).toLocaleDateString("fr-FR") ===
-                            new Date(
-                              lastHistory.endDateTime
-                            ).toLocaleDateString("fr-FR") && (
-                            <div>
+              return (
+                <div
+                  key={patient.id}
+                  className="mb-8 border border-gray-200 rounded-lg"
+                >
+                  <div className="flex items-center justify-between border-b border-gray-200 py-4 px-4 bg-gray-50 rounded-t-lg">
+                    <div className="flex flex-col md:flex-row md:items-center">
+                      <span className="font-semibold text-lg mr-2">
+                        {`Patient ${patient.nom} ${patient.prenom}/${patient.referenceID}`}
+                      </span>
+                      <span
+                        className={`${getStatusColorClass(
+                          patientStatus
+                        )} flex items-center`}
+                      >
+                        {getStatusIcon(patientStatus)}
+                        <strong className="ml-1"> {patientStatus}</strong>
+                      </span>
+                      {lastHistory && (
+                        <div className="mt-2 md:mt-0 md:ml-4">
+                          {lastHistory.startDateTime &&
+                            !lastHistory.endDateTime && (
                               <span>
-                                <span className="font-semibold"> à </span>
+                                <span className="font-semibold">Entré le </span>
                                 {new Date(
                                   lastHistory.startDateTime
-                                ).toLocaleTimeString("fr-FR")}
-                              </span>
-                              <span>
-                                <span className="font-semibold"> - </span>
-                                {new Date(
-                                  lastHistory.endDateTime
-                                ).toLocaleTimeString("fr-FR")}
-                              </span>
-                            </div>
-                          )*/}
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex items-center mt-2 md:mt-0">
-                    <button
-                      onClick={() => handleViewDossierShow(patient)}
-                      className="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 transition"
-                    >
-                      Voir le dossier
-                    </button>
-                    {patient.bedAssignmentHistories.length > 0 && (
-                      <button
-                        onClick={() => toggleAccordion(patient.id)}
-                        className="ml-4 focus:outline-none"
-                      >
-                        {expandedPatientId === patient.id ? (
-                          <FiChevronUp className="text-xl" />
-                        ) : (
-                          <FiChevronDown className="text-xl" />
-                        )}
-                      </button>
-                    )}
-                  </div>
-                </div>
-                {expandedPatientId === patient.id && (
-                  <div className="px-4 py-2 bg-white rounded-b-lg">
-                    {patient.bedAssignmentHistories.map((history, index) => (
-                      <div
-                        key={index}
-                        className="border-t border-gray-300 pt-4 mt-4 grid grid-cols-3 gap-4 items-center text-center"
-                      >
-                        <div className="flex flex-col items-center">
-                          <FaSignInAlt className="text-green-500 mb-2" />
-                          <span>
-                            <span className="font-semibold">Entrée :</span>{" "}
-                            {new Date(history.startDateTime).toLocaleString(
-                              "fr-FR"
-                            )}
-                          </span>
-                        </div>
-                        <div className="flex flex-col items-center">
-                          {history.endDateTime ? (
-                            <>
-                              <FaSignOutAlt className="text-red-500 mb-2" />
-                              <span>
-                                <span className="font-semibold">Sortie :</span>{" "}
-                                {new Date(history.endDateTime).toLocaleString(
-                                  "fr-FR"
+                                ).toLocaleDateString("fr-FR")}
+                                <br />
+                                <span className="font-semibold">Période </span>
+                                {Math.floor(
+                                  (new Date() -
+                                    new Date(lastHistory.startDateTime)) /
+                                    (1000 * 60 * 60 * 24)
+                                ) > 0 && (
+                                  <span>
+                                    {Math.floor(
+                                      (new Date() -
+                                        new Date(lastHistory.startDateTime)) /
+                                        (1000 * 60 * 60 * 24)
+                                    )}{" "}
+                                    {Math.floor(
+                                      (new Date() -
+                                        new Date(lastHistory.startDateTime)) /
+                                        (1000 * 60 * 60 * 24)
+                                    ) === 1
+                                      ? "jour"
+                                      : "jours"}
+                                    {", "}
+                                  </span>
+                                )}
+                                {Math.floor(
+                                  ((new Date() -
+                                    new Date(lastHistory.startDateTime)) %
+                                    (1000 * 60 * 60 * 24)) /
+                                    (1000 * 60 * 60)
+                                ) > 0 && (
+                                  <span>
+                                    {Math.floor(
+                                      ((new Date() -
+                                        new Date(lastHistory.startDateTime)) %
+                                        (1000 * 60 * 60 * 24)) /
+                                        (1000 * 60 * 60)
+                                    )}{" "}
+                                    {Math.floor(
+                                      ((new Date() -
+                                        new Date(lastHistory.startDateTime)) %
+                                        (1000 * 60 * 60 * 24)) /
+                                        (1000 * 60 * 60)
+                                    ) === 1
+                                      ? "heure"
+                                      : "heures"}
+                                    {", "}
+                                  </span>
+                                )}
+                                {Math.floor(
+                                  (((new Date() -
+                                    new Date(lastHistory.startDateTime)) %
+                                    (1000 * 60 * 60 * 24)) %
+                                    (1000 * 60 * 60)) /
+                                    (1000 * 60)
+                                ) > 0 && (
+                                  <span>
+                                    {Math.floor(
+                                      (((new Date() -
+                                        new Date(lastHistory.startDateTime)) %
+                                        (1000 * 60 * 60 * 24)) %
+                                        (1000 * 60 * 60)) /
+                                        (1000 * 60)
+                                    )}{" "}
+                                    {Math.floor(
+                                      (((new Date() -
+                                        new Date(lastHistory.startDateTime)) %
+                                        (1000 * 60 * 60 * 24)) %
+                                        (1000 * 60 * 60)) /
+                                        (1000 * 60)
+                                    ) === 1
+                                      ? "minute"
+                                      : "minutes"}
+                                    {", "}
+                                  </span>
+                                )}
+                                {Math.floor(
+                                  ((((new Date() -
+                                    new Date(lastHistory.startDateTime)) %
+                                    (1000 * 60 * 60 * 24)) %
+                                    (1000 * 60 * 60)) %
+                                    (1000 * 60)) /
+                                    1000
+                                ) > 0 && (
+                                  <span>
+                                    {Math.floor(
+                                      ((((new Date() -
+                                        new Date(lastHistory.startDateTime)) %
+                                        (1000 * 60 * 60 * 24)) %
+                                        (1000 * 60 * 60)) %
+                                        (1000 * 60)) /
+                                        1000
+                                    )}{" "}
+                                    {Math.floor(
+                                      ((((new Date() -
+                                        new Date(lastHistory.startDateTime)) %
+                                        (1000 * 60 * 60 * 24)) %
+                                        (1000 * 60 * 60)) %
+                                        (1000 * 60)) /
+                                        1000
+                                    ) === 1
+                                      ? "seconde"
+                                      : "secondes"}
+                                  </span>
                                 )}
                               </span>
-                            </>
-                          ) : (
-                            <>
-                              <FaTimesCircle className="text-gray-500 mb-2" />
-                              <span>
-                                <span className="font-semibold">
-                                  Encore hospitalisé
+                            )}
+
+                          {lastHistory.endDateTime && (
+                            <span>
+                              <span className="font-semibold">Sorti le </span>
+                              {new Date(
+                                lastHistory.endDateTime
+                              ).toLocaleDateString("fr-FR")}
+                              {lastHistory.startDateTime && (
+                                <span>
+                                  <br />
+                                  <span className="font-semibold">
+                                    Période{" "}
+                                  </span>
+                                  {Math.floor(
+                                    (new Date(lastHistory.endDateTime) -
+                                      new Date(lastHistory.startDateTime)) /
+                                      (1000 * 60 * 60 * 24)
+                                  ) > 0 && (
+                                    <span>
+                                      {Math.floor(
+                                        (new Date(lastHistory.endDateTime) -
+                                          new Date(lastHistory.startDateTime)) /
+                                          (1000 * 60 * 60 * 24)
+                                      )}{" "}
+                                      {Math.floor(
+                                        (new Date(lastHistory.endDateTime) -
+                                          new Date(lastHistory.startDateTime)) /
+                                          (1000 * 60 * 60 * 24)
+                                      ) === 1
+                                        ? "jour"
+                                        : "jours"}
+                                      {", "}
+                                    </span>
+                                  )}
+                                  {Math.floor(
+                                    ((new Date(lastHistory.endDateTime) -
+                                      new Date(lastHistory.startDateTime)) %
+                                      (1000 * 60 * 60 * 24)) /
+                                      (1000 * 60 * 60)
+                                  ) > 0 && (
+                                    <span>
+                                      {Math.floor(
+                                        ((new Date(lastHistory.endDateTime) -
+                                          new Date(lastHistory.startDateTime)) %
+                                          (1000 * 60 * 60 * 24)) /
+                                          (1000 * 60 * 60)
+                                      )}{" "}
+                                      {Math.floor(
+                                        ((new Date(lastHistory.endDateTime) -
+                                          new Date(lastHistory.startDateTime)) %
+                                          (1000 * 60 * 60 * 24)) /
+                                          (1000 * 60 * 60)
+                                      ) === 1
+                                        ? "heure"
+                                        : "heures"}
+                                      {", "}
+                                    </span>
+                                  )}
+                                  {Math.floor(
+                                    (((new Date(lastHistory.endDateTime) -
+                                      new Date(lastHistory.startDateTime)) %
+                                      (1000 * 60 * 60 * 24)) %
+                                      (1000 * 60 * 60)) /
+                                      (1000 * 60)
+                                  ) > 0 && (
+                                    <span>
+                                      {Math.floor(
+                                        (((new Date(lastHistory.endDateTime) -
+                                          new Date(lastHistory.startDateTime)) %
+                                          (1000 * 60 * 60 * 24)) %
+                                          (1000 * 60 * 60)) /
+                                          (1000 * 60)
+                                      )}{" "}
+                                      {Math.floor(
+                                        (((new Date(lastHistory.endDateTime) -
+                                          new Date(lastHistory.startDateTime)) %
+                                          (1000 * 60 * 60 * 24)) %
+                                          (1000 * 60 * 60)) /
+                                          (1000 * 60)
+                                      ) === 1
+                                        ? "minute"
+                                        : "minutes"}
+                                      {", "}
+                                    </span>
+                                  )}
+                                  {Math.floor(
+                                    ((((new Date(lastHistory.endDateTime) -
+                                      new Date(lastHistory.startDateTime)) %
+                                      (1000 * 60 * 60 * 24)) %
+                                      (1000 * 60 * 60)) %
+                                      (1000 * 60)) /
+                                      1000
+                                  ) > 0 && (
+                                    <span>
+                                      {Math.floor(
+                                        ((((new Date(lastHistory.endDateTime) -
+                                          new Date(lastHistory.startDateTime)) %
+                                          (1000 * 60 * 60 * 24)) %
+                                          (1000 * 60 * 60)) %
+                                          (1000 * 60)) /
+                                          1000
+                                      )}{" "}
+                                      {Math.floor(
+                                        ((((new Date(lastHistory.endDateTime) -
+                                          new Date(lastHistory.startDateTime)) %
+                                          (1000 * 60 * 60 * 24)) %
+                                          (1000 * 60 * 60)) %
+                                          (1000 * 60)) /
+                                          1000
+                                      ) === 1
+                                        ? "seconde"
+                                        : "secondes"}
+                                    </span>
+                                  )}
                                 </span>
-                              </span>
-                            </>
+                              )}
+                              {lastHistory.bed && (
+                                <span>, Lit {lastHistory.bed.id}</span>
+                              )}
+                            </span>
                           )}
                         </div>
-                        <div className="flex flex-col items-center">
-                          <FaBed className="text-blue-500 mb-2" />
-                          <span>
-                            <span className="font-semibold">Lit :</span>{" "}
-                            {history.bedAssignedId}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
+                      )}
+                    </div>
+                    <div className="flex items-center mt-2 md:mt-0">
+                      <button
+                        onClick={() => handleViewDossierShow(patient)}
+                        className="bg-[#8f8df2] text-white py-2 px-4 rounded hover:bg-[#7f7de2] transition"
+                      >
+                        Voir le dossier
+                      </button>
+                      {patient.bedAssignmentHistories.length > 0 && (
+                        <button
+                          onClick={() => toggleAccordion(patient.id)}
+                          className="ml-4 focus:outline-none"
+                        >
+                          {expandedPatientId === patient.id ? (
+                            <FiChevronUp className="text-xl" />
+                          ) : (
+                            <FiChevronDown className="text-xl" />
+                          )}
+                        </button>
+                      )}
+                    </div>
                   </div>
-                )}
-              </div>
-            );
-          })}
+                  {expandedPatientId === patient.id && (
+                    <div className="px-4 py-2 bg-white rounded-b-lg">
+                      {patient.bedAssignmentHistories.map((history, index) => (
+                        <div
+                          key={index}
+                          className="border-t border-gray-300 pt-4 mt-4 grid grid-cols-3 gap-4 items-center text-center"
+                        >
+                          <div className="flex flex-col items-center">
+                            <FaSignInAlt className="text-green-500 mb-2" />
+                            <span>
+                              <span className="font-semibold">Entrée :</span>{" "}
+                              {new Date(history.startDateTime).toLocaleString(
+                                "fr-FR"
+                              )}
+                            </span>
+                          </div>
+                          <div className="flex flex-col items-center">
+                            {history.endDateTime ? (
+                              <>
+                                <FaSignOutAlt className="text-red-500 mb-2" />
+                                <span>
+                                  <span className="font-semibold">
+                                    Sortie :
+                                  </span>{" "}
+                                  {new Date(history.endDateTime).toLocaleString(
+                                    "fr-FR"
+                                  )}
+                                </span>
+                              </>
+                            ) : (
+                              <>
+                                <FaTimesCircle className="text-gray-500 mb-2" />
+                                <span>
+                                  <span className="font-semibold">
+                                    Encore hospitalisé
+                                  </span>
+                                </span>
+                              </>
+                            )}
+                          </div>
+                          <div className="flex flex-col items-center">
+                            <FaBed className="text-blue-500 mb-2" />
+                            <span>
+                              <span className="font-semibold">Lit :</span>{" "}
+                              {history.bedAssignedId}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })
+        )}
       </div>
     </div>
   );

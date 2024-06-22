@@ -63,10 +63,10 @@ const ExpRTShow = () => {
           </div>
         </div>
         {loading ? (
-          <p>Chargement...</p>
+          <p className="p-6 justify-center">Chargement...</p>
         ) : error ? (
           <p>{error}</p>
-        ) : (
+        ) : explorations.length > 0 ? (
           <div className="p-6 m-4">
             {explorations.map((exploration, index) => (
               <div key={index} className="mb-4">
@@ -79,6 +79,10 @@ const ExpRTShow = () => {
               </div>
             ))}
           </div>
+        ) : (
+          <p className="mb-10 mt-10 text-gray-500 text-center">
+            Aucune radio du thorax disponible.
+          </p>
         )}
       </div>
     </div>

@@ -48,7 +48,7 @@ const DossierDetail = () => {
       setLoading(false);
     }
     if (location.state?.fromAddPatient) {
-      toast.success("Patient successfully added!");
+      toast.success("Patient ajouté avec succès !");
     }
   }, [id, patient, location.state]);
 
@@ -59,8 +59,11 @@ const DossierDetail = () => {
       setPatient(response.data);
       setLoading(false);
     } catch (err) {
-      console.error("Error fetching patient data:", err);
-      setError("Failed to fetch patient data.");
+      console.error(
+        "Erreur lors de la récupération des données du patient : ",
+        err
+      );
+      setError("Échec de la récupération des données du patient.");
       setLoading(false);
     }
   };
@@ -81,8 +84,12 @@ const DossierDetail = () => {
 
   return (
     <div className="p-4 flex">
-      <ToastContainer position="bottom-right" autoClose={5000} />
-
+      <ToastContainer
+        draggable
+        closeOnClick
+        position="bottom-right"
+        autoClose={5000}
+      />{" "}
       <div className="w-full p-6">
         <div className="flex items-center mb-4">
           <div className="flex items-center w-full">
@@ -113,14 +120,12 @@ const DossierDetail = () => {
           </button>
         </div>
         <h2 className={`text-xl font-bold py-2 text-${color}`}>
-          Mr Patient &nbsp;
+          Mr. Patient &nbsp;
           <span className="text-gray-500">
             {patient.prenom} {patient.nom}
           </span>
-          &nbsp;
-          <span className="text-sm text-gray-500">
-            Ref : {patient.referenceID}
-          </span>
+          &nbsp; <span className="text-sm">Ref</span>&nbsp;
+          <span className="text-sm text-gray-500">{patient.referenceID}</span>
           <a
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}

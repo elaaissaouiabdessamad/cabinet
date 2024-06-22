@@ -27,6 +27,22 @@ const deletePatient = (patientId) => {
   return axiosInstance.delete(API_URL + patientId);
 };
 
+const getAssignmentsByDateRange = (startDate, endDate) => {
+  return axiosInstance.get(`/room-assignments/by-date-range`, {
+    params: {
+      startDate,
+      endDate,
+    },
+  });
+};
+
+const addAssignment = (doctorId, patientId, assignmentData) => {
+  return axiosInstance.post(
+    `/room-assignments/doctor/${doctorId}/patient/${patientId}`,
+    assignmentData
+  );
+};
+
 const PatientService = {
   addPatient,
   getPatientById,
@@ -34,6 +50,8 @@ const PatientService = {
   getPatientWithoutBed,
   updatePatient,
   deletePatient,
+  getAssignmentsByDateRange,
+  addAssignment,
 };
 
 export default PatientService;

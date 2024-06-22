@@ -39,6 +39,7 @@ const ECVVShow = () => {
       state: { patient, color },
     });
   };
+
   return (
     <div className="flex flex-col items-center p-10">
       <HeaderDossierClinicalExamShow
@@ -60,10 +61,10 @@ const ECVVShow = () => {
           </div>
         </div>
         {loading ? (
-          <p>Loading...</p>
+          <p className="p-6 justify-center">Chargement...</p>
         ) : error ? (
           <p>{error}</p>
-        ) : (
+        ) : cardiovascularExamData.length > 0 ? (
           <div className="p-6">
             {cardiovascularExamData.map((exam, index) => (
               <div
@@ -85,6 +86,10 @@ const ECVVShow = () => {
               </div>
             ))}
           </div>
+        ) : (
+          <p className="mb-10 mt-10 text-gray-500 text-center">
+            Aucun examen clinique cardio vasculaire disponible.
+          </p>
         )}
       </div>
     </div>

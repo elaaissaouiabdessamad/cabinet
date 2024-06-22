@@ -4,8 +4,11 @@ import icon4 from "../../../assets/icon4.png";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import HistoryDiseaseDisplay from "../Forms/HistoryDiseaseDisplay";
 import HeaderDossierShow from "../../../components/HeaderDossierShow";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+
 const HistoryDisease = () => {
-  const [historyDiseaseUpdate, setHistoryDiseaseUpdate] = useState(""); // Lifted state
+  const [historyDiseaseUpdate, setHistoryDiseaseUpdate] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
   const patient = location.state?.patient;
@@ -40,7 +43,7 @@ const HistoryDisease = () => {
             Histoire de la maladie
           </div>
         </div>
-        <div className="pb-6 m-6">
+        <div className="pb-2 m-6">
           <HistoryDiseaseDisplay
             patientId={patient.id}
             historyDiseaseUpdate={historyDiseaseUpdate}
@@ -50,15 +53,15 @@ const HistoryDisease = () => {
       <div className="flex justify-between w-full max-w-md mt-6">
         <button
           onClick={handlePrevious}
-          className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-lg"
+          className="bg-white hover:bg-blue-200 border-white hover:border-blue-200 border text-blue-500 font-bold py-2 px-4 rounded-lg"
         >
-          Précédent
+          <FontAwesomeIcon icon={faArrowLeft} /> Précédent
         </button>
         <button
           onClick={handleNext}
           className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg"
         >
-          Suivant
+          Suivant <FontAwesomeIcon icon={faArrowRight} />
         </button>
       </div>
     </div>

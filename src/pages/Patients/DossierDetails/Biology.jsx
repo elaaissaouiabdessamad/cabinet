@@ -8,6 +8,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+
 const Biology = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -133,9 +135,9 @@ const Biology = () => {
       <div className="flex justify-between w-full max-w-md mt-6">
         <button
           onClick={handlePrevious}
-          className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-lg"
+          className="bg-white hover:bg-blue-200 border-white hover:border-blue-200 border text-blue-500 font-bold py-2 px-4 rounded-lg"
         >
-          Précédent
+          <FontAwesomeIcon icon={faArrowLeft} /> Précédent
         </button>
         <button
           onClick={handleDossierRead}

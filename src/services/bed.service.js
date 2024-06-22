@@ -18,9 +18,15 @@ const getBedByPatientId = (patientId) => {
   return axiosInstance.get(API_URL + "patient/" + patientId);
 };
 
-const assignPatientToBed = (bedId, patientId) => {
+const assignPatientToBed = (bedId, patientId, doctorId) => {
   return axiosInstance.post(
-    API_URL + "assign/bed/" + bedId + "/patient/" + patientId
+    API_URL +
+      "assign/bed/" +
+      bedId +
+      "/patient/" +
+      patientId +
+      "/doctor/" +
+      doctorId
   );
 };
 

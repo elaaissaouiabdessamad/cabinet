@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import BedService from "../../services/bed.service";
 import moment from "moment";
 import ModalDeleteBed from "../../components/ModalDelete";
-import ModalDeleteAssignment from "../../components/ModalDelete";
+import ModalDeleteAssignment from "../../components/ModalUnAffectation";
 
 const Patients = () => {
   const { sectorId } = useParams();
@@ -150,16 +150,32 @@ const Patients = () => {
                         }`
                       : "Occupé aujourd'hui"}
                   </p>
-                  <button
-                    onClick={() => {
-                      setDeleteAssignmentByBedId(bed.id);
-                      setIsDeleteModalAssignmentOpen(true);
-                    }}
-                    className="mt-2 p-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition duration-200"
-                  >
-                    <i className="fas fa-user-minus mr-1"></i> Retirer
-                    l’affectation
-                  </button>
+                  <div className="flex justify-between">
+                    <div>
+                      <button
+                        onClick={() => {
+                          setDeleteAssignmentByBedId(bed.id);
+                          setIsDeleteModalAssignmentOpen(true);
+                        }}
+                        className="mt-2 p-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition duration-200"
+                      >
+                        <i className="fas fa-user-minus mr-1"></i> Retirer
+                        l’affectation
+                      </button>
+                    </div>
+                    <div className="ml-4 text-right">
+                      <p className={`${getColorClass(bed).split(" ")[1]}`}>
+                        {bed.assignedDoctor
+                          ? "Dr. " + bed.assignedDoctor.nom
+                          : "Inconnu"}
+                      </p>
+                      <p className={`${getColorClass(bed).split(" ")[1]}`}>
+                        {bed.assignedDoctor
+                          ? bed.assignedDoctor.phoneNumber
+                          : "Inconnu"}
+                      </p>
+                    </div>
+                  </div>
                 </>
               ) : (
                 <p className="text-blue-500 mt-2 mb-6">LIBRE</p>

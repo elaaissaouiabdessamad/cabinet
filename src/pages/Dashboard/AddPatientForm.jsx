@@ -3,6 +3,7 @@ import PatientService from "../../services/patient.service";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ClipLoader } from "react-spinners"; // Import the spinner
 
 const AddPatientForm = () => {
   const navigate = useNavigate();
@@ -32,17 +33,21 @@ const AddPatientForm = () => {
         console.log(createdPatient);
         toast.success(response.data.message);
         if (createdPatient.medicalDossier && createdPatient.medicalDossier.id) {
-          navigate(`/dossier/${createdPatient.medicalDossier.id}`, {
-            state: { patient: createdPatient, fromAddPatient: true },
-          });
+          setTimeout(() => {
+            navigate(`/dossier/${createdPatient.medicalDossier.id}`, {
+              state: { patient: createdPatient, fromAddPatient: true },
+            });
+          }, 2000);
         } else {
           console.error(
             "Identifiant du dossier médical non trouvé dans la réponse."
           );
+          setIsLoading(false);
         }
       } else {
         console.error("Réponse inattendue:", response);
         toast.error("Une erreur inattendue s'est produite.");
+        setIsLoading(false);
       }
     } catch (error) {
       console.error("Erreur lors de l'ajout du patient:", error);
@@ -55,13 +60,12 @@ const AddPatientForm = () => {
       } else {
         toast.error("Une erreur s'est produite lors de l'ajout du patient.");
       }
-    } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen p-6">
+    <div className="flex justify-center items-center mt-4 p-6">
       <ToastContainer
         draggable
         closeOnClick
@@ -69,10 +73,10 @@ const AddPatientForm = () => {
         autoClose={5000}
       />
       <div className="bg-white p-8 rounded-lg shadow-lg border w-full max-w-lg">
-        <h2 className="text-2xl font-semibold text-center mb-6">
+        <h2 className="text-2xl font-semibold text-center mb-3">
           Formulaire d'ajout d'un nouveau patient
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-gray-700">Nom</label>
             <input
@@ -135,29 +139,20 @@ const AddPatientForm = () => {
               name="profession"
               value={formData.profession}
               onChange={handleChange}
-              className="w-full p-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-1 mb-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
-          {/*<div>
-            <label className="block text-gray-700">Reference ID</label>
-            <input
-              disabled
-              type="text"
-              name="referenceID"
-              value={formData.referenceID}
-              onChange={handleChange}
-              className="w-full p-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>*/}
           <button
             type="submit"
-            className="w-full py-3 bg-[#8f8df2] text-white rounded-lg hover:bg-[#7e8ce1] transition duration-200"
-            //className="w-full py-3 bg-[#7f9df0] text-white rounded-lg hover:bg-[#7e8ce1] transition duration-200"
+            className="w-full py-3 bg-[#8f8df2] text-white rounded-lg hover:bg-[#7e8ce1] transition duration-200 flex items-center justify-center"
             disabled={isLoading}
           >
-            {isLoading ? "Chargement..." : "Ajouter patient"}{" "}
+            {isLoading ? (
+              <ClipLoader size={24} color="#ffffff" />
+            ) : (
+              "Ajouter patient"
+            )}
           </button>
         </form>
       </div>

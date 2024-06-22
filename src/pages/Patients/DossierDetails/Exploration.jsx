@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { useLocation, useNavigate } from "react-router-dom";
 import icon10 from "../../../assets/icon10.png";
 import HeaderDossier from "../../../components/HeaderDossier";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 const Exploration = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -69,15 +70,15 @@ const Exploration = () => {
       <div className="flex justify-between w-full max-w-md mt-6">
         <button
           onClick={handlePrevious}
-          className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-lg"
+          className="bg-white hover:bg-blue-200 border-white hover:border-blue-200 border text-blue-500 font-bold py-2 px-4 rounded-lg"
         >
-          Précédent
+          <FontAwesomeIcon icon={faArrowLeft} /> Précédent
         </button>
         <button
           onClick={handleNext}
           className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg"
         >
-          Suivant
+          Suivant <FontAwesomeIcon icon={faArrowRight} />
         </button>
       </div>
     </div>

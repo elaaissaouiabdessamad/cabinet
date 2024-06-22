@@ -56,15 +56,15 @@ const ECA = () => {
         <div className="p-6 border-b border-black justify-center w-full">
           <div className="text-center text-xl font-bold flex items-center justify-center">
             <img src={icon6} alt="Identité" className="mr-2 align-center w-8" />
-            Exploration &nbsp;
+            Examen clinique &nbsp;
             <span className="text-sm"> / Abdominal</span>
           </div>
         </div>
         {loading ? (
-          <p>Chargement...</p>
+          <p className="p-6 justify-center">Chargement...</p>
         ) : error ? (
           <p>{error}</p>
-        ) : (
+        ) : abdominalExamData.length > 0 ? (
           <div className="p-6 m-4">
             {abdominalExamData.map((exam, index) => (
               <div key={index} className="mb-4">
@@ -78,6 +78,10 @@ const ECA = () => {
               </div>
             ))}
           </div>
+        ) : (
+          <p className="mb-10 mt-10 text-gray-500 text-center">
+            Aucun examen clinique abdominal disponible.
+          </p>
         )}
       </div>
     </div>
