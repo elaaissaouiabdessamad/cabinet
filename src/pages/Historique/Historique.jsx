@@ -13,7 +13,7 @@ import {
   FaSignInAlt,
   FaSignOutAlt,
   FaTimesCircle,
-} from "react-icons/fa"; // Importing icons
+} from "react-icons/fa";
 import PatientService from "../../services/patient.service";
 
 const Historique = () => {

@@ -11,6 +11,7 @@ const Profile = () => {
   const [newPassword, setNewPassword] = useState("");
   const [doctorInfo, setDoctorInfo] = useState(null);
   const [editMode, setEditMode] = useState(false);
+
   const [editDoctorInfo, setEditDoctorInfo] = useState({
     nom: "",
     prenom: "",
@@ -38,6 +39,12 @@ const Profile = () => {
     }
   };
 
+  const logout = () => {
+    localStorage.removeItem("activeLink");
+    localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("userData");
+  };
+
   const handleResetPassword = async (e) => {
     e.preventDefault();
     try {
@@ -50,6 +57,7 @@ const Profile = () => {
       );
       toast.success(response.data.message);
       setTimeout(() => {
+        logout();
         navigate("/login");
       }, 3000);
     } catch (error) {

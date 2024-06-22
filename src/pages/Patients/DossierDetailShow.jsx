@@ -51,8 +51,11 @@ const DossierDetailShow = () => {
       setLoading(false);
       console.log(response.data);
     } catch (err) {
-      console.error("Error fetching patient data:", err);
-      setError("Failed to fetch patient data.");
+      console.error(
+        "Erreur lors de la récupération des données du patient:",
+        err
+      );
+      setError("Échec de la récupération des données du patient.");
       setLoading(false);
     }
   };
@@ -77,7 +80,7 @@ const DossierDetailShow = () => {
           <div className="flex items-center w-full">
             <input
               type="text"
-              placeholder="Search..."
+              placeholder="Rechercher..."
               className="flex-grow p-2 border rounded-lg"
             />
             <button className="ml-2 p-2 bg-white border rounded-lg">

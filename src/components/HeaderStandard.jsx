@@ -4,7 +4,7 @@ const HeaderStandard = () => {
     <div className="flex items-center mb-6 w-full">
       <input
         type="text"
-        placeholder="Search..."
+        placeholder="Rechercher..."
         className="flex-grow p-2 border border-gray-400 rounded-lg"
       />
       <button className="absolute right-0 top-0 p-2 rounded-lg">

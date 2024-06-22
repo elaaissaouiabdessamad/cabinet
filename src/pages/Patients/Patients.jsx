@@ -20,7 +20,7 @@ const Patients = () => {
         const response = await BedService.getBedsBySectorId(sectorId);
         setBeds(response.data);
       } catch (error) {
-        console.error("Error fetching beds:", error);
+        console.error("Erreur lors de la récupération des lits:", error);
       }
     };
 
@@ -35,7 +35,7 @@ const Patients = () => {
       const response = await BedService.getBedsBySectorId(sectorId);
       setBeds(response.data);
     } catch (error) {
-      console.error("Error adding bed:", error);
+      console.error("Erreur lors de l'ajout du lit:", error);
     }
   };
 
@@ -45,7 +45,7 @@ const Patients = () => {
       const response = await BedService.getBedsBySectorId(sectorId);
       setBeds(response.data);
     } catch (error) {
-      console.error("Error removing patient from bed:", error);
+      console.error("Erreur lors du retrait du patient du lit:", error);
     }
     setIsDeleteModalAssignmentOpen(false);
   };
@@ -55,7 +55,7 @@ const Patients = () => {
       await BedService.deleteBedById(deleteBedId);
       setBeds(beds.filter((bed) => bed.id !== deleteBedId));
     } catch (error) {
-      console.error("Error deleting bed:", error);
+      console.error("Erreur lors de la suppression du lit:", error);
     }
     setIsDeleteModalBedOpen(false);
   };
@@ -82,7 +82,7 @@ const Patients = () => {
         <div className="flex items-center w-full">
           <input
             type="text"
-            placeholder="Search..."
+            placeholder="Rechercher..."
             className="flex-grow p-2 border rounded-lg"
           />
           <button className="ml-2 p-2 bg-white border rounded-lg">

@@ -10,7 +10,7 @@ import {
   FaUserAlt,
 } from "react-icons/fa";
 import axios from "axios";
-import Logo from "../logo.png"; // Adjust the path as needed
+import Logo from "../logo.png";
 
 function Signup() {
   const [formData, setFormData] = useState({
@@ -34,10 +34,10 @@ function Signup() {
     e.preventDefault();
     try {
       await axios.post("http://localhost:3000/api/auth/signup", formData);
-      navigate("/login"); // Navigate to login after successful signup
+      navigate("/login");
     } catch (error) {
       setErrorMessage(
-        error.response?.data?.message || "Error creating account"
+        error.response?.data?.message || "Erreur lors de la création du compte."
       );
     }
   };

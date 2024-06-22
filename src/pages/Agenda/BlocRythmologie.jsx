@@ -96,14 +96,14 @@ const BlocRythmologie = () => {
       </div>
 
       {isFormVisible && (
-        <div className="flex flex-col space-y-4 mt-4 w-full max-w-xl">
+        <div className="bg-white shadow-md rounded-lg p-6 max-w-5xl mt-4 flex flex-col space-y-4">
           <select
             value={doctorId}
             onChange={(e) => setDoctorId(e.target.value)}
             className="border border-gray-300 p-2 rounded-md"
           >
             <option value="" disabled>
-              Select Doctor
+              Choisir un Médecin
             </option>
             {doctors.map((doctor) => (
               <option key={doctor.id} value={doctor.id}>
@@ -117,7 +117,7 @@ const BlocRythmologie = () => {
             className="border border-gray-300 p-2 rounded-md"
           >
             <option value="" disabled>
-              Select Patient
+              Choisir un Patient{" "}
             </option>
             {patients.map((patient) => (
               <option key={patient.id} value={patient.id}>
@@ -136,12 +136,12 @@ const BlocRythmologie = () => {
             onClick={addAssignment}
             className="bg-green-500 text-white py-2 px-4 rounded-md"
           >
-            Add Assignment
+            Ajouter une Affectation{" "}
           </button>
         </div>
       )}
-      <div className="flex flex-col space-y-4 mt-8 w-full max-w-4xl border border-gray-300 shadow-md rounded-md p-4">
-        <div className="flex space-x-4">
+      <div className="bg-white shadow-md rounded-lg  p-6 w-full max-w-5xl mt-4 flex flex-col space-y-4">
+        <div className="flex space-x-4 justify-around">
           <input
             type="datetime-local"
             value={startDate}
@@ -155,14 +155,15 @@ const BlocRythmologie = () => {
             className="border border-gray-300 p-2 rounded-md"
           />
         </div>
+
         {assignments.length > 0 && (
           <div className="mt-4 w-full">
             <table className="min-w-full bg-white">
               <thead>
                 <tr>
                   <th className="py-2 px-4 bg-gray-200">Date</th>
-                  <th className="py-2 px-4 bg-gray-200">Type</th>
-                  <th className="py-2 px-4 bg-gray-200">Doctor</th>
+                  {/*<th className="py-2 px-4 bg-gray-200">Type</th>*/}
+                  <th className="py-2 px-4 bg-gray-200">Médecin</th>
                   <th className="py-2 px-4 bg-gray-200">Patient</th>
                 </tr>
               </thead>
@@ -174,17 +175,17 @@ const BlocRythmologie = () => {
                         .format("dddd DD MMMM YYYY HH:mm")
                         .replace(/^\w/, (c) => c.toUpperCase()) + "H"}
                     </td>
-                    <td className="py-2 px-4">{assignment.roomType}</td>
+                    {/*<td className="py-2 px-4">{assignment.roomType}</td>*/}
                     <td className="py-2 px-4">
                       {assignment.doctor.nom} {assignment.doctor.prenom} <br />
-                      Specialty: {assignment.doctor.specialty} <br />
-                      Phone: {assignment.doctor.phoneNumber}
+                      Spécialité: {assignment.doctor.specialty} <br />
+                      Téléphone: {assignment.doctor.phoneNumber}
                     </td>
                     <td className="py-2 px-4">
                       {assignment.patient.nom} {assignment.patient.prenom}{" "}
                       <br />
-                      Age: {assignment.patient.age} <br />
-                      City: {assignment.patient.ville} <br />
+                      Âge: {assignment.patient.age} <br />
+                      Ville: {assignment.patient.ville} <br />
                       Profession: {assignment.patient.profession}
                     </td>
                   </tr>

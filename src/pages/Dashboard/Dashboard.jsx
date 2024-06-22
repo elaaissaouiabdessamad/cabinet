@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom"; // Import Link for navigation
+import { Link } from "react-router-dom";
 import iconStats from "../../assets/iconStats.png";
 
 const Dashboard = () => {

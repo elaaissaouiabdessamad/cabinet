@@ -99,6 +99,7 @@ function App() {
 
   const logout = () => {
     setIsAuthenticated(false);
+    localStorage.removeItem("activeLink");
     localStorage.removeItem("isAuthenticated");
     localStorage.removeItem("userData");
   };

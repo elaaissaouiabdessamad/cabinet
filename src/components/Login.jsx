@@ -4,7 +4,7 @@ import { FaUser, FaLock } from "react-icons/fa";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Logo from "../logo.png"; // Adjust the path as needed
+import Logo from "../logo.png";
 
 function Login({ login }) {
   const [username, setUsername] = useState("");
@@ -35,14 +35,25 @@ function Login({ login }) {
       login();
       navigate("/dashboard");
     } catch (error) {
-      setErrorMessage(error.response?.data?.message || "Invalid credentials");
-      toast.error(error.response?.data?.message || "Invalid credentials");
+      setErrorMessage(
+        error.response?.data?.message ||
+          "Informations d'identification invalides"
+      );
+      toast.error(
+        error.response?.data?.message ||
+          "Informations d'identification invalides"
+      );
     }
   };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
-      <ToastContainer position="top-right" autoClose={5000} hideProgressBar />
+      <ToastContainer
+        position="top-right"
+        draggable
+        closeOnClick
+        autoClose={5000}
+      />
       <img src={Logo} alt="Logo" className="mr-64 w-64 mb-6" />
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <form className="space-y-6" onSubmit={handleLogin}>
@@ -70,9 +81,6 @@ function Login({ login }) {
               className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
             />
           </div>
-          {errorMessage && (
-            <div className="text-center text-red-500">{errorMessage}</div>
-          )}
           <button
             type="submit"
             className="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300"
@@ -83,7 +91,7 @@ function Login({ login }) {
             to="/password-reset"
             className="w-full py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400 transition duration-300 text-center block mt-2"
           >
-            Mot de passe oublié
+            Mot de passe oublié ?
           </Link>
         </form>
         <div className="mt-4 text-center">

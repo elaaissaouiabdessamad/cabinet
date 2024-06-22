@@ -3,6 +3,13 @@ import NurseService from "../../services/nurse.service";
 import HeaderAgenda from "../../components/HeaderAgenda";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPlus,
+  faMinus,
+  faEdit,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 
 const NurseShifts = () => {
   const [shifts, setShifts] = useState([]);
@@ -176,8 +183,16 @@ const NurseShifts = () => {
         position="bottom-right"
         autoClose={5000}
       />{" "}
-      <div className="flex flex-col space-y-4 mt-8 w-full max-w-5xl">
-        <form onSubmit={handleSubmit} className="flex space-x-4 mb-4">
+      <div className="flex items-center justify-between">
+        <span className="text-2xl font-bold mt-4">
+          Infirmières responsables
+        </span>
+      </div>
+      <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-5xl mt-4 flex flex-col space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          className="flex justify-between space-x-4"
+        >
           <input
             type="date"
             value={startDate}
@@ -214,154 +229,198 @@ const NurseShifts = () => {
             {loading ? "Génération des horaires..." : "Générer les horaires"}
           </button>
         </form>
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white">
-            <thead>
-              <tr>
-                <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  Date
-                </th>
-                <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  Jour
-                </th>
-                <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  Nuit
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {dateRange.map((date) => (
-                <tr key={date}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {date}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
-                    {getNurseShift(date, "jour").length > 0
-                      ? getNurseShift(date, "jour").map((shift) => (
-                          <div
-                            key={shift.nurse.id}
-                            className="flex items-center justify-center"
-                          >
-                            {shift.nurse.prenom + " " + shift.nurse.nom}
-                            <button
-                              onClick={() => handleUpdateShift(shift)}
-                              className="ml-2 text-blue-500 hover:text-blue-700"
-                            >
-                              Modifier infirmière
-                            </button>
-                            <button
-                              onClick={() => handleDeleteShift(shift)}
-                              className="ml-2 text-red-500 hover:text-red-700"
-                            >
-                              Retirer
-                            </button>
-                          </div>
-                        ))
-                      : ""}
-                    <div className="flex items-center justify-center">
-                      <button
-                        onClick={() => handleAddShift(date, "jour")}
-                        className="text-green-500 hover:text-green-700"
-                      >
-                        Ajouter
-                      </button>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
-                    {getNurseShift(date, "nuit").length > 0
-                      ? getNurseShift(date, "nuit").map((shift) => (
-                          <div
-                            key={shift.nurse.id}
-                            className="flex items-center justify-center"
-                          >
-                            {shift.nurse.prenom + " " + shift.nurse.nom}
-                            <button
-                              onClick={() => handleUpdateShift(shift)}
-                              className="ml-2 text-blue-500 hover:text-blue-700"
-                            >
-                              Modifier infirmière
-                            </button>
-                            <button
-                              onClick={() => handleDeleteShift(shift)}
-                              className="ml-2 text-red-500 hover:text-red-700"
-                            >
-                              Retirer
-                            </button>
-                          </div>
-                        ))
-                      : ""}
-                    <div className="flex items-center justify-center">
-                      <button
-                        onClick={() => handleAddShift(date, "nuit")}
-                        className="text-green-500 hover:text-green-700"
-                      >
-                        Ajouter
-                      </button>
-                    </div>
-                  </td>
+        {dateRange.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white">
+              <thead>
+                <tr>
+                  <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    Date
+                  </th>
+                  {shiftType === "jour" || shiftType === "" ? (
+                    <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Jour
+                    </th>
+                  ) : (
+                    ""
+                  )}
+                  {shiftType === "nuit" || shiftType === "" ? (
+                    <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Nuit
+                    </th>
+                  ) : (
+                    ""
+                  )}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="space-y-2 mt-4">
-          <span className="text-lg font-bold">Infirmières</span>
-          <button
-            type="button"
-            onClick={() => setIsNurseFormVisible(!isNurseFormVisible)}
-            className="bg-blue-500 ml-8 text-white py-2 px-4 rounded-md"
+              </thead>
+              <tbody>
+                {dateRange.map((date, index) => (
+                  <tr
+                    key={date}
+                    className={index % 2 === 0 ? "bg-white" : "bg-gray-100"}
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      {date}
+                    </td>
+                    {shiftType === "jour" || shiftType === "" ? (
+                      <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+                        {getNurseShift(date, "jour").length > 0
+                          ? getNurseShift(date, "jour").map((shift) => (
+                              <div
+                                key={shift.nurse.id}
+                                className="flex items-center justify-center"
+                              >
+                                {shift.nurse.prenom + " " + shift.nurse.nom}
+                                <button
+                                  onClick={() => handleUpdateShift(shift)}
+                                  className="ml-2 text-blue-500 hover:text-blue-700"
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faEdit}
+                                    className="mr-1"
+                                  />
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteShift(shift)}
+                                  className="ml-2 text-red-500 hover:text-red-700"
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faTrash}
+                                    className="mr-1"
+                                  />
+                                </button>
+                              </div>
+                            ))
+                          : ""}
+                        <div className="flex items-center justify-center">
+                          <button
+                            onClick={() => handleAddShift(date, "jour")}
+                            className="text-green-500 hover:text-green-700"
+                          >
+                            <FontAwesomeIcon icon={faPlus} className="mr-1" />
+                          </button>
+                        </div>
+                      </td>
+                    ) : (
+                      ""
+                    )}
+                    {shiftType === "nuit" || shiftType === "" ? (
+                      <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+                        {getNurseShift(date, "nuit").length > 0
+                          ? getNurseShift(date, "nuit").map((shift) => (
+                              <div
+                                key={shift.nurse.id}
+                                className="flex items-center justify-center"
+                              >
+                                {shift.nurse.prenom + " " + shift.nurse.nom}
+                                <button
+                                  onClick={() => handleUpdateShift(shift)}
+                                  className="ml-2 text-blue-500 hover:text-blue-700"
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faEdit}
+                                    className="mr-1"
+                                  />{" "}
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteShift(shift)}
+                                  className="ml-2 text-red-500 hover:text-red-700"
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faTrash}
+                                    className="mr-1"
+                                  />{" "}
+                                </button>
+                              </div>
+                            ))
+                          : ""}
+                        <div className="flex items-center justify-center">
+                          <button
+                            onClick={() => handleAddShift(date, "nuit")}
+                            className="text-green-500 hover:text-green-700"
+                          >
+                            <FontAwesomeIcon icon={faPlus} className="mr-1" />
+                          </button>
+                        </div>
+                      </td>
+                    ) : (
+                      ""
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          ""
+        )}
+      </div>
+      <div className="bg-white shadow-md rounded-lg w-1/2 p-6 max-w-5xl mt-8">
+        <span className="text-lg font-bold">Infirmières</span>
+        <button
+          type="button"
+          onClick={() => setIsNurseFormVisible(!isNurseFormVisible)}
+          className="bg-blue-500 ml-8 text-white py-2 px-4 rounded-md"
+        >
+          <FontAwesomeIcon
+            icon={isNurseFormVisible ? faMinus : faPlus}
+            className="mr-2"
+          />
+          {isNurseFormVisible
+            ? "Masquer le formulaire"
+            : "Ajouter une infirmière"}
+        </button>
+        {isNurseFormVisible && (
+          <form
+            onSubmit={handleNurseSubmit}
+            className="flex flex-col space-y-4 mt-4"
           >
-            {isNurseFormVisible ? "Annuler" : "Ajouter une infirmière"}
-          </button>
-          {isNurseFormVisible && (
-            <form
-              onSubmit={handleNurseSubmit}
-              className="flex flex-col space-y-4"
+            <input
+              required
+              type="text"
+              name="nom"
+              value={nurse.nom}
+              onChange={handleNurseChange}
+              placeholder="Prénom"
+              className="border p-2 rounded-md"
+            />
+            <input
+              required
+              type="text"
+              name="prenom"
+              value={nurse.prenom}
+              onChange={handleNurseChange}
+              placeholder="Nom"
+              className="border p-2 rounded-md"
+            />
+            <input
+              required
+              type="text"
+              name="specialty"
+              value={nurse.specialty}
+              onChange={handleNurseChange}
+              placeholder="Spécialité"
+              className="border p-2 rounded-md"
+            />
+            <input
+              required
+              type="text"
+              name="phoneNumber"
+              value={nurse.phoneNumber}
+              onChange={handleNurseChange}
+              placeholder="Numéro de téléphone"
+              className="border p-2 rounded-md"
+            />
+            <button
+              type="submit"
+              className="bg-blue-500 text-white py-2 px-4 rounded-md"
             >
-              <input
-                required
-                type="text"
-                name="nom"
-                value={nurse.nom}
-                onChange={handleNurseChange}
-                placeholder="Prénom"
-                className="border p-2 rounded-md"
-              />
-              <input
-                required
-                type="text"
-                name="prenom"
-                value={nurse.prenom}
-                onChange={handleNurseChange}
-                placeholder="Nom"
-                className="border p-2 rounded-md"
-              />
-              <input
-                required
-                type="text"
-                name="specialty"
-                value={nurse.specialty}
-                onChange={handleNurseChange}
-                placeholder="Spécialité"
-                className="border p-2 rounded-md"
-              />
-              <input
-                required
-                type="text"
-                name="phoneNumber"
-                value={nurse.phoneNumber}
-                onChange={handleNurseChange}
-                placeholder="Numéro de téléphone"
-                className="border p-2 rounded-md"
-              />
-              <button
-                type="submit"
-                className="bg-blue-500 text-white py-2 px-4 rounded-md"
-              >
-                Ajouter une infirmière
-              </button>
-            </form>
-          )}
+              Ajouter une infirmière
+            </button>
+            <hr />
+          </form>
+        )}
+        <div className="space-y-2 mt-4">
           {nurses.map((nurse) => (
             <div
               key={nurse.id}
@@ -379,188 +438,185 @@ const NurseShifts = () => {
             </div>
           ))}
         </div>
-
-        {showAddModal && (
-          <div className="fixed z-10 inset-0 overflow-y-auto">
-            <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-              <div className="fixed inset-0 transition-opacity">
-                <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-              </div>
-              <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
-              <div
-                className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="modal-headline"
-              >
-                <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                  <div className="sm:flex sm:items-start">
-                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                      <h3
-                        className="text-lg leading-6 font-medium text-gray-900"
-                        id="modal-headline"
-                      >
-                        Ajouter horaire
-                      </h3>
-                      <div className="mt-2">
-                        <select
-                          value={selectedShiftNotAdded.nurseId}
-                          onChange={(e) =>
-                            setSelectedShiftNotAdded({
-                              ...selectedShiftNotAdded,
-                              nurseId: e.target.value,
-                            })
-                          }
-                          className="border p-2 rounded-md w-full"
-                        >
-                          <option value="">Sélectionner une infirmière</option>
-                          {nurses.map((nurse) => (
-                            <option key={nurse.id} value={nurse.id}>
-                              {nurse.prenom} {nurse.nom}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                  <button
-                    onClick={addShift}
-                    type="button"
-                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
-                  >
-                    Ajouter
-                  </button>
-                  <button
-                    onClick={() => setShowAddModal(false)}
-                    type="button"
-                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
-                  >
-                    Annuler
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {showUpdateModal && (
-          <div className="fixed z-10 inset-0 overflow-y-auto">
-            <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-              <div className="fixed inset-0 transition-opacity">
-                <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-              </div>
-              <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
-              <div
-                className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="modal-headline"
-              >
-                <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                  <div className="sm:flex sm:items-start">
-                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                      <h3
-                        className="text-lg leading-6 font-medium text-gray-900"
-                        id="modal-headline"
-                      >
-                        Mettre à jour l'horaire
-                      </h3>
-                      <div className="mt-2">
-                        <select
-                          value={selectedShift.nurseId}
-                          onChange={(e) =>
-                            setSelectedShift({
-                              ...selectedShift,
-                              nurseId: e.target.value,
-                            })
-                          }
-                          className="border p-2 rounded-md w-full"
-                        >
-                          <option value="">Sélectionner une infirmière</option>
-                          {nurses.map((nurse) => (
-                            <option key={nurse.id} value={nurse.id}>
-                              {nurse.prenom} {nurse.nom}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                  <button
-                    onClick={updateShift}
-                    type="button"
-                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
-                  >
-                    Mettre à jour
-                  </button>
-                  <button
-                    onClick={() => setShowUpdateModal(false)}
-                    type="button"
-                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
-                  >
-                    Annuler
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {showDeleteModal && (
-          <div className="fixed z-10 inset-0 overflow-y-auto">
-            <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-              <div className="fixed inset-0 transition-opacity">
-                <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-              </div>
-              <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
-              <div
-                className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="modal-headline"
-              >
-                <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                  <div className="sm:flex sm:items-start">
-                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                      <h3
-                        className="text-lg leading-6 font-medium text-gray-900"
-                        id="modal-headline"
-                      >
-                        Supprimer l'horaire
-                      </h3>
-                      <div className="mt-2">
-                        <p className="text-sm text-gray-500">
-                          Êtes-vous sûr de vouloir supprimer cette horaire ?
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                  <button
-                    onClick={() => deleteShift(selectedShift)}
-                    type="button"
-                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
-                  >
-                    Supprimer
-                  </button>
-                  <button
-                    onClick={() => setShowDeleteModal(false)}
-                    type="button"
-                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
-                  >
-                    Annuler
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
+      {showAddModal && (
+        <div className="fixed z-10 inset-0 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 transition-opacity">
+              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
+            <div
+              className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="modal-headline"
+            >
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="sm:flex sm:items-start">
+                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <h3
+                      className="text-lg leading-6 font-medium text-gray-900"
+                      id="modal-headline"
+                    >
+                      Ajouter horaire
+                    </h3>
+                    <div className="mt-2">
+                      <select
+                        value={selectedShiftNotAdded.nurseId}
+                        onChange={(e) =>
+                          setSelectedShiftNotAdded({
+                            ...selectedShiftNotAdded,
+                            nurseId: e.target.value,
+                          })
+                        }
+                        className="border p-2 rounded-md w-full"
+                      >
+                        <option value="">Sélectionner une infirmière</option>
+                        {nurses.map((nurse) => (
+                          <option key={nurse.id} value={nurse.id}>
+                            {nurse.prenom} {nurse.nom}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button
+                  onClick={addShift}
+                  type="button"
+                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
+                >
+                  Ajouter
+                </button>
+                <button
+                  onClick={() => setShowAddModal(false)}
+                  type="button"
+                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+                >
+                  Annuler
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {showUpdateModal && (
+        <div className="fixed z-10 inset-0 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 transition-opacity">
+              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
+            <div
+              className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="modal-headline"
+            >
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="sm:flex sm:items-start">
+                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <h3
+                      className="text-lg leading-6 font-medium text-gray-900"
+                      id="modal-headline"
+                    >
+                      Mettre à jour l'horaire
+                    </h3>
+                    <div className="mt-2">
+                      <select
+                        value={selectedShift.nurseId}
+                        onChange={(e) =>
+                          setSelectedShift({
+                            ...selectedShift,
+                            nurseId: e.target.value,
+                          })
+                        }
+                        className="border p-2 rounded-md w-full"
+                      >
+                        <option value="">Sélectionner une infirmière</option>
+                        {nurses.map((nurse) => (
+                          <option key={nurse.id} value={nurse.id}>
+                            {nurse.prenom} {nurse.nom}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button
+                  onClick={updateShift}
+                  type="button"
+                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                >
+                  Mettre à jour
+                </button>
+                <button
+                  onClick={() => setShowUpdateModal(false)}
+                  type="button"
+                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+                >
+                  Annuler
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {showDeleteModal && (
+        <div className="fixed z-10 inset-0 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 transition-opacity">
+              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
+            <div
+              className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="modal-headline"
+            >
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="sm:flex sm:items-start">
+                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <h3
+                      className="text-lg leading-6 font-medium text-gray-900"
+                      id="modal-headline"
+                    >
+                      Supprimer l'horaire
+                    </h3>
+                    <div className="mt-2">
+                      <p className="text-sm text-gray-500">
+                        Êtes-vous sûr de vouloir supprimer cette horaire ?
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button
+                  onClick={() => deleteShift(selectedShift)}
+                  type="button"
+                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                >
+                  Supprimer
+                </button>
+                <button
+                  onClick={() => setShowDeleteModal(false)}
+                  type="button"
+                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+                >
+                  Annuler
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

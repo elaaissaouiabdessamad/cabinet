@@ -15,7 +15,7 @@ const UpdatePatientForm = ({
     profession: "",
     referenceID: "",
   });
-  const [message, setMessage] = useState(""); // State to store the message from the backend
+  const [message, setMessage] = useState("");
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ const UpdatePatientForm = ({
         const response = await PatientService.getPatientById(patientId);
         setFormData(response.data);
       } catch (error) {
-        console.error("Error fetching patient:", error);
+        console.error("Erreur lors de la récupération du patient:", error);
       }
     };
 
@@ -42,10 +42,10 @@ const UpdatePatientForm = ({
       const response = await PatientService.updatePatient(patientId, formData);
       const message = response.data.message;
       setMessage(message);
-      onMessageUpdate(message); // Call the function to update the message in the parent
+      onMessageUpdate(message);
       onPatientUpdated(formData);
     } catch (error) {
-      console.error("Error updating patient:", error);
+      console.error("Erreur lors de la mise à jour du patient:", error);
     }
   };
 

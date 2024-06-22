@@ -15,7 +15,7 @@ const Header = ({ currentTime, formatTime, username, logout }) => {
       logout();
       navigate("/login");
     } catch (error) {
-      console.error("Error during logout:", error);
+      console.error("Erreur lors de la déconnexion:", error);
     }
   };
 

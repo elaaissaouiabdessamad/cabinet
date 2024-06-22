@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import BedService from "../../services/bed.service"; // Ensure the path is correct
+import BedService from "../../services/bed.service";
 
 const Sectors = () => {
   const [sectors, setSectors] = useState([
@@ -38,12 +38,15 @@ const Sectors = () => {
         );
         setSectors(updatedSectors);
       } catch (error) {
-        console.error("Error fetching sector data:", error);
+        console.error(
+          "Erreur lors de la récupération des données du secteur:",
+          error
+        );
       }
     };
 
     fetchSectorData();
-  }, []); // Add 'sectors' to the dependency array
+  }, []);
 
   return (
     <div className="p-10">
@@ -51,7 +54,7 @@ const Sectors = () => {
         <div className="flex items-center w-full">
           <input
             type="text"
-            placeholder="Search..."
+            placeholder="Rechercher..."
             className="flex-grow p-2 border rounded-lg"
           />
           <button className="ml-2 p-2 bg-white border rounded-lg">
@@ -87,10 +90,10 @@ const Sectors = () => {
               style={{
                 backgroundImage: `linear-gradient(to bottom, ${sector.bgFrom}, ${sector.bgTo})`,
                 color: "white",
-                padding: "80px 40px", // Adjust padding as needed
+                padding: "80px 40px",
                 boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
                 cursor: "pointer",
-                transition: "box-shadow 0.5s", // Add box-shadow transition
+                transition: "box-shadow 0.5s",
               }}
             >
               <div className="mb-20 text-center text-2xl pr-8 pl-8">

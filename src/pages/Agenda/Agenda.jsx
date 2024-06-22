@@ -31,7 +31,7 @@ const Agenda = () => {
           onClick={() => navigate("/garde-des-infirmieres")}
           className="bg-green-300 text-center py-8 px-48 rounded-md border border-gray-300 w-full text-xl"
         >
-          Infirmiers responsables
+          Infirmières responsables
         </button>
       </div>
     </div>
