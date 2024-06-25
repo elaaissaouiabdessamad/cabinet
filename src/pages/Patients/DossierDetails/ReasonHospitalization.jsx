@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import icon2 from "../../../assets/icon2.png";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import AddReasonHospitalizationForm from "../Forms/AddReasonHospitalizationForm";
-import ReasonHospitalizationDisplay from "../Forms/ReasonHospitalizationDisplay";
 import HeaderDossier from "../../../components/HeaderDossier";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faArrowLeft } from "@fortawesome/free-solid-svg-icons";

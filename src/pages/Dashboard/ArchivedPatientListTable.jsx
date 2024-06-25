@@ -7,13 +7,7 @@ import MedicalService from "../../services/medical.service";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ModalDelete from "../../components/ModalDelete";
-import {
-  FaTrashAlt,
-  FaEye,
-  FaEdit,
-  FaArchive,
-  FaFolderOpen,
-} from "react-icons/fa";
+import { FaTrashAlt, FaEye, FaEdit, FaFolderOpen } from "react-icons/fa";
 
 const ArchivedPatientListTable = () => {
   const [patients, setPatients] = useState([]);

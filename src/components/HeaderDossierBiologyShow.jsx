@@ -1,23 +1,13 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
-
-const HeaderAgenda = () => {
-  const navigate = useNavigate();
-  const handleAgenda = () => {
-    navigate(`/agenda`);
-  };
-
+const HeaderDossierBiologyShow = ({ handleDossierBiologyShow }) => {
   return (
     <div className="flex items-center mb-6 w-full">
       <div className="flex items-center w-full relative">
         <button
-          onClick={handleAgenda}
+          onClick={handleDossierBiologyShow}
           className="mr-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg flex items-center"
         >
-          <i class="fa fa-angle-double-left"></i>&nbsp; Au agenda &nbsp;
-          <FontAwesomeIcon icon={faCalendarAlt} className="ml-1" />
+          <i class="fa fa-angle-double-left"></i>&nbsp; Au biologie
         </button>
         <input
           type="text"
@@ -48,4 +38,4 @@ const HeaderAgenda = () => {
   );
 };
 
-export default HeaderAgenda;
+export default HeaderDossierBiologyShow;

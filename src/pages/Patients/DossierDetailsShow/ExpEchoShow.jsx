@@ -4,6 +4,7 @@ import MedicalService from "../../../services/medical.service";
 import icon10 from "../../../assets/icon10.png";
 import HeaderDossierExplorationShow from "../../../components/HeaderDossierExplorationShow";
 import AuthorizedImage from "../../../services/authorizedImage";
+import ImageModal from "../../../components/ImageModal";
 
 const ExpEchoShow = () => {
   const location = useLocation();
@@ -11,6 +12,7 @@ const ExpEchoShow = () => {
   const patient = location.state?.patient;
   const color = location.state?.color;
 
+  const [modalImageSrc, setModalImageSrc] = useState(null);
   const [explorations, setExplorations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -37,6 +39,14 @@ const ExpEchoShow = () => {
     navigate(`/show/exploration`, {
       state: { patient, color },
     });
+  };
+
+  const handleImageClick = (imageSrc) => {
+    setModalImageSrc(imageSrc);
+  };
+
+  const handleCloseModal = () => {
+    setModalImageSrc(null);
   };
 
   return (
@@ -75,6 +85,7 @@ const ExpEchoShow = () => {
                   src={exploration.imageUrl}
                   alt={`Echo ${index + 1}`}
                   className="w-full"
+                  onClick={handleImageClick}
                 />
                 <p className="mt-2">{exploration.conclusion}</p>
               </div>
@@ -86,6 +97,11 @@ const ExpEchoShow = () => {
           </p>
         )}
       </div>
+      <ImageModal
+        imageSrc={modalImageSrc}
+        alt="Biology Image"
+        onClose={handleCloseModal}
+      />
     </div>
   );
 };

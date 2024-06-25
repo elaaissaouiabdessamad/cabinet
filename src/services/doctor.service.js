@@ -31,9 +31,15 @@ const getDoctorGuards = (startDate, endDate, shiftType) => {
   });
 };
 
-const generateShifts = (startDate, endDate, shiftType) => {
+const generateShifts = (startDate, endDate) => {
   return axiosInstance.post(`${API_URLDS}generate`, null, {
-    params: { startDate, endDate, shiftType },
+    params: { startDate, endDate },
+  });
+};
+
+const deleteShifts = (startDate, endDate) => {
+  return axiosInstance.delete(`${API_URLDS}delete`, {
+    params: { startDate, endDate },
   });
 };
 
@@ -59,6 +65,7 @@ const DoctorService = {
   deleteDoctor,
   getDoctorGuards,
   generateShifts,
+  deleteShifts,
   addShift,
   updateShift,
   deleteShift,

@@ -14,9 +14,6 @@ const ECA = () => {
 
   const [abdominalExamResult, setAbdominalExamResult] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [successful, setSuccessful] = useState(false);
-  const [message, setMessage] = useState("");
 
   const handleAbdominalExamChange = (event) => {
     setAbdominalExamResult(event.target.value);
@@ -36,7 +33,6 @@ const ECA = () => {
       );
       setLoading(false);
       toast.success(`Examen clinique:abdominal${response.data.message}`);
-      setSuccessful(true);
     } catch (error) {
       const resMessage =
         (error.response &&
@@ -90,7 +86,6 @@ const ECA = () => {
               value={abdominalExamResult}
               onChange={handleAbdominalExamChange}
             ></textarea>
-            {error && <p className="text-red-500">{error}</p>}
             <button
               type="submit"
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-4 rounded"

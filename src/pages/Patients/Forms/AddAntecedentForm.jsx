@@ -8,21 +8,17 @@ const AddAntecedentForm = ({ patientId, setAntecedentUpdate }) => {
   const [cardiovascularRiskFactors, setCardiovascularRiskFactors] =
     useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
-      const response = await MedicalService.addAntecedent(
+      await MedicalService.addAntecedent(
         personal,
         familial,
         cardiovascularRiskFactors,
         patientId
       );
-      setPersonal("");
-      setFamilial("");
-      setCardiovascularRiskFactors("");
       setLoading(false);
       toast.success("Antecedents ajoutés avec succès.");
       setAntecedentUpdate(Date.now());
@@ -81,16 +77,6 @@ const AddAntecedentForm = ({ patientId, setAntecedentUpdate }) => {
           required
           className="mt-1 p-2 border border-gray-300 rounded-md block w-full shadow-sm"
         ></textarea>
-        {message && (
-          <div className="text-sm text-center text-gray-700 mb-2 mt-4">
-            <div
-              className="bg-green-500 text-white font-bold rounded-lg p-5"
-              role="alert"
-            >
-              {message}
-            </div>
-          </div>
-        )}
         <button
           type="submit"
           disabled={loading}

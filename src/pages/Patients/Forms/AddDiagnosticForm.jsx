@@ -6,7 +6,6 @@ const AddDiagnosticForm = ({ patientId }) => {
   const [diagnosis, setDiagnosis] = useState("");
   const [diagnosisDifferentiel, setDiagnosisDifferentiel] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,8 +16,6 @@ const AddDiagnosticForm = ({ patientId }) => {
         diagnosisDifferentiel,
         patientId
       );
-      setDiagnosis("");
-      setDiagnosisDifferentiel("");
       setLoading(false);
       toast.success("Diagnostics ajoutés avec succès.");
     } catch (error) {
@@ -64,16 +61,6 @@ const AddDiagnosticForm = ({ patientId }) => {
           required
           className="mt-1 p-2 border border-gray-300 rounded-md block w-full shadow-sm"
         ></textarea>
-        {message && (
-          <div className="text-sm text-center text-gray-700 mb-2 mt-6">
-            <div
-              className="bg-green-500 text-white font-bold rounded-lg p-5"
-              role="alert"
-            >
-              {message}
-            </div>
-          </div>
-        )}
         <button
           type="submit"
           disabled={loading}

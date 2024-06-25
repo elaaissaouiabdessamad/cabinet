@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import icon10 from "../../../assets/icon10.png";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import HeaderDossierShow from "../../../components/HeaderDossierShow";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faArrowLeft } from "@fortawesome/free-solid-svg-icons";

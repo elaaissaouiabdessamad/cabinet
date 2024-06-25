@@ -41,7 +41,13 @@ const Sidebar = () => {
       (path === "/sectors" && activeLink.startsWith("/biologie")) ||
       (path === "/dashboard" && activeLink.startsWith("/add-patient")) ||
       (path === "/dashboard" && activeLink.startsWith("/patient-list")) ||
-      (path === "/dashboard" && activeLink.startsWith("/archived-patients"))
+      (path === "/dashboard" && activeLink.startsWith("/archived-patients")) ||
+      (path === "/agenda" && activeLink.startsWith("/bloc-rythmologie")) ||
+      (path === "/agenda" && activeLink.startsWith("/salle-catheterisme")) ||
+      (path === "/agenda" && activeLink.startsWith("/salle-catheterisme")) ||
+      (path === "/agenda" && activeLink.startsWith("/garde-des-medecins")) ||
+      (path === "/agenda" && activeLink.startsWith("/garde-des-infirmieres")) ||
+      (path === "/sectors" && activeLink.startsWith("/preview-pdf"))
     ) {
       return "active";
     }

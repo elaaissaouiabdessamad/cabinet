@@ -5,7 +5,6 @@ import {
   FaUser,
   FaMapMarkerAlt,
   FaBriefcase,
-  FaIdCard,
   FaRegIdBadge,
   FaCalendarAlt,
   FaMoneyBillAlt,

@@ -1,13 +1,15 @@
+// src/pages/Biology.js
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import MedicalService from "../../../services/medical.service";
+import axiosInstance from "../../../services/axiosInstance"; // Import axiosInstance
 import icon11 from "../../../assets/icon11.png";
 import iconFolder from "../../../assets/iconFolder.png";
 import HeaderDossierShow from "../../../components/HeaderDossierShow";
 import AuthorizedImage from "../../../services/authorizedImage";
+import ImageModal from "../../../components/ImageModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye } from "@fortawesome/free-solid-svg-icons";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 const Biology = () => {
   const location = useLocation();
@@ -19,6 +21,7 @@ const Biology = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [downloading, setDownloading] = useState(false);
+  const [modalImageSrc, setModalImageSrc] = useState(null);
 
   useEffect(() => {
     const fetchBiologies = async () => {
@@ -57,16 +60,23 @@ const Biology = () => {
   const downloadFile = async (fileUrl, isPDF) => {
     try {
       if (isPDF) {
-        window.open(fileUrl, "_blank");
+        const response = await axiosInstance.get(fileUrl, {
+          responseType: "blob",
+        });
+        const file = new Blob([response.data], { type: "application/pdf" });
+        const fileURL = window.URL.createObjectURL(file);
+        window.open(fileURL, "_blank");
       } else {
         setDownloading(true);
-        const response = await fetch(fileUrl);
+        const response = await axiosInstance.get(fileUrl, {
+          responseType: "blob",
+        });
         if (!response.ok) {
           throw new Error(
             `Erreur lors du téléchargement du fichier: ${response.status} ${response.statusText}`
           );
         }
-        const blob = await response.blob();
+        const blob = new Blob([response.data]);
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
@@ -86,9 +96,30 @@ const Biology = () => {
     }
   };
 
-  const previewPDF = (fileUrl) => {
-    console.log(fileUrl);
-    window.open(`/preview-pdf?url=${encodeURIComponent(fileUrl)}`, "_blank");
+  const previewPDF = async (fileUrl) => {
+    try {
+      const response = await axiosInstance.get(fileUrl, {
+        responseType: "blob",
+      });
+      const file = new Blob([response.data], { type: "application/pdf" });
+      const fileURL = window.URL.createObjectURL(file);
+      navigate("/preview-pdf", {
+        state: { patient: patient, color: color, url: fileURL },
+      });
+    } catch (error) {
+      console.error("Erreur lors de la prévisualisation du PDF: ", error);
+      setError(
+        "Échec de la prévisualisation du PDF. Veuillez réessayer ultérieurement."
+      );
+    }
+  };
+
+  const handleImageClick = (imageSrc) => {
+    setModalImageSrc(imageSrc);
+  };
+
+  const handleCloseModal = () => {
+    setModalImageSrc(null);
   };
 
   return (
@@ -154,7 +185,8 @@ const Biology = () => {
                     <AuthorizedImage
                       src={biology.bilanImageUrl}
                       alt={biology.conclusion}
-                      className="h-14 w-14"
+                      className="h-14 w-14 cursor-pointer"
+                      onClick={handleImageClick}
                     />
                   )}
                 </div>
@@ -182,6 +214,11 @@ const Biology = () => {
           &nbsp; Éditer dossier du patient
         </button>
       </div>
+      <ImageModal
+        imageSrc={modalImageSrc}
+        alt="Biology Image"
+        onClose={handleCloseModal}
+      />
     </div>
   );
 };

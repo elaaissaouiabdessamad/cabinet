@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import icon5 from "../../../assets/icon5.png";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import AddPrimaryConclusionForm from "../Forms/AddPrimaryConclusionForm";
-import PrimaryConclusionDisplay from "../Forms/PrimaryConclusionDisplay";
 import HeaderDossier from "../../../components/HeaderDossier";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
@@ -51,10 +49,6 @@ const PrimaryConclusion = () => {
             patientId={patient?.id}
             setPrimaryConclusionUpdate={setPrimaryConclusionUpdate}
           />
-          {/*<PrimaryConclusionDisplay
-            patientId={patient.id}
-            primaryConclusionUpdate={primaryConclusionUpdate}
-          />*/}
         </div>
       </div>
       <div className="flex justify-between w-full max-w-md mt-6">

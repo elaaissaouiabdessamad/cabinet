@@ -1,50 +1,46 @@
-import React, { useState } from "react";
-import { Document, Page } from "react-pdf";
-import { useLocation } from "react-router-dom";
-import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+import React, { useEffect, useState } from "react";
+import { pdfjs } from "react-pdf";
+import PdfComp from "./PdfComp";
+import { useLocation, useNavigate } from "react-router-dom";
+import "@react-pdf-viewer/core/lib/styles/index.css";
+import "@react-pdf-viewer/default-layout/lib/styles/index.css";
+import HeaderDossierBiologyShow from "./HeaderDossierBiologyShow";
 
-const PDFPreview = () => {
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  "pdfjs-dist/build/pdf.worker.min.js",
+  import.meta.url
+).toString();
+
+const PreviewPDF = () => {
   const location = useLocation();
-  const [numPages, setNumPages] = useState(null);
-  const [pageNumber, setPageNumber] = useState(1);
-  const query = new URLSearchParams(location.search);
-  const fileUrl = query.get("url");
+  const navigate = useNavigate();
+  const patient = location.state?.patient;
+  const color = location.state?.color;
+  const { url } = location.state || {};
+  const [pdfFile, setPdfFile] = useState(null);
 
-  const onDocumentLoadSuccess = ({ numPages }) => {
-    setNumPages(numPages);
-    setPageNumber(1);
+  const handleDossierBiologyShow = () => {
+    navigate(`/show/biologie`, {
+      state: { patient, color },
+    });
+  };
+
+  useEffect(() => {
+    showPdf(url);
+  }, [url]);
+
+  const showPdf = (pdf) => {
+    setPdfFile(pdf);
   };
 
   return (
-    <div className="pdf-preview">
-      <Document
-        file={fileUrl}
-        onLoadSuccess={onDocumentLoadSuccess}
-        loading="Chargement du document PDF..."
-      >
-        <Page pageNumber={pageNumber} />
-      </Document>
-      {numPages && (
-        <div className="pagination">
-          <p>
-            Page {pageNumber} of {numPages}
-          </p>
-          <button
-            disabled={pageNumber <= 1}
-            onClick={() => setPageNumber(pageNumber - 1)}
-          >
-            Previous
-          </button>
-          <button
-            disabled={pageNumber >= numPages}
-            onClick={() => setPageNumber(pageNumber + 1)}
-          >
-            Next
-          </button>
-        </div>
-      )}
+    <div className="flex flex-col items-center p-10">
+      <HeaderDossierBiologyShow
+        handleDossierBiologyShow={handleDossierBiologyShow}
+      />
+      {pdfFile && <PdfComp pdfFile={pdfFile} />}
     </div>
   );
 };
 
-export default PDFPreview;
+export default PreviewPDF;

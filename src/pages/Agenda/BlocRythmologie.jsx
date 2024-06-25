@@ -15,10 +15,10 @@ dayjs.locale("fr");
 
 const BlocRythmologie = () => {
   const [startDate, setStartDate] = useState(
-    dayjs().format("YYYY-MM-DDTHH:mm")
+    dayjs().format("YYYY-MM-DDT00:00")
   );
   const [endDate, setEndDate] = useState(
-    dayjs().add(7, "day").format("YYYY-MM-DDTHH:mm")
+    dayjs().add(6, "day").format("YYYY-MM-DDT23:59")
   );
   const [assignments, setAssignments] = useState([]);
   const [doctors, setDoctors] = useState([]);
@@ -107,7 +107,7 @@ const BlocRythmologie = () => {
             </option>
             {doctors.map((doctor) => (
               <option key={doctor.id} value={doctor.id}>
-                {doctor.nom} {doctor.prenom} {doctor.specialty}
+                {doctor.prenom} {doctor.nom} - {doctor.specialty}
               </option>
             ))}
           </select>
@@ -121,7 +121,7 @@ const BlocRythmologie = () => {
             </option>
             {patients.map((patient) => (
               <option key={patient.id} value={patient.id}>
-                {patient.nom} {patient.prenom} {patient.referenceID}
+                {patient.prenom} {patient.nom} {patient.referenceID}
               </option>
             ))}
           </select>

@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import moment from "moment";
 import BedService from "../../services/bed.service";
 import PatientService from "../../services/patient.service";
 import DoctorService from "../../services/doctor.service";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSnowflake, faProcedures } from "@fortawesome/free-solid-svg-icons";
 const BedDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [bed, setBed] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,6 +19,7 @@ const BedDetail = () => {
   const [selectedPatientId, setSelectedPatientId] = useState("");
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctorId, setSelectedDoctorId] = useState("");
+  const { sectorId } = location.state || {};
 
   useEffect(() => {
     const fetchBed = async () => {
@@ -133,10 +136,28 @@ const BedDetail = () => {
     return daysOccupied;
   };
 
+  const handlePatientSector = () => {
+    navigate(`/patients/${sectorId}`, {
+      state: { sectorId },
+    });
+  };
+
   return (
     <div className="p-4 flex flex-col items-center">
       <div className="flex items-center mb-4 w-full">
         <div className="flex items-center w-full relative">
+          <button
+            onClick={handlePatientSector}
+            className="mr-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg flex items-center"
+          >
+            <i className="fa fa-angle-double-left"></i>&nbsp; Au secteur&nbsp;
+            {sectorId == 1 ? "USI" : "froid"}
+            &nbsp;&nbsp;
+            <FontAwesomeIcon
+              icon={sectorId == 1 ? faProcedures : faSnowflake}
+              className="mr-2"
+            />{" "}
+          </button>
           <input
             type="text"
             placeholder="Search..."

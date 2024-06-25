@@ -69,7 +69,6 @@ import ExpEcho from "./pages/Patients/DossierDetails/ExpEcho";
 import ExpEchoShow from "./pages/Patients/DossierDetailsShow/ExpEchoShow";
 
 import DossierDetailShow from "./pages/Patients/DossierDetailShow";
-import PasswordReset from "./components/PasswordReset";
 import PatientListPage from "./pages/Dashboard/PatientListPage";
 import NotFound from "./components/NotFound";
 import PreviewPDF from "./components/PreviewPDF";

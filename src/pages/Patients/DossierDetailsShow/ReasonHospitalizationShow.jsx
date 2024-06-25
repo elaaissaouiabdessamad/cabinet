@@ -1,14 +1,13 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import icon2 from "../../../assets/icon2.png";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ReasonHospitalizationDisplay from "../Forms/ReasonHospitalizationDisplay";
 import HeaderDossierShow from "../../../components/HeaderDossierShow";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 const ReasonHospitalization = () => {
-  const [reasonUpdate, setReasonUpdate] = useState(""); // Lifted state
+  const [reasonUpdate, setReasonUpdate] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
   const patient = location.state?.patient;

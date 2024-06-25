@@ -3,19 +3,29 @@ import NurseService from "../../services/nurse.service";
 import HeaderAgenda from "../../components/HeaderAgenda";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import dayjs from "dayjs";
+import "dayjs/locale/fr";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlus,
   faMinus,
   faEdit,
   faTrash,
+  faSyncAlt,
+  faTrashAlt,
+  faCheck,
+  faEye,
 } from "@fortawesome/free-solid-svg-icons";
+import ReactTooltip from "react-tooltip";
 
 const NurseShifts = () => {
   const [shifts, setShifts] = useState([]);
   const [nurses, setNurses] = useState([]);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [isEdit, setIsEdit] = useState(false);
+  const [startDate, setStartDate] = useState(dayjs().format("YYYY-MM-DD"));
+  const [endDate, setEndDate] = useState(
+    dayjs().add(6, "day").format("YYYY-MM-DD")
+  );
   const [shiftType, setShiftType] = useState("");
   const [nurse, setNurse] = useState({
     nom: "",
@@ -40,7 +50,13 @@ const NurseShifts = () => {
 
   const fetchShifts = () => {
     if (!startDate || !endDate) {
-      toast.error("Veuillez fournir les dates de début et de fin.");
+      toast.error(
+        "Veuillez fournir à la fois une date de début et une date de fin pour récupérer les horaires."
+      );
+      return;
+    }
+    if (new Date(startDate) > new Date(endDate)) {
+      toast.error("La date de début doit être antérieure à la date de fin.");
       return;
     }
     NurseService.getNurseShifts(startDate, endDate, shiftType).then(
@@ -56,19 +72,58 @@ const NurseShifts = () => {
     });
   };
 
+  const handleMode = () => {
+    setIsEdit(!isEdit);
+  };
+
   const handleGenerateShifts = () => {
     if (!startDate || !endDate) {
-      toast.error("Veuillez fournir les dates de début et de fin.");
+      toast.error(
+        "Veuillez fournir à la fois une date de début et une date de fin pour générer les horaires."
+      );
+      return;
+    }
+    if (new Date(startDate) > new Date(endDate)) {
+      toast.error("La date de début doit être antérieure à la date de fin.");
+      return;
+    }
+    if (nurses.length <= 1) {
+      toast.error("Veuillez fournir au moins deux infirmières.");
       return;
     }
     setLoading(true);
-    NurseService.generateShifts(startDate, endDate, shiftType)
+    NurseService.generateShifts(startDate, endDate)
       .then(() => {
         fetchShifts();
         toast.success("Les gardes ont été générées avec succès !");
       })
       .catch(() => {
         toast.error("Échec de la génération des gardes. Veuillez réessayer.");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const handleDeleteShifts = () => {
+    if (!startDate || !endDate) {
+      toast.error(
+        "Veuillez fournir à la fois une date de début et une date de fin pour supprimer les horaires."
+      );
+      return;
+    }
+    if (new Date(startDate) > new Date(endDate)) {
+      toast.error("La date de début doit être antérieure à la date de fin.");
+      return;
+    }
+    setLoading(true);
+    NurseService.deleteShifts(startDate, endDate)
+      .then(() => {
+        fetchShifts();
+        toast.success("Les gardes ont été supprimées avec succès !");
+      })
+      .catch(() => {
+        toast.error("Échec de la suppression des gardes. Veuillez réessayer.");
       })
       .finally(() => {
         setLoading(false);
@@ -184,15 +239,31 @@ const NurseShifts = () => {
         autoClose={5000}
       />{" "}
       <div className="flex items-center justify-between">
-        <span className="text-2xl font-bold mt-4">
-          Infirmières responsables
-        </span>
+        <span className="text-2xl font-bold">Infirmières responsables</span>
+        &nbsp; &nbsp; &nbsp; &nbsp;
+        <p
+          className={`text-sm mt-1 px-4 py-1 rounded-md cursor-pointer transition duration-300 flex items-center ${
+            isEdit
+              ? "text-white bg-blue-500 hover:bg-blue-600"
+              : "border border-blue-500 text-blue-500 bg-white hover:bg-blue-100"
+          }`}
+          onClick={handleMode}
+        >
+          {isEdit ? (
+            <>
+              <FontAwesomeIcon icon={faEye} className="mr-2" />
+              Mode lecture
+            </>
+          ) : (
+            <>
+              <FontAwesomeIcon icon={faEdit} className="mr-2" />
+              Mode mise à jour
+            </>
+          )}
+        </p>
       </div>
       <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-5xl mt-4 flex flex-col space-y-4">
-        <form
-          onSubmit={handleSubmit}
-          className="flex justify-between space-x-4"
-        >
+        <form onSubmit={handleSubmit} className="flex justify-evenly space-x-4">
           <input
             type="date"
             value={startDate}
@@ -214,20 +285,66 @@ const NurseShifts = () => {
             <option value="jour">Jour</option>
             <option value="nuit">Nuit</option>
           </select>
-          <button
-            type="submit"
-            className="bg-blue-500 text-white py-2 px-4 rounded-md"
-          >
-            Récupérer les horaires
-          </button>
-          <button
-            type="button"
-            onClick={handleGenerateShifts}
-            className="bg-green-500 text-white py-2 px-4 rounded-md"
-            disabled={loading}
-          >
-            {loading ? "Génération des horaires..." : "Générer les horaires"}
-          </button>
+          {isEdit ? (
+            <>
+              <button
+                type="submit"
+                className="bg-blue-500 text-white py-2 px-4 rounded-md"
+                data-tip
+                data-for="fetchNurseShiftsTip"
+              >
+                <FontAwesomeIcon icon={faSyncAlt} className="mr-2" />
+                Récupérer
+              </button>
+              <ReactTooltip id="fetchNurseShiftsTip" place="top" effect="solid">
+                Veuillez fournir à la fois une date de début, une date de fin
+                <br />
+                et le type de garde pour récupérer les horaires.{" "}
+              </ReactTooltip>
+              <button
+                type="button"
+                onClick={handleGenerateShifts}
+                className="bg-green-500 text-white py-2 px-4 rounded-md"
+                disabled={loading}
+                data-tip
+                data-for="generateNurseShiftsTip"
+              >
+                <FontAwesomeIcon icon={faCheck} className="mr-2" />
+                Générer
+              </button>
+              <ReactTooltip
+                id="generateNurseShiftsTip"
+                place="top"
+                effect="solid"
+              >
+                Cliquez ici pour générer de nouveaux horaires
+                <br />
+                pour les infirmières après avoir fourni les dates.
+              </ReactTooltip>
+              <button
+                type="button"
+                onClick={handleDeleteShifts}
+                className="bg-red-500 text-white py-2 px-4 rounded-md"
+                disabled={loading}
+                data-tip
+                data-for="deleteNurseShiftsTip"
+              >
+                <FontAwesomeIcon icon={faTrashAlt} className="mr-2" />
+                Supprimer
+              </button>
+              <ReactTooltip
+                id="deleteNurseShiftsTip"
+                place="top"
+                effect="solid"
+              >
+                Cliquez ici pour supprimer de nouveaux horaires
+                <br />
+                pour les infirmières après avoir fourni les dates.
+              </ReactTooltip>
+            </>
+          ) : (
+            ""
+          )}
         </form>
         {dateRange.length > 0 ? (
           <div className="overflow-x-auto">
@@ -271,35 +388,52 @@ const NurseShifts = () => {
                                 className="flex items-center justify-center"
                               >
                                 {shift.nurse.prenom + " " + shift.nurse.nom}
-                                <button
-                                  onClick={() => handleUpdateShift(shift)}
-                                  className="ml-2 text-blue-500 hover:text-blue-700"
-                                >
-                                  <FontAwesomeIcon
-                                    icon={faEdit}
-                                    className="mr-1"
-                                  />
-                                </button>
-                                <button
-                                  onClick={() => handleDeleteShift(shift)}
-                                  className="ml-2 text-red-500 hover:text-red-700"
-                                >
-                                  <FontAwesomeIcon
-                                    icon={faTrash}
-                                    className="mr-1"
-                                  />
-                                </button>
+                                {isEdit ? (
+                                  <>
+                                    <button
+                                      onClick={() => handleUpdateShift(shift)}
+                                      className="ml-2 text-blue-500 hover:text-blue-700"
+                                    >
+                                      <FontAwesomeIcon
+                                        icon={faEdit}
+                                        className="mr-1"
+                                      />
+                                    </button>
+                                    <button
+                                      onClick={() => handleDeleteShift(shift)}
+                                      className="ml-2 text-red-500 hover:text-red-700"
+                                    >
+                                      <FontAwesomeIcon
+                                        icon={faTrash}
+                                        className="mr-1"
+                                      />
+                                    </button>
+                                  </>
+                                ) : (
+                                  ""
+                                )}
                               </div>
                             ))
                           : ""}
-                        <div className="flex items-center justify-center">
-                          <button
-                            onClick={() => handleAddShift(date, "jour")}
-                            className="text-green-500 hover:text-green-700"
-                          >
-                            <FontAwesomeIcon icon={faPlus} className="mr-1" />
-                          </button>
-                        </div>
+                        {isEdit ? (
+                          <>
+                            <div className="flex items-center justify-center">
+                              <button
+                                onClick={() => handleAddShift(date, "jour")}
+                                className="text-green-500 hover:text-green-700"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faPlus}
+                                  className="mr-1"
+                                />
+                              </button>
+                            </div>
+                          </>
+                        ) : getNurseShift(date, "jour").length > 0 ? (
+                          ""
+                        ) : (
+                          "-"
+                        )}
                       </td>
                     ) : (
                       ""
@@ -334,14 +468,24 @@ const NurseShifts = () => {
                               </div>
                             ))
                           : ""}
-                        <div className="flex items-center justify-center">
-                          <button
-                            onClick={() => handleAddShift(date, "nuit")}
-                            className="text-green-500 hover:text-green-700"
-                          >
-                            <FontAwesomeIcon icon={faPlus} className="mr-1" />
-                          </button>
-                        </div>
+
+                        {isEdit ? (
+                          <>
+                            <div className="flex items-center justify-center">
+                              <button
+                                onClick={() => handleAddShift(date, "nuit")}
+                                className="text-green-500 hover:text-green-700"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faPlus}
+                                  className="mr-1"
+                                />
+                              </button>
+                            </div>
+                          </>
+                        ) : (
+                          "-"
+                        )}
                       </td>
                     ) : (
                       ""
@@ -357,20 +501,26 @@ const NurseShifts = () => {
       </div>
       <div className="bg-white shadow-md rounded-lg w-1/2 p-6 max-w-5xl mt-8">
         <span className="text-lg font-bold">Infirmières</span>
-        <button
-          type="button"
-          onClick={() => setIsNurseFormVisible(!isNurseFormVisible)}
-          className="bg-blue-500 ml-8 text-white py-2 px-4 rounded-md"
-        >
-          <FontAwesomeIcon
-            icon={isNurseFormVisible ? faMinus : faPlus}
-            className="mr-2"
-          />
-          {isNurseFormVisible
-            ? "Masquer le formulaire"
-            : "Ajouter une infirmière"}
-        </button>
-        {isNurseFormVisible && (
+        {isEdit ? (
+          <>
+            <button
+              type="button"
+              onClick={() => setIsNurseFormVisible(!isNurseFormVisible)}
+              className="bg-blue-500 ml-8 text-white py-2 px-4 rounded-md"
+            >
+              <FontAwesomeIcon
+                icon={isNurseFormVisible ? faMinus : faPlus}
+                className="mr-2"
+              />
+              {isNurseFormVisible
+                ? "Masquer le formulaire"
+                : "Ajouter une infirmière"}
+            </button>
+          </>
+        ) : (
+          ""
+        )}
+        {isNurseFormVisible && isEdit && (
           <form
             onSubmit={handleNurseSubmit}
             className="flex flex-col space-y-4 mt-4"
@@ -378,8 +528,8 @@ const NurseShifts = () => {
             <input
               required
               type="text"
-              name="nom"
-              value={nurse.nom}
+              name="prenom"
+              value={nurse.prenom}
               onChange={handleNurseChange}
               placeholder="Prénom"
               className="border p-2 rounded-md"
@@ -387,8 +537,8 @@ const NurseShifts = () => {
             <input
               required
               type="text"
-              name="prenom"
-              value={nurse.prenom}
+              name="nom"
+              value={nurse.nom}
               onChange={handleNurseChange}
               placeholder="Nom"
               className="border p-2 rounded-md"
@@ -420,24 +570,46 @@ const NurseShifts = () => {
             <hr />
           </form>
         )}
-        <div className="space-y-2 mt-4">
-          {nurses.map((nurse) => (
-            <div
-              key={nurse.id}
-              className="p-4 bg-gray-100 rounded-md shadow-md"
-            >
-              <p>
-                <strong>Nom complet:</strong> {nurse.nom} {nurse.prenom}
-              </p>
-              <p>
-                <strong>Spécialité:</strong> {nurse.specialty}
-              </p>
-              <p>
-                <strong>Numéro de téléphone:</strong> {nurse.phoneNumber}
-              </p>
+
+        {nurses.length > 0 ? (
+          <div className="space-y-2 mt-4">
+            <div className="overflow-x-auto">
+              <table className="min-w-full bg-white">
+                <thead>
+                  <tr>
+                    <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Nom
+                    </th>
+                    <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Spécialité
+                    </th>
+                    <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Numéro de téléphone
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {nurses.map((nurse, index) => (
+                    <tr
+                      key={nurse.id}
+                      className={`${
+                        index % 2 === 0 ? "bg-white" : "bg-gray-100"
+                      } border-b`}
+                    >
+                      <td className="px-4 py-2">
+                        {nurse.prenom} {nurse.nom}
+                      </td>
+                      <td className="px-4 py-2">{nurse.specialty}</td>
+                      <td className="px-4 py-2">{nurse.phoneNumber}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          ))}
-        </div>
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
       {showAddModal && (
         <div className="fixed z-10 inset-0 overflow-y-auto">
@@ -473,11 +645,22 @@ const NurseShifts = () => {
                         className="border p-2 rounded-md w-full"
                       >
                         <option value="">Sélectionner une infirmière</option>
-                        {nurses.map((nurse) => (
-                          <option key={nurse.id} value={nurse.id}>
-                            {nurse.prenom} {nurse.nom}
-                          </option>
-                        ))}
+                        {nurses
+                          .filter((nurse) => {
+                            return !shifts.some(
+                              (shift) =>
+                                shift.shiftDate ===
+                                  selectedShiftNotAdded.shiftDate &&
+                                shift.shiftType ===
+                                  selectedShiftNotAdded.shiftType &&
+                                shift.nurse.id === nurse.id
+                            );
+                          })
+                          .map((nurse) => (
+                            <option key={nurse.id} value={nurse.id}>
+                              {nurse.prenom} {nurse.nom}
+                            </option>
+                          ))}
                       </select>
                     </div>
                   </div>
@@ -537,11 +720,20 @@ const NurseShifts = () => {
                         className="border p-2 rounded-md w-full"
                       >
                         <option value="">Sélectionner une infirmière</option>
-                        {nurses.map((nurse) => (
-                          <option key={nurse.id} value={nurse.id}>
-                            {nurse.prenom} {nurse.nom}
-                          </option>
-                        ))}
+                        {nurses
+                          .filter((nurse) => {
+                            return !shifts.some(
+                              (shift) =>
+                                shift.shiftDate === selectedShift.shiftDate &&
+                                shift.shiftType === selectedShift.shiftType &&
+                                shift.nurse.id === nurse.id
+                            );
+                          })
+                          .map((nurse) => (
+                            <option key={nurse.id} value={nurse.id}>
+                              {nurse.prenom} {nurse.nom}
+                            </option>
+                          ))}
                       </select>
                     </div>
                   </div>
@@ -591,7 +783,10 @@ const NurseShifts = () => {
                     </h3>
                     <div className="mt-2">
                       <p className="text-sm text-gray-500">
-                        Êtes-vous sûr de vouloir supprimer cette horaire ?
+                        Êtes-vous sûr de vouloir supprimer l'horaire pour{" "}
+                        {selectedShift.nurse.prenom} {selectedShift.nurse.nom}{" "}
+                        le {selectedShift.shiftDate} pour le quart de travail{" "}
+                        {selectedShift.shiftType} ?{" "}
                       </p>
                     </div>
                   </div>

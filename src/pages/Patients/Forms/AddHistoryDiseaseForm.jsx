@@ -4,10 +4,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const AddHistoryDiseaseForm = ({ patientId, setHistoryDiseaseUpdate }) => {
   const [historyDisease, setHistoryDisease] = useState("");
-  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [successful, setSuccessful] = useState(false);
-  const [message, setMessage] = useState("");
+  const [isNew, setIsNew] = useState(false);
 
   useEffect(() => {
     const fetchHistoryDisease = async () => {
@@ -18,14 +16,15 @@ const AddHistoryDiseaseForm = ({ patientId, setHistoryDiseaseUpdate }) => {
         );
         const fetchedHistoryDisease = response.data.historyDisease;
         setHistoryDisease(fetchedHistoryDisease);
+        if (fetchedHistoryDisease === "" || !fetchedHistoryDisease) {
+          setIsNew(true);
+        }
         setLoading(false);
-        setError(null);
       } catch (error) {
         console.error(
           "Échec de la récupération de l'historique des maladies.:",
           error
         );
-        setError("Échec de la récupération de l'historique des maladies.");
         setLoading(false);
       }
     };
@@ -37,7 +36,6 @@ const AddHistoryDiseaseForm = ({ patientId, setHistoryDiseaseUpdate }) => {
     e.preventDefault();
     try {
       setLoading(true);
-      // Patch the medical dossier with the history of disease
       const response = await MedicalService.patchMedicalDossier(
         null,
         historyDisease,
@@ -45,12 +43,10 @@ const AddHistoryDiseaseForm = ({ patientId, setHistoryDiseaseUpdate }) => {
         null,
         patientId
       );
-      // Reset form state
-      setHistoryDisease("");
       setHistoryDiseaseUpdate(historyDisease);
+      setIsNew(false);
       setLoading(false);
       toast.success(`Histoire de la maladie ${response.data.message}`);
-      // Handle success (e.g., redirect to another page)
     } catch (error) {
       const resMessage =
         (error.response &&
@@ -76,7 +72,9 @@ const AddHistoryDiseaseForm = ({ patientId, setHistoryDiseaseUpdate }) => {
           htmlFor="historyDisease"
           className="block text-sm font-medium text-gray-700"
         >
-          Modifier l'histoire de la maladie :
+          {isNew
+            ? "Ajouter l'histoire de la maladie:"
+            : "Modifier l'histoire de la maladie (déjà enregistré):"}
         </label>
         <textarea
           id="historyDisease"
@@ -86,19 +84,6 @@ const AddHistoryDiseaseForm = ({ patientId, setHistoryDiseaseUpdate }) => {
           className="mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm"
           rows="4"
         ></textarea>
-        {error && <p className="text-red-500">{error}</p>}
-        {message && (
-          <div className="text-sm text-center text-gray-700 dark:text-gray-200 mb-8 m-4">
-            <div
-              className={`${
-                successful ? "bg-green-500" : "bg-red-500"
-              } text-white font-bold rounded-lg border border-white shadow-lg p-5 m-4`}
-              role="alert"
-            >
-              {message}
-            </div>
-          </div>
-        )}
         <button
           type="submit"
           disabled={loading}

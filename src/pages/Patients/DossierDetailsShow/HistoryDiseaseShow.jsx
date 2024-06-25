@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import icon4 from "../../../assets/icon4.png";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import HistoryDiseaseDisplay from "../Forms/HistoryDiseaseDisplay";
 import HeaderDossierShow from "../../../components/HeaderDossierShow";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

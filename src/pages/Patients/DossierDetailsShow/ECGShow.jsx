@@ -5,6 +5,7 @@ import icon7 from "../../../assets/icon7.png";
 import HeaderDossierShow from "../../../components/HeaderDossierShow";
 import AuthorizedImage from "../../../services/authorizedImage";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ImageModal from "../../../components/ImageModal";
 import { faArrowRight, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 const ECG = () => {
   const location = useLocation();
@@ -12,6 +13,7 @@ const ECG = () => {
   const patient = location.state?.patient;
   const color = location.state?.color;
 
+  const [modalImageSrc, setModalImageSrc] = useState(null);
   const [ecgs, setEcgs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -46,6 +48,13 @@ const ECG = () => {
       state: { patient, color },
     });
   };
+  const handleImageClick = (imageSrc) => {
+    setModalImageSrc(imageSrc);
+  };
+
+  const handleCloseModal = () => {
+    setModalImageSrc(null);
+  };
 
   return (
     <div className="flex flex-col items-center p-10 max-h-width">
@@ -78,6 +87,7 @@ const ECG = () => {
                   src={ecg.imageUrl}
                   alt="ECG Image"
                   className="h-64 w-auto"
+                  onClick={handleImageClick}
                 />
                 <span className="mt-2">{ecg.conclusion}</span>
               </div>
@@ -103,6 +113,11 @@ const ECG = () => {
           Suivant <FontAwesomeIcon icon={faArrowRight} />
         </button>
       </div>
+      <ImageModal
+        imageSrc={modalImageSrc}
+        alt="Biology Image"
+        onClose={handleCloseModal}
+      />
     </div>
   );
 };

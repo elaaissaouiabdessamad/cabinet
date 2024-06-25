@@ -35,6 +35,12 @@ const generateShifts = (startDate, endDate) => {
   );
 };
 
+const deleteShifts = (startDate, endDate) => {
+  return axiosInstance.delete(
+    `${API_URL_NURSE_SHIFTS}/delete?startDate=${startDate}&endDate=${endDate}`
+  );
+};
+
 const addShift = (date, shiftType, nurseId) => {
   return axiosInstance.post(
     `${API_URL_NURSE_SHIFTS}/date/${date}/shift-type/${shiftType}/nurse/${nurseId}`
@@ -59,6 +65,7 @@ export default {
   deleteNurse,
   getNurseShifts,
   generateShifts,
+  deleteShifts,
   addShift,
   updateShift,
   deleteShift,

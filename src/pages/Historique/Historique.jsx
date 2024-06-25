@@ -180,7 +180,7 @@ const Historique = () => {
                   <div className="flex items-center justify-between border-b border-gray-200 py-4 px-4 bg-gray-50 rounded-t-lg">
                     <div className="flex flex-col md:flex-row md:items-center">
                       <span className="font-semibold text-lg mr-2">
-                        {`Patient ${patient.nom} ${patient.prenom}/${patient.referenceID}`}
+                        {`Patient ${patient.prenom} ${patient.nom} / ${patient.referenceID}`}
                       </span>
                       <span
                         className={`${getStatusColorClass(

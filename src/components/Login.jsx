@@ -9,7 +9,6 @@ import Logo from "../logo.png";
 function Login({ login }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate();
 
@@ -35,10 +34,6 @@ function Login({ login }) {
       login();
       navigate("/dashboard");
     } catch (error) {
-      setErrorMessage(
-        error.response?.data?.message ||
-          "Informations d'identification invalides"
-      );
       toast.error(
         error.response?.data?.message ||
           "Informations d'identification invalides"

@@ -3,19 +3,28 @@ import DoctorService from "../../services/doctor.service";
 import HeaderAgenda from "../../components/HeaderAgenda";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import dayjs from "dayjs";
+import "dayjs/locale/fr";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlus,
   faMinus,
   faEdit,
   faTrash,
+  faSyncAlt,
+  faTrashAlt,
+  faEye,
+  faCheck,
 } from "@fortawesome/free-solid-svg-icons";
+import ReactTooltip from "react-tooltip";
 
 const DoctorShifts = () => {
   const [shifts, setShifts] = useState([]);
   const [doctors, setDoctors] = useState([]);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState(dayjs().format("YYYY-MM-DD"));
+  const [endDate, setEndDate] = useState(
+    dayjs().add(6, "day").format("YYYY-MM-DD")
+  );
   const [shiftType, setShiftType] = useState("");
   const [loading, setLoading] = useState(false);
   const [doctor, setDoctor] = useState({
@@ -24,6 +33,7 @@ const DoctorShifts = () => {
     specialty: "",
     phoneNumber: "",
   });
+  const [isEdit, setIsEdit] = useState(false);
   const [showDoctorForm, setShowDoctorForm] = useState(false);
   const [selectedShift, setSelectedShift] = useState(null);
   const [selectedShiftNotAdded, setSelectedShiftNotAdded] = useState(null);
@@ -40,7 +50,13 @@ const DoctorShifts = () => {
 
   const fetchShifts = () => {
     if (!startDate || !endDate) {
-      toast.error("Veuillez fournir les dates de début et de fin.");
+      toast.error(
+        "Veuillez fournir à la fois une date de début et une date de fin pour récupérer les horaires."
+      );
+      return;
+    }
+    if (new Date(startDate) > new Date(endDate)) {
+      toast.error("La date de début doit être antérieure à la date de fin.");
       return;
     }
     DoctorService.getDoctorGuards(startDate, endDate, shiftType).then(
@@ -58,17 +74,52 @@ const DoctorShifts = () => {
 
   const handleGenerateShifts = () => {
     if (!startDate || !endDate) {
-      toast.error("Veuillez fournir les dates de début et de fin.");
+      toast.error(
+        "Veuillez fournir à la fois une date de début et une date de fin pour générer les horaires."
+      );
+      return;
+    }
+    if (new Date(startDate) > new Date(endDate)) {
+      toast.error("La date de début doit être antérieure à la date de fin.");
+      return;
+    }
+    if (doctors.length <= 0) {
+      toast.error("Veuillez fournir au moins un médecin.");
       return;
     }
     setLoading(true);
-    DoctorService.generateShifts(startDate, endDate, shiftType)
+    DoctorService.generateShifts(startDate, endDate)
       .then(() => {
         fetchShifts();
         toast.success("Les gardes ont été générées avec succès !");
       })
       .catch(() => {
         toast.error("Échec de la génération des gardes. Veuillez réessayer.");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const handleDeleteShifts = () => {
+    if (!startDate || !endDate) {
+      toast.error(
+        "Veuillez fournir à la fois une date de début et une date de fin pour générer les horaires."
+      );
+      return;
+    }
+    if (new Date(startDate) > new Date(endDate)) {
+      toast.error("La date de début doit être antérieure à la date de fin.");
+      return;
+    }
+    setLoading(true);
+    DoctorService.deleteShifts(startDate, endDate)
+      .then(() => {
+        fetchShifts();
+        toast.success("Les gardes ont été supprimées avec succès !");
+      })
+      .catch(() => {
+        toast.error("Échec de la suppression des gardes. Veuillez réessayer.");
       })
       .finally(() => {
         setLoading(false);
@@ -144,7 +195,7 @@ const DoctorShifts = () => {
     )
       .then(() => {
         toast.success("Garde ajouté avec succès !");
-        setShowUpdateModal(false);
+        setShowAddModal(false);
         fetchShifts();
       })
       .catch(() => {
@@ -153,8 +204,6 @@ const DoctorShifts = () => {
   };
 
   const updateShift = () => {
-    console.log("id 1: " + selectedShift.doctorId);
-    console.log("id 2: " + selectedShift.doctor.id);
     DoctorService.updateShift(selectedShift.id, selectedShift.doctorId)
       .then(() => {
         toast.success("Garde mise à jour avec succès !");
@@ -164,6 +213,10 @@ const DoctorShifts = () => {
       .catch(() => {
         toast.error("Échec de la mise à jour de la garde. Veuillez réessayer.");
       });
+  };
+
+  const handleMode = () => {
+    setIsEdit(!isEdit);
   };
 
   const deleteShift = (selectedShift) => {
@@ -188,13 +241,31 @@ const DoctorShifts = () => {
         autoClose={5000}
       />{" "}
       <div className="flex items-center justify-between">
-        <span className="text-2xl font-bold mt-4">Garde des médecins</span>
+        <span className="text-2xl font-bold">Garde des médecins</span>
+        &nbsp; &nbsp; &nbsp; &nbsp;
+        <p
+          className={`text-sm mt-1 px-4 py-1 rounded-md cursor-pointer transition duration-300 flex items-center ${
+            isEdit
+              ? "text-white bg-blue-500 hover:bg-blue-700"
+              : "border border-blue-500 text-blue-500 bg-white hover:bg-blue-100"
+          }`}
+          onClick={handleMode}
+        >
+          {isEdit ? (
+            <>
+              <FontAwesomeIcon icon={faEye} className="mr-2" />
+              Mode lecture
+            </>
+          ) : (
+            <>
+              <FontAwesomeIcon icon={faEdit} className="mr-2" />
+              Mode mise à jour
+            </>
+          )}
+        </p>{" "}
       </div>
       <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-5xl mt-4 flex flex-col space-y-4">
-        <form
-          onSubmit={handleSubmit}
-          className="flex justify-between space-x-4"
-        >
+        <form onSubmit={handleSubmit} className="flex justify-evenly space-x-4">
           <input
             type="date"
             value={startDate}
@@ -216,20 +287,59 @@ const DoctorShifts = () => {
             <option value="jour">Jour</option>
             <option value="nuit">Nuit</option>
           </select>
-          <button
-            type="submit"
-            className="bg-blue-500 text-white py-2 px-4 rounded-md"
-          >
-            Récupérer les horaires
-          </button>
-          <button
-            type="button"
-            onClick={handleGenerateShifts}
-            className="bg-green-500 text-white py-2 px-4 rounded-md"
-            disabled={loading}
-          >
-            {loading ? "Génération des horaires..." : "Générer les horaires"}
-          </button>
+          {isEdit ? (
+            <>
+              <button
+                type="submit"
+                className="bg-blue-500 text-white py-2 px-4 rounded-md"
+                data-tip
+                data-for="fetchShiftsTip"
+              >
+                <FontAwesomeIcon icon={faSyncAlt} className="mr-2" />
+                Récupérer{" "}
+              </button>
+              <ReactTooltip id="fetchShiftsTip" place="top" effect="solid">
+                Cliquez ici en fournissant à la fois une date de début, une date
+                de fin
+                <br />
+                et le type de garde pour récupérer les horaires.
+              </ReactTooltip>
+              <button
+                type="button"
+                onClick={handleGenerateShifts}
+                className="bg-green-500 text-white py-2 px-4 rounded-md"
+                disabled={loading}
+                data-tip
+                data-for="generateShiftsTip"
+              >
+                <FontAwesomeIcon icon={faCheck} className="mr-2" />
+                Générer{" "}
+              </button>
+              <ReactTooltip id="generateShiftsTip" place="top" effect="solid">
+                Cliquez ici pour générer de nouveaux horaires
+                <br />
+                après avoir fourni les dates.
+              </ReactTooltip>
+              <button
+                type="button"
+                onClick={handleDeleteShifts}
+                className="bg-red-500 text-white py-2 px-4 rounded-md"
+                disabled={loading}
+                data-tip
+                data-for="deleteShiftsTip"
+              >
+                <FontAwesomeIcon icon={faTrashAlt} className="mr-2" />
+                Supprimer{" "}
+              </button>
+              <ReactTooltip id="deleteShiftsTip" place="top" effect="solid">
+                Cliquez ici pour supprimer de nouveaux horaires
+                <br />
+                après avoir fourni les dates.
+              </ReactTooltip>
+            </>
+          ) : (
+            ""
+          )}
         </form>
         {dateRange.length > 0 ? (
           <div className="overflow-x-auto">
@@ -271,36 +381,56 @@ const DoctorShifts = () => {
                             {getDoctorShift(date, "jour").doctor.prenom +
                               " " +
                               getDoctorShift(date, "jour").doctor.nom}
-                            <button
-                              onClick={() =>
-                                handleUpdateShift(getDoctorShift(date, "jour"))
-                              }
-                              className="ml-2 text-blue-500 hover:text-blue-700"
-                            >
-                              <FontAwesomeIcon icon={faEdit} className="mr-1" />{" "}
-                            </button>
-                            <button
-                              onClick={() =>
-                                handleDeleteShift(getDoctorShift(date, "jour"))
-                              }
-                              className="ml-2 text-red-500 hover:text-red-700"
-                            >
-                              <FontAwesomeIcon
-                                icon={faTrash}
-                                className="mr-1"
-                              />{" "}
-                            </button>
+                            {isEdit ? (
+                              <>
+                                <button
+                                  onClick={() =>
+                                    handleUpdateShift(
+                                      getDoctorShift(date, "jour")
+                                    )
+                                  }
+                                  className="ml-2 text-blue-500 hover:text-blue-700"
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faEdit}
+                                    className="mr-1"
+                                  />{" "}
+                                </button>
+                                <button
+                                  onClick={() =>
+                                    handleDeleteShift(
+                                      getDoctorShift(date, "jour")
+                                    )
+                                  }
+                                  className="ml-2 text-red-500 hover:text-red-700"
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faTrash}
+                                    className="mr-1"
+                                  />{" "}
+                                </button>
+                              </>
+                            ) : (
+                              ""
+                            )}
                           </div>
+                        ) : isEdit ? (
+                          <>
+                            <div className="flex items-center justify-center">
+                              {" "}
+                              <button
+                                onClick={() => handleAddShift(date, "jour")}
+                                className="text-green-500 hover:text-green-700"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faPlus}
+                                  className="mr-1"
+                                />
+                              </button>
+                            </div>
+                          </>
                         ) : (
-                          <div className="flex items-center justify-center">
-                            {" "}
-                            <button
-                              onClick={() => handleAddShift(date, "jour")}
-                              className="text-green-500 hover:text-green-700"
-                            >
-                              <FontAwesomeIcon icon={faPlus} className="mr-1" />
-                            </button>
-                          </div>
+                          "-"
                         )}
                       </td>
                     ) : (
@@ -313,36 +443,56 @@ const DoctorShifts = () => {
                             {getDoctorShift(date, "nuit").doctor.prenom +
                               " " +
                               getDoctorShift(date, "nuit").doctor.nom}
-                            <button
-                              onClick={() =>
-                                handleUpdateShift(getDoctorShift(date, "nuit"))
-                              }
-                              className="ml-2 text-blue-500 hover:text-blue-700"
-                            >
-                              <FontAwesomeIcon icon={faEdit} className="mr-1" />{" "}
-                            </button>
-                            <button
-                              onClick={() =>
-                                handleDeleteShift(getDoctorShift(date, "nuit"))
-                              }
-                              className="ml-2 text-red-500 hover:text-red-700"
-                            >
-                              <FontAwesomeIcon
-                                icon={faTrash}
-                                className="mr-1"
-                              />{" "}
-                            </button>
+                            {isEdit ? (
+                              <>
+                                <button
+                                  onClick={() =>
+                                    handleUpdateShift(
+                                      getDoctorShift(date, "nuit")
+                                    )
+                                  }
+                                  className="ml-2 text-blue-500 hover:text-blue-700"
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faEdit}
+                                    className="mr-1"
+                                  />{" "}
+                                </button>
+                                <button
+                                  onClick={() =>
+                                    handleDeleteShift(
+                                      getDoctorShift(date, "nuit")
+                                    )
+                                  }
+                                  className="ml-2 text-red-500 hover:text-red-700"
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faTrash}
+                                    className="mr-1"
+                                  />{" "}
+                                </button>
+                              </>
+                            ) : (
+                              ""
+                            )}
                           </div>
+                        ) : isEdit ? (
+                          <>
+                            <div className="flex items-center justify-center">
+                              {" "}
+                              <button
+                                onClick={() => handleAddShift(date, "nuit")}
+                                className="text-green-500 hover:text-green-700"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faPlus}
+                                  className="mr-1"
+                                />
+                              </button>
+                            </div>
+                          </>
                         ) : (
-                          <div className="flex items-center justify-center">
-                            {" "}
-                            <button
-                              onClick={() => handleAddShift(date, "nuit")}
-                              className="text-green-500 hover:text-green-700"
-                            >
-                              <FontAwesomeIcon icon={faPlus} className="mr-1" />
-                            </button>
-                          </div>
+                          "-"
                         )}
                       </td>
                     ) : (
@@ -359,18 +509,24 @@ const DoctorShifts = () => {
       </div>
       <div className="bg-white shadow-md rounded-lg w-1/2 p-6 max-w-5xl mt-8">
         <span className="text-lg font-bold">Médecins</span>
-        <button
-          type="button"
-          onClick={() => setShowDoctorForm(!showDoctorForm)}
-          className="bg-blue-500 ml-8 text-white py-2 px-4 rounded-md"
-        >
-          <FontAwesomeIcon
-            icon={showDoctorForm ? faMinus : faPlus}
-            className="mr-2"
-          />
-          {showDoctorForm ? "Masquer le formulaire" : "Ajouter un médecin"}
-        </button>
-        {showDoctorForm && (
+        {isEdit ? (
+          <>
+            <button
+              type="button"
+              onClick={() => setShowDoctorForm(!showDoctorForm)}
+              className="bg-blue-500 ml-8 text-white py-2 px-4 rounded-md"
+            >
+              <FontAwesomeIcon
+                icon={showDoctorForm ? faMinus : faPlus}
+                className="mr-2"
+              />
+              {showDoctorForm ? "Masquer le formulaire" : "Ajouter un médecin"}
+            </button>
+          </>
+        ) : (
+          ""
+        )}
+        {showDoctorForm && isEdit && (
           <form
             onSubmit={handleDoctorSubmit}
             className="flex flex-col justify-between space-y-4 mt-4"
@@ -378,8 +534,8 @@ const DoctorShifts = () => {
             <input
               required
               type="text"
-              name="nom"
-              value={doctor.nom}
+              name="prenom"
+              value={doctor.prenom}
               onChange={handleDoctorChange}
               placeholder="Prénom"
               className="border p-2 rounded-md"
@@ -387,8 +543,8 @@ const DoctorShifts = () => {
             <input
               required
               type="text"
-              name="prenom"
-              value={doctor.prenom}
+              name="nom"
+              value={doctor.nom}
               onChange={handleDoctorChange}
               placeholder="Nom"
               className="border p-2 rounded-md"
@@ -420,24 +576,45 @@ const DoctorShifts = () => {
             <hr />
           </form>
         )}
-        <div className="space-y-2 mt-4">
-          {doctors.map((doctor) => (
-            <div
-              key={doctor.id}
-              className="p-4 bg-gray-100 rounded-md shadow-md"
-            >
-              <p>
-                <strong>Nom:</strong> {doctor.nom} {doctor.prenom}
-              </p>
-              <p>
-                <strong>Spécialité:</strong> {doctor.specialty}
-              </p>
-              <p>
-                <strong>Numéro de téléphone:</strong> {doctor.phoneNumber}
-              </p>
+        {doctors.length > 0 ? (
+          <div className="space-y-2 mt-4">
+            <div className="overflow-x-auto">
+              <table className="min-w-full bg-white">
+                <thead>
+                  <tr>
+                    <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Nom
+                    </th>
+                    <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Spécialité
+                    </th>
+                    <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Numéro de téléphone
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {doctors.map((doctor, index) => (
+                    <tr
+                      key={doctor.id}
+                      className={`${
+                        index % 2 === 0 ? "bg-white" : "bg-gray-100"
+                      } border-b`}
+                    >
+                      <td className="px-4 py-2">
+                        {doctor.prenom} {doctor.nom}
+                      </td>
+                      <td className="px-4 py-2">{doctor.specialty}</td>
+                      <td className="px-4 py-2">{doctor.phoneNumber}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          ))}
-        </div>
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
       {showAddModal && (
         <div className="fixed z-10 inset-0 overflow-y-auto">
@@ -445,9 +622,7 @@ const DoctorShifts = () => {
             <div className="fixed inset-0 transition-opacity">
               <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
             </div>
-            <span className="hidden sm:inline-block sm:align-middle sm:h-screen">
-              &#8203;
-            </span>
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
             <div
               className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
               role="dialog"
@@ -508,61 +683,71 @@ const DoctorShifts = () => {
       {showUpdateModal && (
         <div className="fixed z-10 inset-0 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div
-              className="fixed inset-0 transition-opacity"
-              aria-hidden="true"
-            >
+            <div className="fixed inset-0 transition-opacity">
               <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
             </div>
-            <span
-              className="hidden sm:inline-block sm:align-middle sm:h-screen"
-              aria-hidden="true"
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
+            <div
+              className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="modal-headline"
             >
-              &#8203;
-            </span>
-            <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-              <div>
-                <div className="mt-3 text-center sm:mt-5">
-                  <h3
-                    className="text-lg leading-6 font-medium text-gray-900"
-                    id="modal-title"
-                  >
-                    Mettre à jour l'horaire
-                  </h3>
-                  <div className="mt-2">
-                    <select
-                      value={selectedShift.doctorId}
-                      onChange={(e) =>
-                        setSelectedShift({
-                          ...selectedShift,
-                          doctorId: e.target.value,
-                        })
-                      }
-                      className="border p-2 rounded-md"
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="sm:flex sm:items-start">
+                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <h3
+                      className="text-lg leading-6 font-medium text-gray-900"
+                      id="modal-headline"
                     >
-                      <option value="">Sélectionner un médecin</option>
-                      {doctors.map((doctor) => (
-                        <option key={doctor.id} value={doctor.id}>
-                          {doctor.prenom} {doctor.nom}
-                        </option>
-                      ))}
-                    </select>
+                      Mettre à jour l'horaire
+                    </h3>
+                    <div className="mt-2">
+                      <select
+                        value={selectedShift.doctorId}
+                        onChange={(e) =>
+                          setSelectedShift({
+                            ...selectedShift,
+                            doctorId: e.target.value,
+                          })
+                        }
+                        className="border p-2 rounded-md"
+                      >
+                        <option value="">Sélectionner un médecin</option>
+                        {doctors
+                          .filter((doctor) => {
+                            return !shifts.some(
+                              (shift) =>
+                                shift.shiftDate === selectedShift.shiftDate &&
+                                shift.shiftType === selectedShift.shiftType &&
+                                shift.doctor.id === doctor.id
+                            );
+                          })
+                          .map((doctor) => (
+                            <option key={doctor.id} value={doctor.id}>
+                              {doctor.prenom} {doctor.nom}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="mt-5 sm:mt-6">
-                <button
-                  onClick={updateShift}
-                  className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm"
-                >
-                  Mettre à jour
-                </button>
-                <button
-                  onClick={() => setShowUpdateModal(false)}
-                  className="mt-3 inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:text-sm"
-                >
-                  Annuler
-                </button>
+                <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                  <button
+                    onClick={updateShift}
+                    type="button"
+                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                  >
+                    Mettre à jour
+                  </button>
+                  <button
+                    onClick={() => setShowUpdateModal(false)}
+                    type="button"
+                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+                  >
+                    Annuler
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -571,47 +756,48 @@ const DoctorShifts = () => {
       {showDeleteModal && (
         <div className="fixed z-10 inset-0 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div
-              className="fixed inset-0 transition-opacity"
-              aria-hidden="true"
-            >
+            <div className="fixed inset-0 transition-opacity">
               <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
             </div>
-            <span
-              className="hidden sm:inline-block sm:align-middle sm:h-screen"
-              aria-hidden="true"
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
+            <div
+              className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="modal-headline"
             >
-              &#8203;
-            </span>
-            <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-              <div>
-                <div className="mt-3 text-center sm:mt-5">
-                  <h3
-                    className="text-lg leading-6 font-medium text-gray-900"
-                    id="modal-title"
-                  >
-                    Supprimer l'horaire
-                  </h3>
-                  <div className="mt-2">
-                    <p>
-                      Êtes-vous sûr de vouloir supprimer l'horaire pour{" "}
-                      {selectedShift.doctor.firstName}{" "}
-                      {selectedShift.doctor.lastName} le {selectedShift.date}{" "}
-                      pour le quart de travail {selectedShift.shiftType} ?
-                    </p>
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="sm:flex sm:items-start">
+                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <h3
+                      className="text-lg leading-6 font-medium text-gray-900"
+                      id="modal-headline"
+                    >
+                      Supprimer l'horaire
+                    </h3>
+                    <div className="mt-2">
+                      <p className="text-sm text-gray-500">
+                        Êtes-vous sûr de vouloir supprimer l'horaire pour{" "}
+                        {selectedShift.doctor.prenom} {selectedShift.doctor.nom}{" "}
+                        le {selectedShift.shiftDate} pour le quart de travail{" "}
+                        {selectedShift.shiftType} ?{" "}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="mt-5 sm:mt-6">
+              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                 <button
                   onClick={() => deleteShift(selectedShift)}
-                  className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-500 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
+                  type="button"
+                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
                 >
                   Supprimer
                 </button>
                 <button
                   onClick={() => setShowDeleteModal(false)}
-                  className="mt-3 inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:text-sm"
+                  type="button"
+                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
                 >
                   Annuler
                 </button>

@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import BedService from "../../services/bed.service";
 import moment from "moment";
 import ModalDeleteBed from "../../components/ModalDelete";
 import ModalDeleteAssignment from "../../components/ModalUnAffectation";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faMap,
+  faSnowflake,
+  faProcedures,
+} from "@fortawesome/free-solid-svg-icons";
 
 const Patients = () => {
   const { sectorId } = useParams();
+  const navigate = useNavigate();
   const [beds, setBeds] = useState([]);
   const [isDeleteModalBedOpen, setIsDeleteModalBedOpen] = useState(false);
   const [deleteBedId, setDeleteBedId] = useState(null);
@@ -76,10 +84,36 @@ const Patients = () => {
     return daysOccupied;
   };
 
+  const handleSectors = () => {
+    navigate(`/sectors`);
+  };
+
   return (
     <div className="p-4">
       <div className="flex items-center mb-4">
         <div className="flex items-center w-full">
+          <button
+            onClick={handleSectors}
+            className="mr-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg flex items-center"
+          >
+            <i className="fa fa-angle-double-left"></i>&nbsp; Au secteurs &nbsp;
+            <FontAwesomeIcon icon={faMap} className="ml-1" />
+          </button>
+          <button
+            disabled
+            className={`mr-4 font-bold py-2 px-4 rounded-lg flex items-center text-white ${
+              sectorId == 1
+                ? "bg-blue-700 hover:bg-blue-800"
+                : "bg-blue-500 hover:bg-blue-600"
+            }`}
+          >
+            Secteur&nbsp;
+            {sectorId == 1 ? "USI" : "froid"}&nbsp;&nbsp;
+            <FontAwesomeIcon
+              icon={sectorId == 1 ? faProcedures : faSnowflake}
+              className="mr-2"
+            />
+          </button>
           <input
             type="text"
             placeholder="Rechercher..."
@@ -123,7 +157,11 @@ const Patients = () => {
               >
                 <i className="fas fa-trash-alt"></i>
               </button>
-              <Link to={`/beds/${bed.id}`} className="no-underline">
+              <Link
+                to={`/beds/${bed.id}`}
+                className="no-underline"
+                state={{ sectorId }}
+              >
                 <h3
                   className={`text-lg font-semibold ${
                     getColorClass(bed).split(" ")[1]
@@ -214,7 +252,7 @@ const Patients = () => {
         isOpen={isDeleteModalAssignmentOpen}
         onRequestClose={() => setIsDeleteModalAssignmentOpen(false)}
         handleDelete={handleRemovePatient}
-        message="retirer l’affectation"
+        message="supprimer affectation"
       />
     </div>
   );

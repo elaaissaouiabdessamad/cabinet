@@ -1,15 +1,13 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import icon5 from "../../../assets/icon5.png";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
-import AddPrimaryConclusionForm from "../Forms/AddPrimaryConclusionForm";
+import { useLocation, useNavigate } from "react-router-dom";
 import PrimaryConclusionDisplay from "../Forms/PrimaryConclusionDisplay";
 import HeaderDossierShow from "../../../components/HeaderDossierShow";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 const PrimaryConclusion = () => {
-  const [primaryConclusionUpdate, setPrimaryConclusionUpdate] = useState(""); // Lifted state
+  const [primaryConclusionUpdate, setPrimaryConclusionUpdate] = useState("");
 
   const location = useLocation();
   const navigate = useNavigate();

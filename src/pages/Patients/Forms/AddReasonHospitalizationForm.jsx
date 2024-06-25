@@ -5,10 +5,8 @@ import "react-toastify/dist/ReactToastify.css";
 
 const AddReasonHospitalizationForm = ({ patientId, setReasonUpdate }) => {
   const [reason, setReason] = useState("");
-  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [successful, setSuccessful] = useState(false);
-  const [message, setMessage] = useState("");
+  const [isNew, setIsNew] = useState(false);
 
   useEffect(() => {
     const fetchReason = async () => {
@@ -19,14 +17,15 @@ const AddReasonHospitalizationForm = ({ patientId, setReasonUpdate }) => {
         );
         const reasonForHospitalization = response.data.hospitalization;
         setReason(reasonForHospitalization);
+        if (reasonForHospitalization === "" || !reasonForHospitalization) {
+          setIsNew(true);
+        }
         setLoading(false);
-        setError(null);
       } catch (error) {
         console.error(
           "Échec de la récupération de la raison de l'hospitalisation:",
           error
         );
-        setError("Échec de la récupération de la raison de l'hospitalisation.");
         setLoading(false);
       }
     };
@@ -46,6 +45,7 @@ const AddReasonHospitalizationForm = ({ patientId, setReasonUpdate }) => {
         patientId
       );
       setReasonUpdate(reason);
+      setIsNew(false);
       setLoading(false);
       toast.success(`Motif d'hospitalisation ${response.data.message}`);
     } catch (error) {
@@ -73,7 +73,9 @@ const AddReasonHospitalizationForm = ({ patientId, setReasonUpdate }) => {
           htmlFor="reason"
           className="block text-sm font-medium text-gray-700"
         >
-          Modifier motif d'hospitalisation:
+          {isNew
+            ? "Ajouter motif d'hospitalisation:"
+            : "Modifier motif d'hospitalisation (déjà enregistré):"}
         </label>
         <textarea
           id="reason"
@@ -83,19 +85,6 @@ const AddReasonHospitalizationForm = ({ patientId, setReasonUpdate }) => {
           className="mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm"
           rows="4"
         ></textarea>
-        {error && <p className="text-red-500">{error}</p>}
-        {message && (
-          <div className="text-sm text-center text-gray-700 dark:text-gray-200 mb-8 m-4">
-            <div
-              className={`${
-                successful ? "bg-green-500" : "bg-red-500"
-              } text-white font-bold rounded-lg border border-white shadow-lg p-5 m-4`}
-              role="alert"
-            >
-              {message}
-            </div>
-          </div>
-        )}
         <button
           type="submit"
           disabled={loading}

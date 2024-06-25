@@ -6,13 +6,13 @@
 
 .input-group input[type="text"],
 .input-group input[type="password"] {
-  padding-left: 2.5rem; /* Adjust as needed */
+  padding-left: 2.5rem;
 }
 
 .input-group i {
   position: absolute;
   top: 50%;
-  left: 0.75rem; /* Adjust as needed */
+  left: 0.75rem;
   transform: translateY(-50%);
 }
 

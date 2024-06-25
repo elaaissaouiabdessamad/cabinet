@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AddConclusionForm from "../Forms/AddConclusionForm";
-import ConclusionDisplay from "../Forms/ConclusionDisplay";
 import icon8 from "../../../assets/icon8.png";
 import HeaderDossier from "../../../components/HeaderDossier";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 const Conclusion = () => {
-  const [conclusionUpdate, setConclusionUpdate] = useState(""); // Lifted state
+  const [conclusionUpdate, setConclusionUpdate] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
   const patient = location.state?.patient;
@@ -46,12 +45,8 @@ const Conclusion = () => {
         <div className="pb-6 m-6">
           <AddConclusionForm
             patientId={patient?.id}
-            setConclusionUpdate={setConclusionUpdate} // Pass setter function
+            setConclusionUpdate={setConclusionUpdate}
           />
-          {/*<ConclusionDisplay
-            patientId={patient?.id}
-            conclusionUpdate={conclusionUpdate} // Pass conclusion state
-          />*/}
         </div>
       </div>
       <div className="flex justify-between w-full max-w-md mt-6">

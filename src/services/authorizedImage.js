@@ -1,7 +1,8 @@
+// src/services/AuthorizedImage.js
 import React, { useEffect, useState } from "react";
 import axiosInstance from "./axiosInstance";
 
-const AuthorizedImage = ({ src, alt, className }) => {
+const AuthorizedImage = ({ src, alt, className, onClick }) => {
   const [imageSrc, setImageSrc] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -25,7 +26,14 @@ const AuthorizedImage = ({ src, alt, className }) => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading image: {error}</p>;
 
-  return <img src={imageSrc} alt={alt} className={className} />;
+  return (
+    <img
+      src={imageSrc}
+      alt={alt}
+      className={`${className} cursor-pointer`}
+      onClick={() => onClick(imageSrc)}
+    />
+  );
 };
 
 export default AuthorizedImage;

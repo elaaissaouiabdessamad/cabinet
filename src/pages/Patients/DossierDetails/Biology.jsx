@@ -19,9 +19,6 @@ const Biology = () => {
   const [bilanFile, setBilanFile] = useState(null);
   const [conclusion, setConclusion] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [successful, setSuccessful] = useState(false);
-  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -109,19 +106,6 @@ const Biology = () => {
               value={conclusion}
               onChange={handleConclusionChange}
             ></textarea>
-            {error && <p className="text-red-500">{error}</p>}
-            {message && (
-              <div className="text-sm text-center text-gray-700 dark:text-gray-200 mb-8 m-4">
-                <div
-                  className={`${
-                    successful ? "bg-green-500" : "bg-red-500"
-                  } text-white font-bold rounded-lg border border-white shadow-lg p-5 m-4`}
-                  role="alert"
-                >
-                  {message}
-                </div>
-              </div>
-            )}
             <button
               type="submit"
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-4 rounded"

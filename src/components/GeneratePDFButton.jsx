@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
-import axios from "axios";
-import placeholderImage from "../assets/placeholder2.jpg";
+import axiosInstance from "../services/axiosInstance";
 
 const GeneratePDFButton = ({ patient }) => {
   const [base64Image, setBase64Image] = useState("");
@@ -19,7 +18,7 @@ const GeneratePDFButton = ({ patient }) => {
 
     const fetchImageAsBase64 = async () => {
       try {
-        const response = await import("../assets/placeholder2.jpg"); // Use import for local assets
+        const response = await import("../assets/placeholder2.jpg");
         const blob = await fetch(response.default).then((r) => r.blob());
         const base64String = await convertToBase64(blob);
         setBase64Image(`data:image/jpeg;base64,${base64String}`);
@@ -40,20 +39,20 @@ const GeneratePDFButton = ({ patient }) => {
     let endpoint;
     switch (type) {
       case "explorations":
-        endpoint = `http://localhost:8080/api/explorations/files/${url}`;
+        endpoint = `/explorations/files/${url}`;
         break;
       case "ecgs":
-        endpoint = `http://localhost:8080/api/ecgs/files/${url}`;
+        endpoint = `/ecgs/files/${url}`;
         break;
       case "biologies":
-        endpoint = `http://localhost:8080/api/biologies/files/${url}`;
+        endpoint = `/biologies/files/${url}`;
         break;
       default:
         return null;
     }
 
     try {
-      const response = await axios.get(endpoint, {
+      const response = await axiosInstance.get(endpoint, {
         responseType: "arraybuffer",
       });
       const base64String = btoa(

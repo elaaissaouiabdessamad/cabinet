@@ -1,20 +1,17 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import icon4 from "../../../assets/icon4.png";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import AddHistoryDiseaseForm from "../Forms/AddHistoryDiseaseForm";
-import HistoryDiseaseDisplay from "../Forms/HistoryDiseaseDisplay";
 import HeaderDossier from "../../../components/HeaderDossier";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 const HistoryDisease = () => {
-  const [historyDiseaseUpdate, setHistoryDiseaseUpdate] = useState(""); // Lifted state
+  const [historyDiseaseUpdate, setHistoryDiseaseUpdate] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
   const patient = location.state?.patient;
   const color = location.state?.color;
-  console.log(patient);
 
   const handlePrevious = () => {
     navigate("/antecedents", { state: { patient, color } });
@@ -52,10 +49,6 @@ const HistoryDisease = () => {
             patientId={patient?.id}
             setHistoryDiseaseUpdate={setHistoryDiseaseUpdate}
           />
-          {/*<HistoryDiseaseDisplay
-            patientId={patient.id}
-            historyDiseaseUpdate={historyDiseaseUpdate}
-          />*/}
         </div>
       </div>
       <div className="flex justify-between w-full max-w-md mt-6">

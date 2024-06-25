@@ -7,7 +7,7 @@ html, body {
 
 .dashboard-container {
   display: flex;
-  min-height: 100vh; /* Ensure at least viewport height */
+  min-height: 100vh;
   flex-direction: column;
 }
 
@@ -27,8 +27,8 @@ html, body {
 
 .content {
   display: flex;
-  flex: 1; /* Grow to take remaining space */
-  margin-left: 200px; /* Adjust based on sidebar width */
+  flex: 1;
+  margin-left: 200px;
   margin-top: 66px;
 
 }
@@ -37,7 +37,7 @@ html, body {
   position: fixed;
   left: 0;
   width: 200px;
-  height: 100vh; /* Full height */
+  height: 100vh;
   background-color: #e0e7ff;
   display: flex;
   flex-direction: column;
@@ -60,8 +60,8 @@ html, body {
 }
 
 .sidebar-item.active {
-  background-color: #8f8df2; /* New color for the active item */
-  color: white; /* Text color for the active item */
+  background-color: #8f8df2;
+  color: white;
 }
 
 

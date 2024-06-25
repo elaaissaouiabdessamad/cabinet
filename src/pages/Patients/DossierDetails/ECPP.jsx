@@ -14,8 +14,6 @@ const ECPP = () => {
 
   const [pulmonaryExamResult, setPulmonaryExamResult] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [successful, setSuccessful] = useState(false);
 
   const handlePulmonaryExamChange = (event) => {
     setPulmonaryExamResult(event.target.value);
@@ -37,7 +35,6 @@ const ECPP = () => {
       toast.success(
         `Examen clinique : pleuro pulmonaire ${response.data.message}`
       );
-      setSuccessful(true);
     } catch (error) {
       const resMessage =
         (error.response &&
