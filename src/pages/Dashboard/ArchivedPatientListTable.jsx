@@ -325,7 +325,9 @@ const ArchivedPatientListTable = () => {
             </table>
           </div>
         ) : (
-          <div className="text-center text-gray-500">Aucun patient trouvé.</div>
+          <div className="text-center text-gray-500">
+            Aucun patient archivé trouvé.
+          </div>
         )}
 
         <ModalDelete

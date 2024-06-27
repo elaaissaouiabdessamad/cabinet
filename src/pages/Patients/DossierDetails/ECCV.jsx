@@ -95,7 +95,7 @@ const ECVV = () => {
               type="text"
               required
               placeholder="Examen général"
-              className="w-full mb-6 p-4 border border-black"
+              className="w-full mb-6 p-4 border"
               value={generalExam}
               onChange={(e) => setGeneralExam(e.target.value)}
             ></textarea>
@@ -103,7 +103,7 @@ const ECVV = () => {
               type="text"
               required
               placeholder="Signes fonctionnels"
-              className="w-full mb-6 p-4 border border-black"
+              className="w-full mb-6 p-4 border"
               value={functionalSigns}
               onChange={(e) => setFunctionalSigns(e.target.value)}
             ></textarea>
@@ -111,7 +111,7 @@ const ECVV = () => {
               type="text"
               required
               placeholder="Signes physiques"
-              className="w-full p-4 border border-black"
+              className="w-full p-4 border"
               value={physicalSigns}
               onChange={(e) => setPhysicalSigns(e.target.value)}
             ></textarea>

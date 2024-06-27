@@ -82,6 +82,7 @@ const AddReasonHospitalizationForm = ({ patientId, setReasonUpdate }) => {
           value={reason}
           onChange={(e) => setReason(e.target.value)}
           required
+          placeholder="Entrez le motif d'hospitalisation"
           className="mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm"
           rows="4"
         ></textarea>

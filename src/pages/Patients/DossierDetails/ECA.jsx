@@ -78,7 +78,7 @@ const ECA = () => {
           </div>
         </div>
         <form onSubmit={handleSubmit}>
-          <div className="p-6 m-4 text-center">
+          <div className="p-6 m-4">
             <textarea
               required
               className="w-full h-32 p-2 border"

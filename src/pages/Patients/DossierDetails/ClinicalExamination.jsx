@@ -47,7 +47,7 @@ const ClinicalExamination = () => {
             state={{ patient, color }}
             className="no-underline"
           >
-            <button className="bg-gradient-to-b from-[#97bfe4] to-[#3472ab] mt-10 mb-10 border border-black hover:shadow-lg hover:shadow-xl hover:shadow-2xl hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg w-full">
+            <button className="bg-gradient-to-b from-[#97bfe4] to-[#3472ab] mt-5 mb-10 border border-black hover:shadow-lg hover:shadow-xl hover:shadow-2xl hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg w-full">
               Cardio vasculaire
             </button>
           </Link>

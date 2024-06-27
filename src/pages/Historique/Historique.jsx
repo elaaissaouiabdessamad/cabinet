@@ -13,12 +13,18 @@ import {
   FaSignInAlt,
   FaSignOutAlt,
   FaTimesCircle,
+  FaUserInjured,
+  FaClock,
 } from "react-icons/fa";
+
 import PatientService from "../../services/patient.service";
 
 const Historique = () => {
   const [patients, setPatients] = useState([]);
   const [expandedPatientId, setExpandedPatientId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [statusFilters, setStatusFilters] = useState({
     pasEncoreAssigne: true,
     actuellementHospitalise: true,
@@ -101,6 +107,18 @@ const Historique = () => {
     }));
   };
 
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleStartDateChange = (e) => {
+    setStartDate(e.target.value);
+  };
+
+  const handleEndDateChange = (e) => {
+    setEndDate(e.target.value);
+  };
+
   const isPatientVisible = (patientStatus) => {
     switch (patientStatus) {
       case "Pas encore assigné à aucun lit":
@@ -114,51 +132,108 @@ const Historique = () => {
     }
   };
 
+  const filterPatients = () => {
+    return patients.filter((patient) => {
+      const lastHistory = getLastBedAssignment(patient.bedAssignmentHistories);
+      const patientStatus = getPatientStatus(patient, lastHistory);
+      const matchesSearchTerm =
+        patient.id.toString().includes(searchTerm) ||
+        patient.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        patient.prenom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        patient.age.toString().includes(searchTerm) ||
+        patient.ville.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        patient.referenceID.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const isWithinDateRange =
+        (!startDate ||
+          new Date(lastHistory?.startDateTime) >= new Date(startDate)) &&
+        (!endDate || new Date(lastHistory?.endDateTime) <= new Date(endDate));
+      console.log(lastHistory?.endDateTime + "  " + endDate);
+      console.log(lastHistory?.endDateTime == Date(endDate));
+      return (
+        isPatientVisible(patientStatus) &&
+        matchesSearchTerm &&
+        isWithinDateRange
+      );
+    });
+  };
+
+  const filteredPatients = filterPatients();
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-4">Historique des patients</h1>
-      <div className="mb-4 ml-4 flex flex-col sm:flex-row">
-        <div className="flex items-center mr-4 mb-2 sm:mb-0">
-          <input
-            type="checkbox"
-            checked={statusFilters.pasEncoreAssigne}
-            onChange={() => handleStatusFilterChange("pasEncoreAssigne")}
-            className="mr-2"
-          />
-          <label>Pas encore assigné à aucun lit</label>
+      <div className="mb-4 p-4 bg-gray-100 rounded-lg shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center mb-4 justify-evenly">
+          <div className="flex items-center space-x-2 mb-2 sm:mb-0 sm:mr-4">
+            <input
+              type="checkbox"
+              checked={statusFilters.pasEncoreAssigne}
+              onChange={() => handleStatusFilterChange("pasEncoreAssigne")}
+              className="mr-1"
+            />
+            <label>Pas encore assigné à aucun lit</label>
+          </div>
+          <div className="flex items-center space-x-2 mb-2 sm:mb-0 sm:mr-4">
+            <input
+              type="checkbox"
+              checked={statusFilters.actuellementHospitalise}
+              onChange={() =>
+                handleStatusFilterChange("actuellementHospitalise")
+              }
+              className="mr-1"
+            />
+            <label>Actuellement hospitalisé</label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={statusFilters.sortiDeLhopital}
+              onChange={() => handleStatusFilterChange("sortiDeLhopital")}
+              className="mr-1"
+            />
+            <label>Sorti de l'hôpital</label>
+          </div>
         </div>
-        <div className="flex items-center mr-4 mb-2 sm:mb-0">
-          <input
-            type="checkbox"
-            checked={statusFilters.actuellementHospitalise}
-            onChange={() => handleStatusFilterChange("actuellementHospitalise")}
-            className="mr-2"
-          />
-          <label>Actuellement hospitalisé</label>
-        </div>
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            checked={statusFilters.sortiDeLhopital}
-            onChange={() => handleStatusFilterChange("sortiDeLhopital")}
-            className="mr-2"
-          />
-          <label>Sorti de l'hôpital</label>
+        <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4 justify-evenly">
+          <div className="flex items-center">
+            <label className="mr-2">Chercher par mot-clé:</label>
+            <input
+              type="text"
+              placeholder="Rechercher..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="border p-2 rounded-lg"
+            />
+          </div>
+          <div className="flex items-center">
+            <label className="mr-2">Date de début:</label>
+            <input
+              type="datetime-local"
+              value={startDate}
+              onChange={handleStartDateChange}
+              className="border p-2 rounded-lg"
+            />
+          </div>
+          <div className="flex items-center">
+            <label className="mr-2">Date de fin:</label>
+            <input
+              type="datetime-local"
+              value={endDate}
+              onChange={handleEndDateChange}
+              className="border p-2 rounded-lg"
+            />
+          </div>
         </div>
       </div>
+
       <div className="bg-white shadow-md rounded-md p-4">
-        {patients.filter((patient) => {
-          const lastHistory = getLastBedAssignment(
-            patient.bedAssignmentHistories
-          );
-          const patientStatus = getPatientStatus(patient, lastHistory);
-          return isPatientVisible(patientStatus);
-        }).length === 0 ? (
+        {filteredPatients.length === 0 ? (
           <div className="text-center text-gray-500 py-4">
             Aucun patient trouvé.
           </div>
         ) : (
-          patients
+          filteredPatients
             .filter((patient) => {
               const lastHistory = getLastBedAssignment(
                 patient.bedAssignmentHistories
@@ -178,28 +253,24 @@ const Historique = () => {
                   className="mb-8 border border-gray-200 rounded-lg"
                 >
                   <div className="flex items-center justify-between border-b border-gray-200 py-4 px-4 bg-gray-50 rounded-t-lg">
-                    <div className="flex flex-col md:flex-row md:items-center">
+                    <div className="flex flex-row md:items-center justify-end">
+                      <FaUserInjured className="mr-2 text-[#003366]" />
                       <span className="font-semibold text-lg mr-2">
                         {`Patient ${patient.prenom} ${patient.nom} / ${patient.referenceID}`}
                       </span>
-                      <span
-                        className={`${getStatusColorClass(
-                          patientStatus
-                        )} flex items-center`}
-                      >
-                        {getStatusIcon(patientStatus)}
-                        <strong className="ml-1"> {patientStatus}</strong>
-                      </span>
+
                       {lastHistory && (
-                        <div className="mt-2 md:mt-0 md:ml-4">
+                        <div className="mt-2 md:mt-0 md:ml-4 space-x-2">
                           {lastHistory.startDateTime &&
                             !lastHistory.endDateTime && (
                               <span>
+                                <FaSignInAlt className="mr-2 text-[#003366] fa-regular" />
                                 <span className="font-semibold">Entré le </span>
                                 {new Date(
                                   lastHistory.startDateTime
                                 ).toLocaleDateString("fr-FR")}
                                 <br />
+                                <FaClock className="mr-2 text-[#003366] fa-regular" />
                                 <span className="font-semibold">Période </span>
                                 {Math.floor(
                                   (new Date() -
@@ -307,6 +378,7 @@ const Historique = () => {
 
                           {lastHistory.endDateTime && (
                             <span>
+                              <FaSignOutAlt className="mr-2 text-[#003366] fa-regular" />
                               <span className="font-semibold">Sorti le </span>
                               {new Date(
                                 lastHistory.endDateTime
@@ -314,6 +386,7 @@ const Historique = () => {
                               {lastHistory.startDateTime && (
                                 <span>
                                   <br />
+                                  <FaClock className="mr-2 text-[#003366] fa-regular" />
                                   <span className="font-semibold">
                                     Période{" "}
                                   </span>
@@ -428,10 +501,24 @@ const Historique = () => {
                         </div>
                       )}
                     </div>
-                    <div className="flex items-center mt-2 md:mt-0">
+                    <div
+                      className={`flex items-center mt-2 md:mt-0 ${
+                        patientStatus === "Pas encore assigné à aucun lit"
+                          ? "mr-9"
+                          : ""
+                      }`}
+                    >
+                      <span
+                        className={`${getStatusColorClass(
+                          patientStatus
+                        )} flex items-center`}
+                      >
+                        <strong className="mr-1"> {patientStatus}</strong>
+                        {getStatusIcon(patientStatus)}
+                      </span>
                       <button
                         onClick={() => handleViewDossierShow(patient)}
-                        className="bg-[#8f8df2] text-white py-2 px-4 rounded hover:bg-[#7f7de2] transition"
+                        className="bg-[#8f8df2] text-white py-2 px-4 rounded hover:bg-[#7f7de2] transition mt-2 md:mt-0 md:ml-4"
                       >
                         Voir le dossier
                       </button>

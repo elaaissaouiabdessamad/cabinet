@@ -1,21 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCog, faPowerOff, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import LogoutModal from "./LogoutModal";
 
 const Header = ({ currentTime, formatTime, username, logout }) => {
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
 
   const handleLogout = async () => {
     try {
       await axios.post("http://localhost:3000/api/auth/logout");
-
       logout();
       navigate("/login");
     } catch (error) {
-      console.error("Erreur lors de la déconnexion:", error);
+      console.error("Error during logout:", error);
     }
+  };
+
+  const handleIconClick = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  const handleConfirmLogout = () => {
+    handleLogout();
+    setShowModal(false);
   };
 
   return (
@@ -43,11 +57,16 @@ const Header = ({ currentTime, formatTime, username, logout }) => {
         </Link>
         <button
           className="ml-8 text-red-500 hover:text-red-700 text-xl"
-          onClick={handleLogout}
+          onClick={handleIconClick}
         >
           <FontAwesomeIcon icon={faPowerOff} />
         </button>
       </div>
+      <LogoutModal
+        show={showModal}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmLogout}
+      />
     </div>
   );
 };

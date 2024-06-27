@@ -84,6 +84,7 @@ const AddPrimaryConclusionForm = ({
           value={primaryConclusion}
           onChange={(e) => setPrimaryConclusion(e.target.value)}
           required
+          placeholder="Entrez la conclusion primaire"
           className="mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm"
           rows="4"
         ></textarea>

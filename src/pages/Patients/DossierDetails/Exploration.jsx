@@ -46,7 +46,7 @@ const Exploration = () => {
             Exploration
           </div>
         </div>
-        <div className="p-6">
+        <div className="p-6 m-2">
           <Link
             to="/exploration/radio-throax"
             state={{ patient, color }}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import MedicalService from "../../../services/medical.service";
 import icon11 from "../../../assets/icon11.png";
@@ -19,6 +19,7 @@ const Biology = () => {
   const [bilanFile, setBilanFile] = useState(null);
   const [conclusion, setConclusion] = useState("");
   const [loading, setLoading] = useState(false);
+  const fileInputRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,6 +30,9 @@ const Biology = () => {
       formData.append("conclusion", conclusion);
       const response = await MedicalService.addBiology(formData, patient.id);
       setLoading(false);
+      setBilanFile(null);
+      setConclusion("");
+      fileInputRef.current.value = "";
       toast.success(response.data.message);
     } catch (error) {
       const resMessage =
@@ -41,8 +45,6 @@ const Biology = () => {
       toast.error(resMessage);
     }
   };
-  console.log("Voir details patient--faut medical dossier");
-  console.log(patient);
 
   const handleFileChange = (e) => {
     setBilanFile(e.target.files[0]);
@@ -51,6 +53,14 @@ const Biology = () => {
   const handleConclusionChange = (e) => {
     setConclusion(e.target.value);
   };
+
+  {
+    /*const handleClear = () => {
+    setBilanFile(null);
+    setConclusion("");
+    fileInputRef.current.value = "";
+  };*/
+  }
 
   const handlePrevious = () => {
     navigate("/exploration", { state: { patient, color } });
@@ -67,6 +77,7 @@ const Biology = () => {
       state: { patient, color },
     });
   };
+
   return (
     <div className="flex flex-col items-center p-10">
       <ToastContainer
@@ -96,23 +107,38 @@ const Biology = () => {
         </div>
         <form onSubmit={handleSubmit}>
           <div className="p-6 m-4 flex justify-between items-center">
-            <input type="file" accept=".pdf" onChange={handleFileChange} />
+            <input
+              type="file"
+              accept=".pdf"
+              onChange={handleFileChange}
+              ref={fileInputRef}
+            />
             <img src={iconFolder} alt="Folder Icon" className="h-14 w-14" />
           </div>
-          <div className="p-6 m-4 text-center">
+          <div className="p-6 m-4">
             <textarea
               className="w-full h-32 p-2 border"
               placeholder="Conclusion"
               value={conclusion}
               onChange={handleConclusionChange}
             ></textarea>
-            <button
-              type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-4 rounded"
-              disabled={loading}
-            >
-              {loading ? "Envoi en cours..." : "Envoyer la biologie"}
-            </button>
+            <div className="flex justify-between">
+              <button
+                type="submit"
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-4 rounded"
+                disabled={loading}
+              >
+                {loading ? "Envoi en cours..." : "Envoyer la biologie"}
+              </button>
+              {/*<button
+                type="button"
+                onClick={handleClear}
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 m-4 rounded"
+                disabled={loading}
+              >
+                Vider
+              </button>*/}
+            </div>
           </div>
         </form>
       </div>

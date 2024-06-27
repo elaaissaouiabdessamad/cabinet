@@ -20,7 +20,7 @@ const AddAntecedentForm = ({ patientId, setAntecedentUpdate }) => {
         patientId
       );
       setLoading(false);
-      toast.success("Antecedents ajoutés avec succès.");
+      toast.success("Antécédents ajoutés avec succès.");
       setAntecedentUpdate(Date.now());
     } catch (error) {
       const resMessage =
@@ -51,6 +51,7 @@ const AddAntecedentForm = ({ patientId, setAntecedentUpdate }) => {
           value={personal}
           onChange={(e) => setPersonal(e.target.value)}
           required
+          placeholder="Personnels"
           className="mt-1 p-2 border border-gray-300 rounded-md block w-full shadow-sm"
         ></textarea>
       </div>
@@ -63,6 +64,7 @@ const AddAntecedentForm = ({ patientId, setAntecedentUpdate }) => {
           value={familial}
           onChange={(e) => setFamilial(e.target.value)}
           required
+          placeholder="Familiaux"
           className="mt-1 p-2 border border-gray-300 rounded-md block w-full shadow-sm"
         ></textarea>
       </div>
@@ -75,6 +77,7 @@ const AddAntecedentForm = ({ patientId, setAntecedentUpdate }) => {
           value={cardiovascularRiskFactors}
           onChange={(e) => setCardiovascularRiskFactors(e.target.value)}
           required
+          placeholder="Facteurs de risque cardio-vasculaire"
           className="mt-1 p-2 border border-gray-300 rounded-md block w-full shadow-sm"
         ></textarea>
         <button

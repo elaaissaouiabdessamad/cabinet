@@ -38,7 +38,7 @@ const AddDiagnosticForm = ({ patientId }) => {
         position="bottom-right"
         autoClose={5000}
       />{" "}
-      <div className="mb-4">
+      <div className="mb-6">
         <label className="block text-sm font-medium text-gray-700">
           Diagnostic:
         </label>
@@ -47,10 +47,11 @@ const AddDiagnosticForm = ({ patientId }) => {
           value={diagnosis}
           onChange={(e) => setDiagnosis(e.target.value)}
           required
+          placeholder="Diagnostic"
           className="mt-1 p-2 border border-gray-300 rounded-md block w-full shadow-sm"
         ></textarea>
       </div>
-      <div className="mb-4">
+      <div className="mb-2">
         <label className="block text-sm font-medium text-gray-700">
           Diagnostic différentiel:
         </label>
@@ -59,6 +60,7 @@ const AddDiagnosticForm = ({ patientId }) => {
           value={diagnosisDifferentiel}
           onChange={(e) => setDiagnosisDifferentiel(e.target.value)}
           required
+          placeholder="Diagnostic différentiel"
           className="mt-1 p-2 border border-gray-300 rounded-md block w-full shadow-sm"
         ></textarea>
         <button

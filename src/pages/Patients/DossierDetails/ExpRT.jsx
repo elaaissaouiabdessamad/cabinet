@@ -84,13 +84,12 @@ const ExpRT = () => {
             Exploration &nbsp;<span className="text-sm">/ Radio de thorax</span>
           </div>
         </div>
-        {/* Exploration form */}
         <form onSubmit={handleSubmit}>
           <div className="p-6 m-4 flex justify-between items-center">
             <input type="file" accept="image/*" onChange={handleImageChange} />
             <img src={iconFolder} alt="icone dossier" className="h-14 w-14" />
           </div>
-          <div className="p-6 m-4 text-center">
+          <div className="p-6 m-4">
             <textarea
               className="w-full h-32 p-2 border"
               placeholder="Conclusion"
