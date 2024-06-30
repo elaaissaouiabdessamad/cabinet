@@ -567,46 +567,47 @@ const NurseShifts = () => {
             >
               Ajouter une infirmière
             </button>
-            <hr />
           </form>
         )}
 
         {nurses.length > 0 ? (
-          <div className="space-y-2 mt-4">
-            <div className="overflow-x-auto">
-              <table className="min-w-full bg-white">
-                <thead>
-                  <tr>
-                    <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Nom
-                    </th>
-                    <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Spécialité
-                    </th>
-                    <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Numéro de téléphone
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {nurses.map((nurse, index) => (
-                    <tr
-                      key={nurse.id}
-                      className={`${
-                        index % 2 === 0 ? "bg-white" : "bg-gray-100"
-                      } border-b`}
-                    >
-                      <td className="px-4 py-2">
-                        {nurse.prenom} {nurse.nom}
-                      </td>
-                      <td className="px-4 py-2">{nurse.specialty}</td>
-                      <td className="px-4 py-2">{nurse.phoneNumber}</td>
+          <>
+            <div className="space-y-2 mt-4">
+              <div className="overflow-x-auto">
+                <table className="min-w-full bg-white">
+                  <thead>
+                    <tr>
+                      <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Nom
+                      </th>
+                      <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Spécialité
+                      </th>
+                      <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Numéro de téléphone
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {nurses.map((nurse, index) => (
+                      <tr
+                        key={nurse.id}
+                        className={`${
+                          index % 2 === 0 ? "bg-white" : "bg-gray-100"
+                        } border-b`}
+                      >
+                        <td className="px-4 py-2">
+                          {nurse.prenom} {nurse.nom}
+                        </td>
+                        <td className="px-4 py-2">{nurse.specialty}</td>
+                        <td className="px-4 py-2">{nurse.phoneNumber}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
+          </>
         ) : (
           <></>
         )}

@@ -13,6 +13,7 @@ import {
   FaSignInAlt,
   FaSignOutAlt,
   FaTimesCircle,
+  FaUserMd,
   FaUserInjured,
   FaClock,
 } from "react-icons/fa";
@@ -137,10 +138,10 @@ const Historique = () => {
       const lastHistory = getLastBedAssignment(patient.bedAssignmentHistories);
       const patientStatus = getPatientStatus(patient, lastHistory);
       const matchesSearchTerm =
-        patient.id.toString().includes(searchTerm) ||
+        //patient.id.toString().includes(searchTerm) ||
         patient.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
         patient.prenom.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        patient.age.toString().includes(searchTerm) ||
+        //patient.age.toString().includes(searchTerm) ||
         patient.ville.toLowerCase().includes(searchTerm.toLowerCase()) ||
         patient.referenceID.toLowerCase().includes(searchTerm.toLowerCase());
 
@@ -148,8 +149,7 @@ const Historique = () => {
         (!startDate ||
           new Date(lastHistory?.startDateTime) >= new Date(startDate)) &&
         (!endDate || new Date(lastHistory?.endDateTime) <= new Date(endDate));
-      console.log(lastHistory?.endDateTime + "  " + endDate);
-      console.log(lastHistory?.endDateTime == Date(endDate));
+
       return (
         isPatientVisible(patientStatus) &&
         matchesSearchTerm &&
@@ -161,7 +161,7 @@ const Historique = () => {
   const filteredPatients = filterPatients();
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-6">
       <h1 className="text-3xl font-bold mb-4">Historique des patients</h1>
       <div className="mb-4 p-4 bg-gray-100 rounded-lg shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center mb-4 justify-evenly">
@@ -227,7 +227,7 @@ const Historique = () => {
         </div>
       </div>
 
-      <div className="bg-white shadow-md rounded-md p-4">
+      <div className="bg-white shadow-md rounded-md py-4 px-4">
         {filteredPatients.length === 0 ? (
           <div className="text-center text-gray-500 py-4">
             Aucun patient trouvé.
@@ -250,9 +250,15 @@ const Historique = () => {
               return (
                 <div
                   key={patient.id}
-                  className="mb-8 border border-gray-200 rounded-lg"
+                  className="mb-6 border border-gray-200 rounded-lg"
                 >
-                  <div className="flex items-center justify-between border-b border-gray-200 py-4 px-4 bg-gray-50 rounded-t-lg">
+                  <div
+                    className={`flex items-center justify-between py-4 px-4 bg-gray-50 ${
+                      expandedPatientId === patient.id
+                        ? "border-b border-gray-300 rounded-t-lg"
+                        : "rounded-lg"
+                    } `}
+                  >
                     <div className="flex flex-row md:items-center justify-end">
                       <FaUserInjured className="mr-2 text-[#003366]" />
                       <span className="font-semibold text-lg mr-2">
@@ -341,19 +347,17 @@ const Historique = () => {
                                     ) === 1
                                       ? "minute"
                                       : "minutes"}
-                                    {", "}
                                   </span>
                                 )}
                                 {Math.floor(
-                                  ((((new Date() -
-                                    new Date(lastHistory.startDateTime)) %
-                                    (1000 * 60 * 60 * 24)) %
-                                    (1000 * 60 * 60)) %
-                                    (1000 * 60)) /
+                                  (new Date() -
+                                    new Date(lastHistory.startDateTime)) /
                                     1000
-                                ) > 0 && (
+                                ) < 60 ? (
+                                  <span>&lt; 1 min</span>
+                                ) : (
                                   <span>
-                                    {Math.floor(
+                                    {/*Math.floor(
                                       ((((new Date() -
                                         new Date(lastHistory.startDateTime)) %
                                         (1000 * 60 * 60 * 24)) %
@@ -370,12 +374,11 @@ const Historique = () => {
                                         1000
                                     ) === 1
                                       ? "seconde"
-                                      : "secondes"}
+                                      : "secondes"*/}
                                   </span>
                                 )}
                               </span>
                             )}
-
                           {lastHistory.endDateTime && (
                             <span>
                               <FaSignOutAlt className="mr-2 text-[#003366] fa-regular" />
@@ -459,19 +462,17 @@ const Historique = () => {
                                       ) === 1
                                         ? "minute"
                                         : "minutes"}
-                                      {", "}
                                     </span>
                                   )}
                                   {Math.floor(
-                                    ((((new Date(lastHistory.endDateTime) -
-                                      new Date(lastHistory.startDateTime)) %
-                                      (1000 * 60 * 60 * 24)) %
-                                      (1000 * 60 * 60)) %
-                                      (1000 * 60)) /
+                                    (new Date(lastHistory.endDateTime) -
+                                      new Date(lastHistory.startDateTime)) /
                                       1000
-                                  ) > 0 && (
+                                  ) < 60 ? (
+                                    <span>&lt; 1 min</span>
+                                  ) : (
                                     <span>
-                                      {Math.floor(
+                                      {/* {Math.floor(
                                         ((((new Date(lastHistory.endDateTime) -
                                           new Date(lastHistory.startDateTime)) %
                                           (1000 * 60 * 60 * 24)) %
@@ -488,7 +489,7 @@ const Historique = () => {
                                           1000
                                       ) === 1
                                         ? "seconde"
-                                        : "secondes"}
+                                        : "secondes"} */}
                                     </span>
                                   )}
                                 </span>
@@ -537,11 +538,13 @@ const Historique = () => {
                     </div>
                   </div>
                   {expandedPatientId === patient.id && (
-                    <div className="px-4 py-2 bg-white rounded-b-lg">
+                    <div className="px-4 pb-1 bg-white rounded-b-lg">
                       {patient.bedAssignmentHistories.map((history, index) => (
                         <div
                           key={index}
-                          className="border-t border-gray-300 pt-4 mt-4 grid grid-cols-3 gap-4 items-center text-center"
+                          className={`pt-4 mb-2 grid grid-cols-4 items-center text-center ${
+                            index !== 0 ? "border-t border-gray-300" : ""
+                          }`}
                         >
                           <div className="flex flex-col items-center">
                             <FaSignInAlt className="text-green-500 mb-2" />
@@ -581,6 +584,13 @@ const Historique = () => {
                             <span>
                               <span className="font-semibold">Lit :</span>{" "}
                               {history.bedAssignedId}
+                            </span>
+                          </div>
+                          <div className="flex flex-col items-center">
+                            <FaUserMd className="text-yellow-500 mb-2" />
+                            <span>
+                              <span className="font-semibold">Médecin :</span>{" "}
+                              {history.doctorDetails.split("-")[0]}
                             </span>
                           </div>
                         </div>

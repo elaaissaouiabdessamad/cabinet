@@ -153,7 +153,7 @@ const Patients = () => {
                   setDeleteBedId(bed.id);
                   setIsDeleteModalBedOpen(true);
                 }}
-                className="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 align-center text-center flex items-center justify-center rounded-full hover:bg-red-600 transition duration-200 z-10"
+                className="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 align-center text-center flex items-center justify-center rounded-full hover:bg-red-600 transition duration-200"
               >
                 <i className="fas fa-trash-alt"></i>
               </button>

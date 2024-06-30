@@ -43,6 +43,10 @@ const addAssignment = (doctorId, patientId, assignmentData) => {
   );
 };
 
+const deleteAssignment = (assignmentId) => {
+  return axiosInstance.delete(`/room-assignments/${assignmentId}`);
+};
+
 const PatientService = {
   addPatient,
   getPatientById,
@@ -52,6 +56,7 @@ const PatientService = {
   deletePatient,
   getAssignmentsByDateRange,
   addAssignment,
+  deleteAssignment,
 };
 
 export default PatientService;
