@@ -50,7 +50,7 @@ function Login({ login }) {
         autoClose={5000}
       />
       <img src={Logo} alt="Logo" className="mr-64 w-64 mb-6" />
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
         <form className="space-y-6" onSubmit={handleLogin}>
           <div className="relative">
             <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">

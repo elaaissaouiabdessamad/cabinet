@@ -5,7 +5,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import dayjs from "dayjs";
 import "dayjs/locale/fr";
+import axiosInstance from "../../services/axiosInstance";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ModalDelete from "../../components/ModalDelete";
 import {
   faPlus,
   faMinus,
@@ -17,6 +19,7 @@ import {
   faEye,
 } from "@fortawesome/free-solid-svg-icons";
 import ReactTooltip from "react-tooltip";
+import ModalEdit from "../../components/ModalEdit";
 
 const NurseShifts = () => {
   const [shifts, setShifts] = useState([]);
@@ -35,11 +38,15 @@ const NurseShifts = () => {
   });
   const [isNurseFormVisible, setIsNurseFormVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedNurse, setSelectedNurse] = useState(null);
   const [selectedShift, setSelectedShift] = useState(null);
   const [selectedShiftNotAdded, setSelectedShiftNotAdded] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteNurseId, setDeleteNurseId] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   useEffect(() => {
     if (startDate && endDate) {
@@ -64,6 +71,16 @@ const NurseShifts = () => {
         setShifts(response.data);
       }
     );
+  };
+
+  const handleEdit = (nurse) => {
+    setSelectedNurse(nurse);
+    setIsEditModalOpen(true);
+  };
+
+  const handleNurseChangeModal = (e) => {
+    const { name, value } = e.target;
+    setSelectedNurse((prevNurse) => ({ ...prevNurse, [name]: value }));
   };
 
   const fetchNurses = () => {
@@ -152,6 +169,30 @@ const NurseShifts = () => {
       .catch(() => {
         toast.error("Échec de l'ajout de l'infirmière. Veuillez réessayer.");
       });
+  };
+
+  const handleNurseUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      await axiosInstance.put(`nurses/${selectedNurse.id}`, selectedNurse);
+      toast.success("Infirmière modifiée avec succès.");
+      fetchNurses();
+      setIsEditModalOpen(false);
+    } catch (error) {
+      toast.error("Erreur lors de la modification de l'infirmière.");
+    }
+  };
+
+  const handleDeleteNurse = async () => {
+    try {
+      await axiosInstance.delete(`nurses/${deleteNurseId}`);
+      toast.success("Infirmière supprimée avec succès.");
+      fetchNurses();
+      fetchShifts();
+    } catch (error) {
+      toast.error("Erreur lors de la suppression de l'infirmière.");
+    }
+    setIsDeleteModalOpen(false);
   };
 
   const getNurseShift = (date, shiftType) => {
@@ -571,45 +612,68 @@ const NurseShifts = () => {
         )}
 
         {nurses.length > 0 ? (
-          <>
-            <div className="space-y-2 mt-4">
-              <div className="overflow-x-auto">
-                <table className="min-w-full bg-white">
-                  <thead>
-                    <tr>
-                      <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Nom
-                      </th>
-                      <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Spécialité
-                      </th>
-                      <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Numéro de téléphone
-                      </th>
+          <div className="space-y-2 mt-4">
+            <div className="overflow-x-auto">
+              <table className="min-w-full bg-white">
+                <thead>
+                  <tr>
+                    <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Nom
+                    </th>
+                    <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Spécialité
+                    </th>
+                    <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Numéro de téléphone
+                    </th>
+                    <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {nurses.map((nurse, index) => (
+                    <tr
+                      key={nurse.id}
+                      className={`${
+                        index % 2 === 0 ? "bg-white" : "bg-gray-100"
+                      } border-b`}
+                    >
+                      <td className="px-4 py-2">
+                        {nurse.prenom} {nurse.nom}
+                      </td>
+                      <td className="px-4 py-2">{nurse.specialty}</td>
+                      <td className="px-4 py-2">{nurse.phoneNumber}</td>
+                      <td className="px-4 py-2 flex space-x-2">
+                        <button
+                          onClick={() => handleEdit(nurse)}
+                          className="text-blue-500 hover:text-blue-700"
+                        >
+                          <FontAwesomeIcon icon={faEdit} className="mr-2" />
+                        </button>
+                        {/*handleDelete(nurse.id) */}
+                        <button
+                          onClick={() => {
+                            setDeleteNurseId(nurse.id);
+                            setIsDeleteModalOpen(true);
+                          }}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <FontAwesomeIcon icon={faTrash} className="mr-2" />
+                        </button>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {nurses.map((nurse, index) => (
-                      <tr
-                        key={nurse.id}
-                        className={`${
-                          index % 2 === 0 ? "bg-white" : "bg-gray-100"
-                        } border-b`}
-                      >
-                        <td className="px-4 py-2">
-                          {nurse.prenom} {nurse.nom}
-                        </td>
-                        <td className="px-4 py-2">{nurse.specialty}</td>
-                        <td className="px-4 py-2">{nurse.phoneNumber}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          </>
+          </div>
         ) : (
-          <></>
+          <div className="space-y-2 mt-4">
+            <div className="overflow-x-auto">
+              <p>Aucune infirmière trouvée.</p>
+            </div>
+          </div>
         )}
       </div>
       {showAddModal && (
@@ -813,6 +877,19 @@ const NurseShifts = () => {
           </div>
         </div>
       )}
+      <ModalEdit
+        isOpen={isEditModalOpen}
+        onRequestClose={() => setIsEditModalOpen(false)}
+        nurse={selectedNurse}
+        handleChange={handleNurseChangeModal}
+        handleSubmit={handleNurseUpdate}
+      />
+      <ModalDelete
+        isOpen={isDeleteModalOpen}
+        onRequestClose={() => setIsDeleteModalOpen(false)}
+        handleDelete={handleDeleteNurse}
+        message={`supprimer infirmière ${selectedNurse?.prenom} ${selectedNurse?.nom}`}
+      />
     </div>
   );
 };

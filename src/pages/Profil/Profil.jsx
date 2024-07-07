@@ -4,7 +4,17 @@ import { FaLock, FaUnlock } from "react-icons/fa";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import zxcvbn from "zxcvbn";
 import DoctorService from "../../services/doctor.service";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPencilAlt,
+  faUser,
+  faUserMd,
+  faPhone,
+  faEnvelope,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
 
 const Profile = () => {
   const userData = JSON.parse(localStorage.getItem("userData"));
@@ -19,6 +29,7 @@ const Profile = () => {
     specialty: "",
     phoneNumber: "",
   });
+  const [passwordScore, setPasswordScore] = useState(0);
 
   const navigate = useNavigate();
 
@@ -38,7 +49,7 @@ const Profile = () => {
       }
     };
     fetchDoctorInfo(userData.userId);
-  }, []);
+  }, [userData.userId]);
 
   const logout = () => {
     localStorage.removeItem("activeLink");
@@ -51,6 +62,11 @@ const Profile = () => {
 
     if (newPassword !== confirmNewPassword) {
       toast.error("Les nouveaux mots de passe ne correspondent pas.");
+      return;
+    }
+
+    if (passwordScore < 2) {
+      toast.error("Le nouveau mot de passe est trop faible.");
       return;
     }
 
@@ -78,6 +94,7 @@ const Profile = () => {
 
   const handleEditDoctor = () => {
     setEditDoctorInfo({
+      id: doctorInfo.id,
       nom: doctorInfo.nom,
       prenom: doctorInfo.prenom,
       specialty: doctorInfo.specialty,
@@ -91,8 +108,13 @@ const Profile = () => {
     setEditDoctorInfo({ ...editDoctorInfo, [name]: value });
   };
 
+  const handleEditModeChange = () => {
+    setEditMode(!editMode);
+  };
+
   const handleUpdateDoctor = async (e) => {
     e.preventDefault();
+    console.log("Updating doctor with info:", editDoctorInfo);
     try {
       await DoctorService.updateDoctor(doctorInfo.id, editDoctorInfo);
       setDoctorInfo(editDoctorInfo);
@@ -106,8 +128,49 @@ const Profile = () => {
     }
   };
 
+  const handlePasswordChange = (e) => {
+    const { value } = e.target;
+    setNewPassword(value);
+    const result = zxcvbn(value);
+    setPasswordScore(result.score);
+  };
+
+  const getPasswordStrengthColor = (score) => {
+    switch (score) {
+      case 0:
+        return "bg-red-500";
+      case 1:
+        return "bg-orange-500";
+      case 2:
+        return "bg-yellow-500";
+      case 3:
+        return "bg-blue-500";
+      case 4:
+        return "bg-green-500";
+      default:
+        return "";
+    }
+  };
+
+  const getPasswordStrengthTextColor = (score) => {
+    switch (score) {
+      case 0:
+        return "text-red-500";
+      case 1:
+        return "text-orange-500";
+      case 2:
+        return "text-yellow-500";
+      case 3:
+        return "text-blue-500";
+      case 4:
+        return "text-green-500";
+      default:
+        return "";
+    }
+  };
+
   return (
-    <div className="max-w-lg mx-auto mb-6">
+    <div className="w-2/3 mx-auto mb-6">
       <ToastContainer
         draggable
         closeOnClick
@@ -115,91 +178,151 @@ const Profile = () => {
         autoClose={5000}
       />
       <div className="mb-4 border-t mt-6 pt-4 p-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold mb-4">Profile</h2>
-        <div className="mb-4">
-          <strong>Username:</strong> {userData.username}
+        <h2 className="text-2xl font-bold mb-4 flex items-center">Profile</h2>
+        <div className="flex items-center mb-4">
+          <FontAwesomeIcon icon={faUser} className="text-gray-500 mr-2" />
+          <div>
+            <strong>Username:</strong> {userData.username}
+          </div>
         </div>
-        <div className="mb-4">
-          <strong>Email:</strong> {userData.email}
+        <div className="flex items-center mb-4">
+          <FontAwesomeIcon icon={faEnvelope} className="text-gray-500 mr-2" />
+          <div>
+            <strong>Email:</strong> {userData.email}
+          </div>
         </div>
       </div>
 
       {doctorInfo && (
         <div className="mb-4 border-t mt-6 pt-4 p-6 bg-white rounded-lg shadow-md">
-          <h3 className="text-xl font-bold mb-2">Détails du médecin</h3>
-          {!editMode ? (
-            <>
-              <div className="mb-2">
-                <strong>Nom:</strong> {doctorInfo.nom}
-              </div>
-              <div className="mb-2">
-                <strong>Prénom:</strong> {doctorInfo.prenom}
-              </div>
-              <div className="mb-2">
-                <strong>Specialtité:</strong> {doctorInfo.specialty}
-              </div>
-              <div className="mb-2">
-                <strong>Téléphone:</strong> {doctorInfo.phoneNumber}
-              </div>
+          <div className="flex items-center mb-3">
+            <h3 className="text-xl font-bold mr-5">Détails du médecin</h3>
+            {!editMode ? (
               <button
                 onClick={handleEditDoctor}
-                className="py-2 mt-4 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300"
+                className="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300 flex items-center"
               >
+                <FontAwesomeIcon icon={faPencilAlt} className="mr-2" />
                 Modifier les données du médecin
               </button>
-            </>
+            ) : (
+              ""
+            )}
+          </div>
+          {!editMode ? (
+            <div className="space-y-4">
+              <div className="flex items-center space-x-4">
+                <FontAwesomeIcon icon={faUser} className="text-gray-600" />
+                <div>
+                  <strong>Prénom:</strong> {doctorInfo.prenom}
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <FontAwesomeIcon icon={faUser} className="text-gray-600" />
+                <div>
+                  <strong>Nom:</strong> {doctorInfo.nom}
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <FontAwesomeIcon icon={faUserMd} className="text-gray-600" />
+                <div>
+                  <strong>Spécialité:</strong> {doctorInfo.specialty}
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <FontAwesomeIcon icon={faPhone} className="text-gray-600" />
+                <div>
+                  <strong>Téléphone:</strong> {doctorInfo.phoneNumber}
+                </div>
+              </div>
+            </div>
           ) : (
             <form className="space-y-6" onSubmit={handleUpdateDoctor}>
-              <div className="relative">
-                <input
-                  type="text"
-                  name="nom"
-                  value={editDoctorInfo.nom}
-                  onChange={handleDoctorChange}
-                  placeholder="Nom"
-                  className="w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
-                  required
-                />
+              <div className="flex space-x-4">
+                <div className="relative w-1/2">
+                  <label className="block text-gray-700">
+                    <FontAwesomeIcon icon={faUser} className="mr-2" />
+                    Prénom
+                  </label>
+                  <input
+                    type="text"
+                    name="prenom"
+                    value={editDoctorInfo.prenom}
+                    onChange={handleDoctorChange}
+                    placeholder="Prénom"
+                    className="w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                    required
+                  />
+                </div>
+                <div className="relative w-1/2">
+                  <label className="block text-gray-700">
+                    <FontAwesomeIcon icon={faUser} className="mr-2" />
+                    Nom
+                  </label>
+                  <input
+                    type="text"
+                    name="nom"
+                    value={editDoctorInfo.nom}
+                    onChange={handleDoctorChange}
+                    placeholder="Nom"
+                    className="w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                    required
+                  />
+                </div>
               </div>
-              <div className="relative">
-                <input
-                  type="text"
-                  name="prenom"
-                  value={editDoctorInfo.prenom}
-                  onChange={handleDoctorChange}
-                  placeholder="Prenom"
-                  className="w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
-                  required
-                />
+              <div className="flex space-x-4">
+                <div className="relative w-1/2">
+                  <label className="block text-gray-700">
+                    <FontAwesomeIcon icon={faUserMd} className="mr-2" />
+                    Spécialité
+                  </label>
+                  <input
+                    type="text"
+                    name="specialty"
+                    value={editDoctorInfo.specialty}
+                    onChange={handleDoctorChange}
+                    placeholder="Spécialité"
+                    className="w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                    required
+                  />
+                </div>
+                <div className="relative w-1/2">
+                  <label className="block text-gray-700">
+                    <FontAwesomeIcon icon={faPhone} className="mr-2" />
+                    Téléphone
+                  </label>
+                  <input
+                    onKeyPress={(event) => {
+                      if (!/[0-9]/.test(event.key)) {
+                        event.preventDefault();
+                      }
+                    }}
+                    type="text"
+                    name="phoneNumber"
+                    value={editDoctorInfo.phoneNumber}
+                    onChange={handleDoctorChange}
+                    placeholder="Téléphone"
+                    className="w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                    required
+                  />
+                </div>
               </div>
-              <div className="relative">
-                <input
-                  type="text"
-                  name="specialty"
-                  value={editDoctorInfo.specialty}
-                  onChange={handleDoctorChange}
-                  placeholder="Specialty"
-                  className="w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
-                  required
-                />
+              <div className="flex space-x-4 justify-evenly">
+                <button
+                  type="submit"
+                  className="w-1/4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300 flex items-center justify-center"
+                >
+                  <FontAwesomeIcon icon={faPencilAlt} className="mr-2" />
+                  Mettre à jour
+                </button>
+                <button
+                  onClick={handleEditModeChange}
+                  className="w-1/4 bg-white hover:bg-blue-200 border-blue-200 hover:border-blue-200 border text-blue-500 font-bold py-2 px-4 rounded-lg flex items-center justify-center"
+                >
+                  <FontAwesomeIcon icon={faTimes} className="mr-2" />
+                  Annuler
+                </button>
               </div>
-              <div className="relative">
-                <input
-                  type="text"
-                  name="phoneNumber"
-                  value={editDoctorInfo.phoneNumber}
-                  onChange={handleDoctorChange}
-                  placeholder="Phone Number"
-                  className="w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300"
-              >
-                Mise à jour des données du médecin
-              </button>
             </form>
           )}
         </div>
@@ -216,6 +339,7 @@ const Profile = () => {
             </span>
             <input
               type="password"
+              name="oldPassword"
               placeholder="Ancien mot de passe"
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
@@ -229,20 +353,49 @@ const Profile = () => {
             </span>
             <input
               type="password"
+              name="newPassword"
               placeholder="Nouveau mot de passe"
               value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
+              onChange={handlePasswordChange}
               className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
               required
             />
           </div>
+          {newPassword !== "" && (
+            <div className="flex items-center mt-2">
+              <div className="w-full bg-gray-200 rounded">
+                <div
+                  className={`h-2 rounded ${getPasswordStrengthColor(
+                    passwordScore
+                  )} transition-all duration-300 ease-in-out`}
+                  style={{ width: `${(passwordScore + 1) * 20}%` }}
+                ></div>
+              </div>
+              <span
+                className={`ml-4 transition-colors duration-300 ease-in-out ${getPasswordStrengthTextColor(
+                  passwordScore
+                )}`}
+              >
+                {passwordScore === 0
+                  ? "Fragile"
+                  : passwordScore === 1
+                  ? "Faible"
+                  : passwordScore === 2
+                  ? "Moyen"
+                  : passwordScore === 3
+                  ? "Bon"
+                  : "Fort"}
+              </span>
+            </div>
+          )}
           <div className="relative">
             <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
               <FaUnlock />
             </span>
             <input
               type="password"
-              placeholder="Confirmez le nouveau mot de passe"
+              name="confirmNewPassword"
+              placeholder="Confirmer le nouveau mot de passe"
               value={confirmNewPassword}
               onChange={(e) => setConfirmNewPassword(e.target.value)}
               className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
@@ -251,7 +404,7 @@ const Profile = () => {
           </div>
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300"
+            className="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300"
           >
             Réinitialiser le mot de passe
           </button>

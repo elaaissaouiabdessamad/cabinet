@@ -4,7 +4,11 @@ const API_URL = "doctors/";
 const API_URLn = "doctors";
 
 const getAllDoctors = () => {
-  return axiosInstance.get(API_URLn);
+  return axiosInstance.get(API_URL + "activated");
+};
+
+const getAllNonActiveDoctors = () => {
+  return axiosInstance.get(API_URL + "deactivated");
 };
 
 const getDoctorById = (doctorId) => {
@@ -21,6 +25,14 @@ const updateDoctor = (doctorId, doctorData) => {
 
 const deleteDoctor = (doctorId) => {
   return axiosInstance.delete(API_URL + doctorId);
+};
+
+const deactivateDoctor = (doctorId) => {
+  return axiosInstance.delete(`${API_URL}${doctorId}/deactivate`);
+};
+
+const activateDoctor = (doctorId) => {
+  return axiosInstance.delete(`${API_URL}${doctorId}/activate`);
 };
 
 const API_URLDS = "doctor-shifts/";
@@ -59,10 +71,13 @@ const deleteShift = (shiftId) => {
 
 const DoctorService = {
   getAllDoctors,
+  getAllNonActiveDoctors,
   getDoctorById,
   createDoctor,
   updateDoctor,
   deleteDoctor,
+  activateDoctor,
+  deactivateDoctor,
   getDoctorGuards,
   generateShifts,
   deleteShifts,

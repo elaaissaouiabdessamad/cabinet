@@ -16,13 +16,18 @@ const formatDateWithCapitalizedDay = (date) => {
   return capitalizeFirstLetter(day) + restOfDate;
 };
 
-const AssignmentCard = ({ title, assignment, assignmentDate }) => {
+const AssignmentCard = ({ title, assignment, assignmentDate, type }) => {
   const assignmentTime = dayjs(assignment.assignmentDateTime);
   const isBefore = assignmentTime.isBefore(assignmentDate);
 
   return (
     <div className="mb-2 p-4 border rounded-lg shadow-sm flex flex-col space-y-2">
-      <h4 className="text-lg font-semibold">{title}</h4>
+      <h4 className="text-lg font-semibold">
+        {title} en{" "}
+        {type == "salle de cathétérisme"
+          ? "Salle de Cathétérisme"
+          : "Bloc de Rythmologie"}
+      </h4>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         <p className="flex items-center">
           <FaCalendarAlt className="mr-2 text-[#8f8df2]" />

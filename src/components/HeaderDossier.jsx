@@ -1,41 +1,47 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
+
 const HeaderDossier = ({ handleDossier }) => {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      setIsScrolled(scrollPosition > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
-    <div className="flex items-center mb-6 w-full">
-      <div className="flex items-center w-full relative">
-        <button
-          onClick={handleDossier}
-          className="mr-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg flex items-center"
+    <div className="flex items-center w-full">
+      <button
+        onClick={handleDossier}
+        className={`mr-4 fixed py-2 px-4 rounded-lg flex items-center bg-green-500 hover:bg-green-600 text-white font-bold transition-all duration-300 ease-in-out ${
+          isScrolled ? "translate-y-[5px]" : "translate-y-[15px]"
+        }`}
+        style={{ transition: "width 0.5s, opacity 0.5s, transform 0.5s" }}
+      >
+        <i className="fa fa-angle-double-left"></i>&nbsp;
+        <span
+          className={`transition-opacity duration-500 ${
+            isScrolled ? "opacity-0" : "opacity-100"
+          }`}
+          style={{ transition: "opacity 0.5s" }}
         >
-          <i class="fa fa-angle-double-left"></i>&nbsp; Au dossier mode
-          <FontAwesomeIcon icon={faEdit} className="ml-1" />
-        </button>
-        <input
-          type="text"
-          placeholder="Rechercher..."
-          className=" flex-grow p-2 border border-gray-400 rounded-lg"
+          {isScrolled ? "" : "Au dossier mode"}
+        </span>
+        <FontAwesomeIcon
+          icon={faEdit}
+          className={`ml-1 transition-transform duration-500 ${
+            isScrolled ? "transform -translate-x-[2px]" : ""
+          }`}
+          style={{ transition: "transform 0.5s" }}
         />
-        <button className="absolute right-0 top-0 p-2 rounded-lg">
-          <i className="fas fa-search"></i>
-        </button>
-      </div>
-      <button className="p-2 ml-4 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M12 4v16m8-8H4"
-          />
-        </svg>
       </button>
     </div>
   );

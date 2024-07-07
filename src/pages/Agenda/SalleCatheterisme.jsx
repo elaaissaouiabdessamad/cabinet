@@ -252,6 +252,10 @@ const SalleCatheterisme = () => {
     setIsDeleteModalAssignmentOpen(false);
   };
 
+  const filteredAssignments = assignments.filter(
+    (assignment) => assignment.roomType === "SALLE_CATHETERISME"
+  );
+
   return (
     <div className="flex flex-col items-center p-4">
       <HeaderAgenda />
@@ -273,7 +277,7 @@ const SalleCatheterisme = () => {
           onSubmit={findClosestAssignments}
           className="bg-white shadow-md rounded-lg p-6 max-w-6xl mt-4 flex flex-col items-center space-y-4"
         >
-          <div className="flex flex-wrap justify-center space-x-4">
+          <div className="flex flex-wrap justify-center space-x-2">
             <select
               value={doctor ? doctor.id : ""}
               onChange={handleDoctorChange}
@@ -337,7 +341,7 @@ const SalleCatheterisme = () => {
           />
         </div>
 
-        {assignments.length > 0 && (
+        {filteredAssignments.length > 0 && (
           <div className="mt-4 w-full">
             <table className="w-full bg-white border ">
               <thead>
@@ -349,55 +353,51 @@ const SalleCatheterisme = () => {
                 </tr>
               </thead>
               <tbody>
-                {assignments
-                  .filter(
-                    (assignment) => assignment.roomType === "SALLE_CATHETERISME"
-                  )
-                  .map((assignment, index) => (
-                    <tr
-                      key={assignment.id}
-                      className={index % 2 === 0 ? "bg-gray-50" : "bg-gray-100"}
-                    >
-                      <td className="py-2 px-4 border">
-                        {formatDateWithCapitalizedDay(
-                          assignment.assignmentDateTime
-                        ) + "H"}
-                      </td>
-                      <td className="py-2 px-4 border">
-                        <div className="font-semibold">
-                          {assignment.doctor.prenom} {assignment.doctor.nom}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          Spé : {assignment.doctor.specialty}
-                          {" - "}
-                          Tél : {assignment.doctor.phoneNumber}
-                        </div>
-                      </td>
-                      <td className="py-2 px-4 border">
-                        <div className="font-semibold">
-                          {assignment.patient.prenom} {assignment.patient.nom}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          Âge: {assignment.patient.age}
-                          {" - "}
-                          Ville: {assignment.patient.ville}
-                          {" - "}
-                          Profession: {assignment.patient.profession}
-                        </div>
-                      </td>
-                      <td className="py-2 px-4 border text-center">
-                        <button
-                          onClick={() => {
-                            setDeleteAssignmentId(assignment.id);
-                            setIsDeleteModalAssignmentOpen(true);
-                          }}
-                          className=" text-red-500 py-1 px-3 hover:text-red-600"
-                        >
-                          <FontAwesomeIcon icon={faTrash} />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                {assignments.map((assignment, index) => (
+                  <tr
+                    key={assignment.id}
+                    className={index % 2 === 0 ? "bg-gray-50" : "bg-gray-100"}
+                  >
+                    <td className="py-2 px-4 border">
+                      {formatDateWithCapitalizedDay(
+                        assignment.assignmentDateTime
+                      ) + "H"}
+                    </td>
+                    <td className="py-2 px-4 border">
+                      <div className="font-semibold">
+                        {assignment.doctor.prenom} {assignment.doctor.nom}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        Spé : {assignment.doctor.specialty}
+                        {" - "}
+                        Tél : {assignment.doctor.phoneNumber}
+                      </div>
+                    </td>
+                    <td className="py-2 px-4 border">
+                      <div className="font-semibold">
+                        {assignment.patient.prenom} {assignment.patient.nom}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        Âge: {assignment.patient.age}
+                        {" - "}
+                        Ville: {assignment.patient.ville}
+                        {" - "}
+                        Profession: {assignment.patient.profession}
+                      </div>
+                    </td>
+                    <td className="py-2 px-4 border text-center">
+                      <button
+                        onClick={() => {
+                          setDeleteAssignmentId(assignment.id);
+                          setIsDeleteModalAssignmentOpen(true);
+                        }}
+                        className=" text-red-500 py-1 px-3 hover:text-red-600"
+                      >
+                        <FontAwesomeIcon icon={faTrash} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -436,65 +436,89 @@ const SalleCatheterisme = () => {
               <div>
                 {closestAssignments.before && (
                   <AssignmentCard
-                    title="Affectation Précédente en Salle Cathétérisme"
+                    title="Affectation Précédente"
                     assignment={closestAssignments.before}
                     assignmentDate={assignmentDate}
+                    type="salle de cathétérisme"
                   />
                 )}
                 {!closestAssignments.before && (
-                  <AssignmentCardNotFound title="Affectation Précédente en Salle Cathétérisme" />
+                  <AssignmentCardNotFound
+                    title="Affectation Précédente"
+                    type="salle de cathétérisme"
+                  />
                 )}
                 {closestAssignments.beforeD && (
                   <AssignmentCard
-                    title="Affectation Précédente pour le Médecin en Bloc Rythmologie"
+                    title="Affectation Précédente pour le Médecin"
                     assignment={closestAssignments.beforeD}
                     assignmentDate={assignmentDate}
+                    type="bloc de rythmologie"
                   />
                 )}
                 {!closestAssignments.beforeD && (
-                  <AssignmentCardNotFound title="Affectation Précédente pour le Médecin en Bloc Rythmologie" />
+                  <AssignmentCardNotFound
+                    title="Affectation Précédente pour le Médecin"
+                    type="bloc de rythmologie"
+                  />
                 )}
                 {closestAssignments.beforeP && (
                   <AssignmentCard
-                    title="Affectation Précédente pour le Patient en Bloc Rythmologie"
+                    title="Affectation Précédente pour le Patient"
                     assignment={closestAssignments.beforeP}
                     assignmentDate={assignmentDate}
+                    type="bloc de rythmologie"
                   />
                 )}
                 {!closestAssignments.beforeP && (
-                  <AssignmentCardNotFound title="Affectation Précédente pour le Patient en Bloc Rythmologie" />
+                  <AssignmentCardNotFound
+                    title="Affectation Précédente pour le Patient"
+                    type="bloc de rythmologie"
+                  />
                 )}
               </div>
               <div>
                 {closestAssignments.after && (
                   <AssignmentCard
-                    title="Affectation Suivante en Salle Cathétérisme"
+                    title="Affectation Suivante"
                     assignment={closestAssignments.after}
                     assignmentDate={assignmentDate}
+                    type="salle de cathétérisme"
                   />
                 )}
                 {!closestAssignments.after && (
-                  <AssignmentCardNotFound title="Affectation Suivante en Salle Cathétérisme" />
+                  <AssignmentCardNotFound
+                    title="Affectation Suivante"
+                    type="salle de cathétérisme"
+                  />
                 )}
                 {closestAssignments.afterD && (
                   <AssignmentCard
-                    title="Affectation Suivante pour le Médecin en Bloc Rythmologie"
+                    title="Affectation Suivante pour le Médecin"
                     assignment={closestAssignments.afterD}
                     assignmentDate={assignmentDate}
+                    type="bloc de rythmologie"
                   />
                 )}
                 {!closestAssignments.afterD && (
-                  <AssignmentCardNotFound title="Affectation Suivante pour le Médecin en Bloc Rythmologie" />
+                  <AssignmentCardNotFound
+                    title="Affectation Suivante pour le Médecin"
+                    type="bloc de rythmologie"
+                  />
                 )}
                 {closestAssignments.afterP && (
                   <AssignmentCard
-                    title="Affectation Suivante pour le Patient en Bloc Rythmologie"
+                    title="Affectation Suivante pour le Patient"
                     assignment={closestAssignments.afterP}
                     assignmentDate={assignmentDate}
+                    type="bloc de rythmologie"
                   />
                 )}
                 {!closestAssignments.afterP && (
-                  <AssignmentCardNotFound title="Affectation Suivante pour le Patient en Bloc Rythmologie" />
+                  <AssignmentCardNotFound
+                    title="Affectation Suivante pour le Patient"
+                    type="bloc de rythmologie"
+                  />
                 )}
               </div>
             </div>

@@ -79,7 +79,7 @@ const Biology = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-10">
+    <div className="flex flex-col items-center p-7">
       <ToastContainer
         draggable
         closeOnClick

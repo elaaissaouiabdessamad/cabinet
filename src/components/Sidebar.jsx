@@ -44,7 +44,6 @@ const Sidebar = () => {
       (path === "/dashboard" && activeLink.startsWith("/archived-patients")) ||
       (path === "/agenda" && activeLink.startsWith("/bloc-rythmologie")) ||
       (path === "/agenda" && activeLink.startsWith("/salle-catheterisme")) ||
-      (path === "/agenda" && activeLink.startsWith("/salle-catheterisme")) ||
       (path === "/agenda" && activeLink.startsWith("/garde-des-medecins")) ||
       (path === "/agenda" && activeLink.startsWith("/garde-des-infirmieres")) ||
       (path === "/sectors" && activeLink.startsWith("/preview-pdf"))

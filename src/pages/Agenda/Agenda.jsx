@@ -6,8 +6,7 @@ const Agenda = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex m-4 flex-col items-center">
-      <HeaderStandard />
+    <div className="flex m-8 flex-col items-center">
       <div className="flex flex-col space-y-4 mt-8">
         <button
           onClick={() => navigate("/salle-catheterisme")}

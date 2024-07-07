@@ -6,6 +6,9 @@ import "react-toastify/dist/ReactToastify.css";
 import dayjs from "dayjs";
 import "dayjs/locale/fr";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ModalEditDoctor from "../../components/ModalEditDoctor";
+import ModalDeactivateDoctor from "../../components/ModalDeactivateDoctor";
+import ModalActivateDoctor from "../../components/ModalActivateDoctor";
 import {
   faPlus,
   faMinus,
@@ -15,6 +18,8 @@ import {
   faTrashAlt,
   faEye,
   faCheck,
+  faCheckCircle,
+  faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import ReactTooltip from "react-tooltip";
 
@@ -40,13 +45,55 @@ const DoctorShifts = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
+  const [isActivateModalOpen, setIsActivateModalOpen] = useState(false);
+  const [showActivated, setShowActivated] = useState(true);
 
   useEffect(() => {
     if (startDate && endDate) {
       fetchShifts();
     }
-    fetchDoctors();
-  }, [startDate, endDate, shiftType]);
+    if (showActivated) {
+      fetchActivatedDoctors();
+    } else {
+      fetchDeactivatedDoctors();
+    }
+  }, [startDate, endDate, shiftType, showActivated]);
+
+  const handleEdit = (doctor) => {
+    setSelectedDoctor(doctor);
+    setIsEdit(true);
+    setIsEditModalOpen(true);
+  };
+
+  const handleDeleteClick = (doctor) => {
+    setSelectedDoctor(doctor);
+    if (showActivated) setIsDeactivateModalOpen(true);
+    else setIsActivateModalOpen(true);
+  };
+
+  const handleDoctorChangeModal = (e) => {
+    const { name, value } = e.target;
+    setSelectedDoctor((prevDoctor) => ({ ...prevDoctor, [name]: value }));
+  };
+
+  const handleDoctorUpdate = async (e) => {
+    e.preventDefault();
+    if (isEdit && selectedDoctor) {
+      try {
+        await DoctorService.updateDoctor(selectedDoctor.id, selectedDoctor);
+        toast.success("Médecin modifié avec succès.");
+        fetchActivatedDoctors();
+        fetchDeactivatedDoctors();
+        setIsEditModalOpen(false);
+        setIsEdit(false);
+      } catch (error) {
+        toast.error("Erreur lors de la modification du médecin.");
+      }
+    }
+  };
 
   const fetchShifts = () => {
     if (!startDate || !endDate) {
@@ -66,8 +113,14 @@ const DoctorShifts = () => {
     );
   };
 
-  const fetchDoctors = () => {
+  const fetchActivatedDoctors = () => {
     DoctorService.getAllDoctors().then((response) => {
+      setDoctors(response.data);
+    });
+  };
+
+  const fetchDeactivatedDoctors = () => {
+    DoctorService.getAllNonActiveDoctors().then((response) => {
       setDoctors(response.data);
     });
   };
@@ -141,7 +194,8 @@ const DoctorShifts = () => {
     DoctorService.createDoctor(doctor)
       .then(() => {
         toast.success("Docteur ajouté avec succès !");
-        fetchDoctors();
+        fetchActivatedDoctors();
+        fetchDeactivatedDoctors();
         setDoctor({ nom: "", prenom: "", specialty: "", phoneNumber: "" });
         setShowDoctorForm(false);
       })
@@ -229,6 +283,44 @@ const DoctorShifts = () => {
       .catch(() => {
         toast.error("Échec de la suppression de la garde. Veuillez réessayer.");
       });
+  };
+
+  const toggleDoctorView = () => {
+    setShowActivated((prevState) => !prevState);
+  };
+
+  /*const handleDelete = async () => {
+    try {
+      await DoctorService.deactivateDoctor(selectedDoctor.id);
+      toast.success("Médecin supprimé avec succès.");
+      fetchActivatedDoctors();
+      fetchDeactivatedDoctors();
+      setIsDeleteModalOpen(false);
+    } catch (error) {
+      toast.error("Erreur lors de la suppression du médecin.");
+    }
+  };*/
+
+  const handleToggleActivation = async () => {
+    try {
+      console.log(selectedDoctor);
+      if (selectedDoctor.active) {
+        await DoctorService.deactivateDoctor(selectedDoctor.id);
+        toast.success("Médecin désactivé avec succès.");
+      } else {
+        await DoctorService.activateDoctor(selectedDoctor.id);
+        toast.success("Médecin activé avec succès.");
+      }
+      if (showActivated) {
+        fetchActivatedDoctors();
+        setIsDeactivateModalOpen(false);
+      } else {
+        fetchDeactivatedDoctors();
+        setIsActivateModalOpen(false);
+      }
+    } catch (error) {
+      toast.error("Erreur lors de l'activation/désactivation du médecin.");
+    }
   };
 
   return (
@@ -507,25 +599,44 @@ const DoctorShifts = () => {
           ""
         )}
       </div>
-      <div className="bg-white shadow-md rounded-lg w-1/2 p-6 max-w-5xl mt-8">
-        <span className="text-lg font-bold">Médecins</span>
-        {isEdit ? (
-          <>
-            <button
-              type="button"
-              onClick={() => setShowDoctorForm(!showDoctorForm)}
-              className="bg-blue-500 ml-8 text-white py-2 px-4 rounded-md"
-            >
-              <FontAwesomeIcon
-                icon={showDoctorForm ? faMinus : faPlus}
-                className="mr-2"
-              />
-              {showDoctorForm ? "Masquer le formulaire" : "Ajouter un médecin"}
-            </button>
-          </>
-        ) : (
-          ""
-        )}
+      <div className="bg-white shadow-md rounded-lg w-2/3 p-6 max-w-5xl mt-8">
+        <div className="flex justify-between items-center">
+          <span className="text-lg font-bold">
+            Médecins{showActivated ? " activés" : " désactivés"}
+          </span>
+          <button
+            onClick={toggleDoctorView}
+            className="bg-white hover:bg-blue-200 ml-4 border-white hover:border-blue-200 border text-blue-500 font-bold py-2 px-4 rounded-lg"
+          >
+            {showActivated ? (
+              <FontAwesomeIcon icon={faTimesCircle} className="mr-1" />
+            ) : (
+              <FontAwesomeIcon icon={faCheckCircle} className="mr-1" />
+            )}{" "}
+            {showActivated
+              ? "Afficher les médecins désactivés"
+              : "Afficher les médecins activés"}
+          </button>
+          {isEdit ? (
+            <>
+              <button
+                type="button"
+                onClick={() => setShowDoctorForm(!showDoctorForm)}
+                className="bg-blue-500 ml-4 text-white py-2 px-4 rounded-md"
+              >
+                <FontAwesomeIcon
+                  icon={showDoctorForm ? faMinus : faPlus}
+                  className="mr-2"
+                />
+                {showDoctorForm
+                  ? "Masquer le formulaire"
+                  : "Ajouter un médecin"}
+              </button>
+            </>
+          ) : (
+            ""
+          )}
+        </div>
         {showDoctorForm && isEdit && (
           <form
             onSubmit={handleDoctorSubmit}
@@ -591,6 +702,13 @@ const DoctorShifts = () => {
                     <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Numéro de téléphone
                     </th>
+                    {isEdit ? (
+                      <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Actions
+                      </th>
+                    ) : (
+                      ""
+                    )}
                   </tr>
                 </thead>
                 <tbody>
@@ -606,6 +724,38 @@ const DoctorShifts = () => {
                       </td>
                       <td className="px-4 py-2">{doctor.specialty}</td>
                       <td className="px-4 py-2">{doctor.phoneNumber}</td>
+                      {isEdit ? (
+                        <td className="px-4 py-2 flex space-x-2">
+                          <button
+                            onClick={() => handleEdit(doctor)}
+                            className="text-blue-500 hover:text-blue-700"
+                          >
+                            <FontAwesomeIcon icon={faEdit} className="mr-2" />{" "}
+                          </button>
+                          <button
+                            onClick={() => handleDeleteClick(doctor)}
+                            className={
+                              showActivated
+                                ? `text-red-500 hover:text-red-700`
+                                : `text-green-500 hover:text-green-700`
+                            }
+                          >
+                            {showActivated ? (
+                              <FontAwesomeIcon
+                                icon={faTrash}
+                                className="ml-2"
+                              />
+                            ) : (
+                              <FontAwesomeIcon
+                                icon={faCheck}
+                                className="ml-2"
+                              />
+                            )}
+                          </button>
+                        </td>
+                      ) : (
+                        ""
+                      )}
                     </tr>
                   ))}
                 </tbody>
@@ -613,7 +763,15 @@ const DoctorShifts = () => {
             </div>
           </div>
         ) : (
-          <></>
+          <div className="space-y-2 mt-5 text-center">
+            <div className="overflow-x-auto">
+              <p>
+                {showActivated
+                  ? "Aucun médecin activé trouvé."
+                  : "Aucun médecin désactivé trouvé."}
+              </p>
+            </div>
+          </div>
         )}
       </div>
       {showAddModal && (
@@ -806,6 +964,25 @@ const DoctorShifts = () => {
           </div>
         </div>
       )}
+      <ModalEditDoctor
+        isOpen={isEditModalOpen}
+        onRequestClose={() => setIsEditModalOpen(false)}
+        doctor={selectedDoctor || {}}
+        handleChange={handleDoctorChangeModal}
+        handleSubmit={handleDoctorUpdate}
+      />
+      <ModalDeactivateDoctor
+        isOpen={isDeactivateModalOpen}
+        onRequestClose={() => setIsDeactivateModalOpen(false)}
+        handleDelete={handleToggleActivation}
+        message={`désactiver le médecin ${selectedDoctor?.prenom} ${selectedDoctor?.nom}`}
+      />
+      <ModalActivateDoctor
+        isOpen={isActivateModalOpen}
+        onRequestClose={() => setIsActivateModalOpen(false)}
+        handleDelete={handleToggleActivation}
+        message={`activer le médecin ${selectedDoctor?.prenom} ${selectedDoctor?.nom}`}
+      />
     </div>
   );
 };

@@ -27,9 +27,8 @@ const CaseHistory = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-10">
+    <div className="flex flex-col items-center p-7">
       <HeaderDossier handleDossier={handleDossier} />
-
       <div className={`mb-6 text-${color} font-bold`}>
         Mr Patient{" "}
         <span className="text-gray-500">

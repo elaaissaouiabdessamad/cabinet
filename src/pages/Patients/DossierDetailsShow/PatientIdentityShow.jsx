@@ -8,6 +8,8 @@ import {
   FaRegIdBadge,
   FaCalendarAlt,
   FaMoneyBillAlt,
+  FaHome, // Import icon for full address
+  FaHeart, // Import icon for marital status
 } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
@@ -28,8 +30,9 @@ const PatientIdentity = () => {
       state: { patient, color },
     });
   };
+
   return (
-    <div className="flex flex-col items-center p-10">
+    <div className="flex flex-col items-center p-7">
       <HeaderDossierShow handleDossierShow={handleDossierShow} />
       <div className={`mb-6 text-${color} font-bold`}>
         Mr Patient{" "}
@@ -72,6 +75,22 @@ const PatientIdentity = () => {
             <span className="text-lg">
               Assurance:&nbsp;{patient?.assurance}
             </span>
+          </div>
+          <div className="flex items-center mb-4">
+            <FaHome className="text-gray-500 mr-3 text-xl" />
+            <span className="text-lg">
+              Adresse complète:&nbsp;{patient?.fullAddress}
+            </span>
+          </div>
+          <div className="flex items-center mb-4">
+            <FaHeart className="text-pink-500 mr-3 text-xl" />
+            <span className="text-lg">
+              État civil:&nbsp;{patient?.maritalStatus}
+            </span>
+          </div>
+          <div className="flex items-center mb-4">
+            <FaMapMarkerAlt className="text-green-500 mr-3 text-xl" />
+            <span className="text-lg">Région:&nbsp;{patient?.region}</span>
           </div>
           <div className="flex items-center mb-4">
             <FaRegIdBadge className="text-gray-500 mr-3 text-xl" />

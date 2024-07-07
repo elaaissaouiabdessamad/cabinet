@@ -57,7 +57,7 @@ const ECG = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-10 max-h-width">
+    <div className="flex flex-col items-center p-7">
       <HeaderDossierShow handleDossierShow={handleDossierShow} />
       <div className={`mb-6 text-${color} font-bold`}>
         Mr Patient{" "}
@@ -66,7 +66,7 @@ const ECG = () => {
         </span>
         , ref:<span className="text-gray-500"> {patient?.referenceID}</span>
       </div>
-      <div className="bg-white border border-black rounded-3xl shadow-lg w-full max-w-3xl">
+      <div className="bg-white border border-black rounded-3xl shadow-lg w-full max-w-md">
         {" "}
         {/* Adjusted max-width here */}
         <div className="p-6 border-b border-black flex justify-center w-full">
