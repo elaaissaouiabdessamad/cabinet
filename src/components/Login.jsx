@@ -32,7 +32,7 @@ function Login({ login }) {
       };
       localStorage.setItem("userData", JSON.stringify(userData));
       login();
-      navigate("/dashboard");
+      navigate("/accueil");
     } catch (error) {
       toast.error(
         error.response?.data?.message ||

@@ -9,7 +9,7 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
-import Dashboard from "./pages/Dashboard/Dashboard";
+import Accueil from "./pages/Dashboard/Accueil";
 import Patients from "./pages/Patients/Patients";
 import Sectors from "./pages/Patients/Sectors";
 import Historique from "./pages/Historique/Historique";
@@ -80,6 +80,9 @@ import NurseShifts from "./pages/Agenda/NurseShifts";
 import AddPatientForm from "./pages/Dashboard/AddPatientForm";
 import RequestPasswordReset from "./components/RequestPasswordReset";
 import ResetPassword from "./components/ResetPassword";
+import PatientDashboard from "./pages/Dashboard/PatientDashboard";
+import PharmacieDashboard from "./pages/Dashboard/PharmacieDashboard";
+import PatientTable from "./pages/Dashboard/PatientTable";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -129,7 +132,7 @@ function App() {
           path="/"
           element={
             isAuthenticated ? (
-              <Navigate to="/dashboard" />
+              <Navigate to="/accueil" />
             ) : (
               <Navigate to="/login" />
             )
@@ -159,7 +162,21 @@ function App() {
                   <Sidebar />
                   <div className="flex-1 bg-gradient-to-b from-white to-blue-100">
                     <Routes>
-                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/accueil" element={<Accueil />} />
+                      <Route
+                        path="/dashboard-patient"
+                        element={<PatientDashboard />}
+                      />
+                      <Route
+                        path="/dashboard-pharmacie"
+                        element={<PharmacieDashboard />}
+                      />
+                      <Route path="/sectors-show" element={<Sectors />} />
+                      <Route
+                        path="/sectors-statistics"
+                        element={<PharmacieDashboard />}
+                      />
+                      <Route path="/sectors-table" element={<PatientTable />} />
                       <Route
                         exact
                         path="/add-patient"
@@ -175,7 +192,6 @@ function App() {
                         path="/archived-patients"
                         element={<ArchivedPatientListTable />}
                       />
-                      <Route path="/sectors" element={<Sectors />} />
                       <Route
                         path="/patients/:sectorId"
                         element={<Patients />}

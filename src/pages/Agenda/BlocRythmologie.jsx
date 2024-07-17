@@ -353,7 +353,7 @@ const BlocRythmologie = () => {
                 </tr>
               </thead>
               <tbody>
-                {assignments.map((assignment, index) => (
+                {filteredAssignments.map((assignment, index) => (
                   <tr
                     key={assignment.id}
                     className={index % 2 === 0 ? "bg-gray-50" : "bg-gray-100"}

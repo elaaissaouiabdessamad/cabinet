@@ -55,11 +55,31 @@ html, body {
   width: 100%;
 }
 
+.submenu-item {
+  padding: 10px;
+  cursor: pointer;
+  color: #003366;
+  background-color: transparent;
+  border: none;
+  text-align: center;
+  outline: none;
+  width: 60%;
+}
+
 .sidebar-item:hover {
-  background-color: #c5cbe9;
+  background-color: #aab0ce;
 }
 
 .sidebar-item.active {
+  background-color: #7e7dd0;
+  color: white;
+}
+
+.submenu-item:hover {
+  background-color: #c5cbe9;
+}
+
+.submenu-item.active {
   background-color: #8f8df2;
   color: white;
 }
@@ -90,7 +110,7 @@ html, body {
   }
   
   .search-input {
-    width: 400px; /* Increase the width as desired */
+    width: 400px;
     padding: 10px;
     padding-left: 30px;
     border: 1px solid #ccc;

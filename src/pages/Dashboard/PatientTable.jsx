@@ -169,6 +169,7 @@ const PatientTable = () => {
             <input
               type="checkbox"
               name="assigned"
+              className="mr-1"
               checked={showAssigned}
               onChange={handleCheckboxChange}
             />
@@ -178,6 +179,7 @@ const PatientTable = () => {
             <input
               type="checkbox"
               name="unassigned"
+              className="mr-1"
               checked={showUnassigned}
               onChange={handleCheckboxChange}
             />
@@ -207,43 +209,61 @@ const PatientTable = () => {
             <thead>
               <tr>
                 <th
-                  className="py-2 px-4 border text-center cursor-pointer"
+                  className="py-2 px-2 border text-center cursor-pointer"
                   onClick={() => handleSort("referenceID")}
                 >
                   Ref ID
                 </th>
                 <th
-                  className="py-2 px-4 border text-center cursor-pointer"
+                  className="py-2 px-2 border text-center cursor-pointer"
                   onClick={() => handleSort("nom")}
                 >
                   Nom
                 </th>
                 <th
-                  className="py-2 px-4 border text-center cursor-pointer"
+                  className="py-2 px-2 border text-center cursor-pointer"
                   onClick={() => handleSort("prenom")}
                 >
                   Prénom
                 </th>
                 <th
-                  className="py-2 px-4 border text-center cursor-pointer"
+                  className="py-2 px-2 border text-center cursor-pointer"
                   onClick={() => handleSort("age")}
                 >
                   Âge
                 </th>
                 <th
-                  className="py-2 px-4 border text-center cursor-pointer"
+                  className="py-2 px-2 border text-center cursor-pointer"
                   onClick={() => handleSort("ville")}
                 >
                   Ville
                 </th>
                 <th
-                  className="py-2 px-4 border text-center cursor-pointer"
+                  className="py-2 px-2 border text-center cursor-pointer"
+                  onClick={() => handleSort("assurance")}
+                >
+                  Assurance
+                </th>
+                <th
+                  className="py-2 px-2 border text-center cursor-pointer"
+                  onClick={() => handleSort("ville")}
+                >
+                  Tél
+                </th>
+                <th
+                  className="py-2 px-2 border text-center cursor-pointer"
+                  onClick={() => handleSort("ville")}
+                >
+                  État civil
+                </th>
+                <th
+                  className="py-2 px-2 border text-center cursor-pointer"
                   onClick={() => handleSort("isAssigned")}
                 >
                   Lit Assigné ?
                 </th>
-                <th className="py-2 px-4 border text-center">Patient</th>
-                <th className="py-2 px-4 border text-center">
+                <th className="py-2 px-2 border text-center">Patient</th>
+                <th className="py-2 px-2 border text-center">
                   Dossier Médical
                 </th>
               </tr>
@@ -251,22 +271,31 @@ const PatientTable = () => {
             <tbody>
               {filteredPatients.map((patient) => (
                 <tr key={patient.id}>
-                  <td className="py-2 px-4 border text-center">
+                  <td className="py-2 px-2 border text-center">
                     {patient.referenceID}
                   </td>
-                  <td className="py-2 px-4 border text-center">
+                  <td className="py-2 px-2 border text-center">
                     {patient.nom}
                   </td>
-                  <td className="py-2 px-4 border text-center">
+                  <td className="py-2 px-2 border text-center">
                     {patient.prenom}
                   </td>
-                  <td className="py-2 px-4 border text-center">
+                  <td className="py-2 px-2 border text-center">
                     {patient.age}
                   </td>
-                  <td className="py-2 px-4 border text-center">
+                  <td className="py-2 px-2 border text-center">
                     {patient.ville}
                   </td>
-                  <td className="py-2 px-4 border text-center">
+                  <td className="py-2 px-2 border text-center">
+                    {patient.assurance}
+                  </td>
+                  <td className="py-2 px-2 border text-center">
+                    {patient.familyPhone}
+                  </td>
+                  <td className="py-2 px-2 border text-center">
+                    {patient.maritalStatus}
+                  </td>
+                  <td className="py-2 px-2 border text-center">
                     {assignmentStatus[patient.id] !== undefined ? (
                       assignmentStatus[patient.id] ? (
                         <span className="text-green-500">Assigné</span>
@@ -277,7 +306,7 @@ const PatientTable = () => {
                       <span className="text-gray-500">Chargement...</span>
                     )}
                   </td>
-                  <td className="py-2 px-4 border text-center">
+                  <td className="py-2 px-2 border text-center">
                     <div className="space-x-2">
                       <button
                         onClick={() => {
@@ -286,23 +315,23 @@ const PatientTable = () => {
                         }}
                         className="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 transition duration-200"
                       >
-                        <FaTrashAlt className="inline-block " /> Effacer
+                        <FaTrashAlt className="inline-block " />
                       </button>
                     </div>
                   </td>
-                  <td className="py-2 px-4 border text-center">
+                  <td className="py-2 px-2 border text-center">
                     <div className="space-x-2">
                       <button
                         onClick={() => handleViewDossierShow(patient)}
                         className="bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700 transition duration-200"
                       >
-                        <FaEye className="inline-block mr-1" /> Voir
+                        <FaEye className="inline-block" />
                       </button>
                       <button
                         onClick={() => handleViewDossier(patient)}
                         className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600 transition duration-200"
                       >
-                        <FaEdit className="inline-block mr-1" /> Modifier
+                        <FaEdit className="inline-block" />
                       </button>
                       <button
                         onClick={() =>
@@ -310,7 +339,7 @@ const PatientTable = () => {
                         }
                         className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition duration-200"
                       >
-                        <FaArchive className="inline-block mr-1" /> Archiver
+                        <FaArchive className="inline-block" />
                       </button>
                     </div>
                   </td>

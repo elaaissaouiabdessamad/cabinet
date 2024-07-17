@@ -259,7 +259,7 @@ function Signup() {
           </button>
         </form>
         <div className="mt-4 text-center">
-          <span className="text-gray-600">Déjà un compte ? </span>
+          <span className="text-gray-600">Avez-vous déjà un compte ? </span>
           <Link to="/login" className="text-blue-500 hover:underline">
             Connexion
           </Link>

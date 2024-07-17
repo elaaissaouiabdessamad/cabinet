@@ -8,6 +8,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSnowflake, faProcedures } from "@fortawesome/free-solid-svg-icons";
+
 const BedDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -20,6 +21,8 @@ const BedDetail = () => {
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctorId, setSelectedDoctorId] = useState("");
   const { sectorId } = location.state || {};
+  const [allDiagnoses, setAllDiagnoses] = useState("");
+  const [allDifferentialDiagnoses, setAllDifferentialDiagnoses] = useState("");
 
   useEffect(() => {
     const fetchBed = async () => {
@@ -64,6 +67,19 @@ const BedDetail = () => {
 
     fetchDoctors();
   }, []);
+
+  useEffect(() => {
+    if (bed && bed.currentPatient && bed.currentPatient.medicalDossier) {
+      const diagnoses = bed.currentPatient.medicalDossier.diagnoses
+        .map((diag) => diag.diagnosis)
+        .join(", ");
+      const differentialDiagnoses = bed.currentPatient.medicalDossier.diagnoses
+        .map((diag) => diag.diagnosisDifferentiel)
+        .join(", ");
+      setAllDiagnoses(diagnoses);
+      setAllDifferentialDiagnoses(differentialDiagnoses);
+    }
+  }, [bed]);
 
   const handleAssignPatient = async () => {
     if (!selectedPatientId && !selectedDoctorId) {
@@ -251,10 +267,20 @@ const BedDetail = () => {
                 <hr />
                 <div className="flex justify-between">
                   <span className="font-semibold">Diagnostic</span>
-                  <span>
-                    {`${calculateDaysOccupied(
-                      bed.startDateTime
-                    )} jours occupés`}
+                  <span className="ml-1 text-right">
+                    {currentPatient.medicalDossier.diagnoses.length > 0 ? (
+                      <div>
+                        <p>
+                          {allDiagnoses
+                            ? allDiagnoses.length > 80
+                              ? `${allDiagnoses.substring(0, 80)}...`
+                              : allDiagnoses
+                            : ""}
+                        </p>
+                      </div>
+                    ) : (
+                      <p>Aucun diagnostic disponible</p>
+                    )}
                   </span>
                 </div>
                 <hr />

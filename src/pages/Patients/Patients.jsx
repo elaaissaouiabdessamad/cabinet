@@ -179,14 +179,14 @@ const Patients = () => {
                   </p>
                   <p className={`${getColorClass(bed).split(" ")[1]}`}>
                     {calculateDaysOccupied(bed.startDateTime) > 0
-                      ? `Jours Occupés: ${calculateDaysOccupied(
+                      ? `Durée de séjour: ${calculateDaysOccupied(
                           bed.startDateTime
                         )} ${
                           calculateDaysOccupied(bed.startDateTime) > 1
                             ? "jours"
                             : "jour"
                         }`
-                      : "Occupé aujourd'hui"}
+                      : "Durée de séjour: 0 jour"}
                   </p>
                   <div className="flex justify-between">
                     <div>

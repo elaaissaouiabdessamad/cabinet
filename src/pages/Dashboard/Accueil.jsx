@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import iconStats from "../../assets/iconStats.png";
 
-const Dashboard = () => {
+const Accueil = () => {
   return (
     <div className="main-content relative">
       <div className="grid-container">
@@ -24,4 +24,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Accueil;

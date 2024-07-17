@@ -86,9 +86,7 @@ const Header = ({ currentTime, formatTime, username, logout }) => {
 
   return (
     <div className="header">
-      <div className="profile mr-4">
-        <button className="profile-button">Dr {username}</button>
-      </div>
+      <button class="profile-button flex justify-center">Dr {username}</button>
       <form onSubmit={handleSearch} className="search flex flex-row relative">
         <FontAwesomeIcon icon={faSearch} className="search-icon" />
         <input
