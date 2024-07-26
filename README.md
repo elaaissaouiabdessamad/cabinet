@@ -1,70 +1,93 @@
-# Getting Started with Create React App
+Medical Cabinet Frontend Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+For Backend Code (Spring Boot + Java): https://github.com/AkramLok/hospital-backend-java
+Overview
+The Medical Cabinet Application is designed to streamline the management of patient information, bed assignments, doctor and nurse shifts, and pharmacy inventory within a hospital setting. Built using Java Spring Boot, this application ensures a robust, scalable, and secure system accessible exclusively to hospital doctors.
 
-## Available Scripts
+Features
+Patient Management
 
-In the project directory, you can run:
+Add, update, and delete patient information.
+View patient details and medical history.
+Track assignments of patients to beds.
+Bed Assignment History
 
-### `npm start`
+Maintain a history of patient bed assignments.
+Doctor and Patient Assignment
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Manage assignments within two specific blocs:
+Bloc de Rythomologie
+Salle Catherterisme
+Shift Scheduling
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Plan and manage shifts for doctors and nurses.
+Add, update, and consult shift schedules.
+Pharmacy Management
 
-### `npm test`
+Add and manage medications in the pharmacy inventory.
+User Authentication and Authorization
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Role-based access control for doctors.
+Technologies Used
+Backend
 
-### `npm run build`
+Java Spring Boot
+Spring Data JPA (Hibernate)
+Spring Security
+RESTful APIs
+Database
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+MySQL
+Frontend
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+HTML, CSS, JavaScript
+React.js
+Tailwind CSS
+Tools
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Maven
+Lombok
+Installation
+Configure the Database
+Update the application.properties or application.yml file with your database configuration.
 
-### `npm run eject`
+application.properties
+spring.datasource.url=jdbc:mysql://localhost:3306/medical_cabinet
+spring.datasource.username=root
+spring.datasource.password=yourpassword
+Build and run the backend application
+mvn clean install
+mvn spring-boot:run
+Build and run the frontend application
+Navigate to the React frontend directory and install dependencies.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+cd path-to-react-frontend
+npm install
+Start the React application.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+npm start
+Usage
+Ensure both the Spring Boot backend and the React frontend applications are running.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Access the application at http://localhost:3000.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Sign in and log in with existing doctor credentials.
 
-## Learn More
+Navigate through the application to manage patients, bed assignments, doctor and nurse shifts, and pharmacy inventory.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Contributing
+Fork the repository.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Create a new feature branch.
 
-### Code Splitting
+git checkout -b feature/your-feature-name
+Commit your changes.
+git commit -m "Add your message"
+Push to the branch.
+git push origin feature/your-feature-name
+Push to the branch.
+License
+This project is licensed under the MIT License.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Contact
+For any questions or support, please reach out to achibaneakram@gmail.com
